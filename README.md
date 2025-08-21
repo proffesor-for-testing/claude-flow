@@ -7,7 +7,7 @@
 [![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-Optimized-green?style=for-the-badge&logo=anthropic)](https://github.com/ruvnet/claude-flow)
 [![🏛️ Agentics Foundation](https://img.shields.io/badge/Agentics-Foundation-crimson?style=for-the-badge&logo=openai)](https://discord.com/invite/dfxmpwkG2D)
 [![🐝 Hive-Mind](https://img.shields.io/badge/Hive--Mind-AI%20Coordination-purple?style=for-the-badge&logo=swarm)](https://github.com/ruvnet/claude-flow)
-[![🧠 Neural](https://img.shields.io/badge/Neural-87%20MCP%20Tools-blue?style=for-the-badge&logo=tensorflow)](https://github.com/ruvnet/claude-flow)
+[![🧠 Neural](https://img.shields.io/badge/Neural-87%20MCP%20Tools-blue?style=for-the-badge&logo=pytorch)](https://github.com/ruvnet/claude-flow)
 [![🛡️ MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -27,7 +27,6 @@
 - **💾 SQLite Memory System**: Persistent `.swarm/memory.db` with 12 specialized tables
 - **🪝 Advanced Hooks System**: Automated workflows with pre/post operation hooks
 - **📊 GitHub Integration**: 6 specialized modes for repository management
-- **⚡ Performance**: 84.8% SWE-Bench solve rate, 2.8-4.4x speed improvement
 
 > 🔥 **Revolutionary AI Coordination**: Build faster, smarter, and more efficiently with AI-powered development orchestration
 
@@ -47,7 +46,7 @@ npm install -g @anthropic-ai/claude-code
 
 # 2. (Optional) Skip permissions check for faster setup
 # Only use if you understand the security implications
- claude --dangerously-skip-permissions
+claude --dangerously-skip-permissions
 ```
 
 💡 **Windows Note**: If you encounter SQLite errors, Claude Flow will automatically use in-memory storage. For persistent storage options, see our [Windows guide](https://github.com/ruvnet/claude-code-flow/blob/main/docs/windows-installation.md).
@@ -62,7 +61,7 @@ npx claude-flow@alpha init --force
 npx claude-flow@alpha --help
 
 # 3a. Quick AI coordination (recommended for most tasks)
-npx claude-flow@alpha swarm "build me a REST API"
+npx claude-flow@alpha swarm "build me a REST API" --claude
 
 # 3b. OR launch the full hive-mind system (for complex projects)
 npx claude-flow@alpha hive-mind wizard
@@ -601,232 +600,6 @@ npx claude-flow@alpha help <command>  # Detailed command help
 - **Memory**: `memory store`, `memory query`, `memory stats`, `memory export/import`
 - **GitHub**: `github <mode>` (6 specialized modes available)
 - **Workflows**: `workflow create`, `batch process`, `pipeline create`
-
----
-
-## 🧪 **Alpha Testing & Development**
-
-### **🐛 Bug Reports & Feedback**
-Found issues with the alpha? We want to hear from you!
-
-- **🐛 Report Bugs**: [GitHub Issues](https://github.com/ruvnet/claude-flow/issues)
-- **💡 Feature Requests**: Use the "Alpha Feedback" label
-- **🛠️ Development**: Check the [`claude-flow-v2.0.0`](https://github.com/ruvnet/claude-flow/tree/claude-flow-v2.0.0) branch
-- **📋 Alpha Testing**: Join our alpha testing program
-
-### **🔬 Testing the Alpha**
-```bash
-# Test available GitHub modes
-npx claude-flow@alpha github gh-coordinator --help
-npx claude-flow@alpha github pr-manager --help  
-npx claude-flow@alpha github issue-tracker --help
-npx claude-flow@alpha github release-manager --help
-npx claude-flow@alpha github repo-architect --help
-npx claude-flow@alpha github sync-coordinator --help
-
-# Test memory functionality
-npx claude-flow@alpha memory stats
-npx claude-flow@alpha memory store "test" "alpha testing data"
-npx claude-flow@alpha memory query "test"
-
-# Test workflow execution
-npx claude-flow@alpha workflow create --name "Test Pipeline" --parallel
-```
-
-### **📊 Alpha Metrics Dashboard**
-```bash
-# Check memory usage and statistics
-npx claude-flow@alpha memory stats
-
-# View available GitHub coordination modes
-npx claude-flow@alpha github --help
-
-# Test workflow capabilities
-npx claude-flow@alpha workflow --help
-```
-
----
-
-## 🚀 **Roadmap to Stable v2.0.0**
-
-### **🎯 Alpha Phase (Current)**
-- ✅ Hive-mind coordination system
-- ✅ 87 MCP tools integration
-- ✅ Neural pattern recognition
-- ✅ Distributed memory architecture
-- ✅ Auto-MCP setup for Claude Code
-
-### **🔄 Beta Phase (Coming Soon)**
-- 🔜 Enhanced swarm intelligence algorithms
-- 🔜 Advanced cognitive computing features
-- 🔜 Enterprise security and compliance
-- 🔜 Multi-cloud deployment automation
-- 🔜 Real-time collaboration features
-
-### **🏆 Stable v2.0.0 (Q2 2025)**
-- 🎯 Production-ready hive-mind orchestration
-- 🎯 Complete neural computing suite
-- 🎯 Enterprise-grade security and monitoring
-- 🎯 Comprehensive documentation and tutorials
-- 🎯 Professional support and training
-
----
-
-## 🤝 **Contributing to Alpha**
-
-### **🛠️ Alpha Development Setup**
-```bash
-# Clone the alpha development branch
-git clone https://github.com/ruvnet/claude-flow.git
-cd claude-flow
-git checkout claude-flow-v2.0.0
-
-# Install alpha dependencies
-npm install
-
-# Build alpha version
-npm run build:alpha
-
-# Test alpha features
-npm run test:alpha
-```
-
-### **🔬 Alpha Testing Guidelines**
-- Focus on hive-mind coordination testing
-- Test neural pattern recognition accuracy
-- Validate memory system persistence
-- Verify Claude Code MCP integration
-- Report performance metrics and bottlenecks
-
----
-
-## 🛡️ **Enhanced Safety & Security Features**
-
-### **Enterprise-Grade Security in v2.0.0 Alpha**
-
-Claude-Flow v2.0.0 introduces revolutionary safety features that ensure secure, reliable AI orchestration at scale:
-
-#### **🔐 Auto-Configured MCP Permissions**
-```bash
-# Automatic settings.local.json creation during init
-# Pre-approves trusted MCP tools - no more permission prompts!
-{
-  "permissions": {
-    "allow": [
-      "mcp__ruv-swarm",
-      "mcp__claude-flow"
-    ],
-    "deny": []
-  }
-}
-```
-
-#### **🌐 Quantum-Resistant Security Architecture**
-- **QuDag Networks**: Future-proof encryption for global communications
-- **Byzantine Fault Tolerance**: Consensus protocols prevent malicious agents
-- **Zero-Trust Agent Communication**: Every inter-agent message is validated
-- **Encrypted Memory Storage**: Cross-session persistence with AES-256 encryption
-
-#### **🛡️ Multi-Layer Safety Mechanisms**
-
-##### **1. Hook-Based Validation System**
-```bash
-# Pre-execution safety checks
-npx claude-flow hooks pre-command --validate-security
-npx claude-flow hooks pre-edit --check-permissions
-```
-
-##### **2. Agent Isolation & Sandboxing**
-- Each agent runs in isolated context
-- Resource limits prevent runaway processes
-- Automatic timeout on long-running operations
-- Memory usage caps per agent
-
-##### **3. Audit Trail & Compliance**
-```bash
-# Complete audit logging
-npx claude-flow security audit --full-trace
-npx claude-flow security compliance --standard SOC2
-```
-
-##### **4. Real-Time Threat Detection**
-- Pattern recognition for anomalous behavior
-- Automatic agent suspension on security violations
-- Neural network-based threat prediction
-- Self-healing security responses
-
-#### **🔒 Secure Communication Protocols**
-
-##### **Cross-Boundary Security**
-- End-to-end encryption for all agent communications
-- <1ms latency with full encryption
-- Secure WebSocket connections with TLS 1.3
-- Certificate pinning for MCP servers
-
-##### **DAA Security Features**
-```bash
-# Secure agent creation with resource limits
-npx claude-flow daa agent-create \
-  --security-level high \
-  --resource-limits "cpu:50%,memory:2GB" \
-  --sandbox enabled
-```
-
-#### **🚨 Safety Guardrails**
-
-##### **Automatic Safety Checks**
-1. **Code Injection Prevention**: Sanitizes all inputs
-2. **Path Traversal Protection**: Validates file operations
-3. **Command Injection Blocking**: Secure command execution
-4. **Memory Overflow Protection**: Prevents buffer attacks
-
-##### **Rollback & Recovery**
-```bash
-# Instant rollback on security issues
-npx claude-flow init --rollback --security-breach
-npx claude-flow recovery --point last-safe-state
-```
-
-#### **📊 Security Monitoring Dashboard**
-```bash
-# Real-time security monitoring
-npx claude-flow security monitor --dashboard
-npx claude-flow security scan --deep --report
-
-# Security metrics and alerts
-npx claude-flow security metrics --last-24h
-npx claude-flow security alerts --configure
-```
-
-#### **🔧 Auto-Configured Security**
-Claude-Flow v2.0.0 Alpha automatically configures secure defaults:
-- Agent isolation and resource limits
-- Encrypted memory storage with AES-256
-- Complete audit logging for all operations
-- Neural threat detection and prevention
-- Auto-approved MCP permissions for trusted tools
-
-#### **🛡️ Defense-in-Depth Architecture**
-```
-┌─────────────────────────────────────────────────────────┐
-│                 🔐 Security Gateway                     │
-├─────────────────────────────────────────────────────────┤
-│     🛡️ Hook Validation │ 🔒 Permission Layer            │
-├─────────────────────────────────────────────────────────┤
-│          🚨 Threat Detection & Response                 │
-├─────────────────────────────────────────────────────────┤
-│     🔐 Encrypted Communication │ 📊 Audit Logging       │
-├─────────────────────────────────────────────────────────┤
-│            🐝 Isolated Agent Sandboxes                  │
-└─────────────────────────────────────────────────────────┘
-```
-
-### **✅ Security Best Practices**
-- Regular security scans with `npx claude-flow security scan`
-- Enable audit logging for production environments
-- Use high security level for sensitive operations
-- Configure resource limits for all agents
-- Regular backup and recovery testing
 
 ---
 
