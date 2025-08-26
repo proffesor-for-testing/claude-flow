@@ -983,6 +983,12 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       return true;
     }
     
+    // Check if database connection is still open before operations
+    if (!this.db || !this.db.open) {
+      console.warn('Database connection closed, cannot remove child PID during cleanup');
+      return false;
+    }
+    
     const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
     if (!session) return false;
 
