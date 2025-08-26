@@ -164,6 +164,8 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       const columns = this.db.prepare('PRAGMA table_info(sessions)').all();
       const hasObjective = columns.some((col) => col.name === 'objective');
       const hasSwarmName = columns.some((col) => col.name === 'swarm_name');
+      const hasCheckpointData = columns.some((col) => col.name === 'checkpoint_data');
+      const hasMetadata = columns.some((col) => col.name === 'metadata');
       const hasParentPid = columns.some((col) => col.name === 'parent_pid');
       const hasChildPids = columns.some((col) => col.name === 'child_pids');
 
@@ -175,6 +177,16 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       if (!hasSwarmName) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN swarm_name TEXT');
         console.log('Added swarm_name column to sessions table');
+      }
+
+      if (!hasCheckpointData) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN checkpoint_data TEXT');
+        console.log('Added checkpoint_data column to sessions table');
+      }
+
+      if (!hasMetadata) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN metadata TEXT');
+        console.log('Added metadata column to sessions table');
       }
 
       if (!hasParentPid) {
