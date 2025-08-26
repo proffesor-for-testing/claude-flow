@@ -635,6 +635,14 @@ claude mcp add claude-flow npx claude-flow@alpha mcp start
 ### System
 \`benchmark_run\`, \`features_detect\`, \`swarm_monitor\`
 
+### Flow-Nexus Integration (Optional Advanced Features)
+Flow-Nexus provides additional cloud-based AI orchestration capabilities through MCP:
+- **Sandboxes**: Cloud execution environments (Node.js, Python, React, Claude Code)  
+- **Templates**: Pre-built project templates (GitHub integration, swarms, hive-mind)
+- **Challenges**: Gamified learning with rUv credits and leaderboards
+- **Queen Seraphina**: AI assistant for strategic guidance
+- **Note**: Requires registration at flow-nexus.ruv.io and login via \`mcp__flow-nexus__user_login\`
+
 ## 🚀 Agent Execution Flow with Claude Code
 
 ### The Correct Pattern:
