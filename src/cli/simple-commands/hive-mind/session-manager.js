@@ -123,6 +123,8 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
         completion_percentage REAL DEFAULT 0,
         checkpoint_data TEXT,
         metadata TEXT,
+        parent_pid INTEGER,
+        child_pids TEXT,
         FOREIGN KEY (swarm_id) REFERENCES swarms(id)
       );
 
