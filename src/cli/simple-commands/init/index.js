@@ -110,6 +110,11 @@ async function setupMcpServers(dryRun = false) {
       command: 'npx ruv-swarm mcp start',
       description: 'ruv-swarm MCP server for enhanced coordination',
     },
+    {
+      name: 'flow-nexus',
+      command: 'npx flow-nexus@latest mcp start',
+      description: 'Flow Nexus Complete MCP server for advanced AI orchestration',
+    },
   ];
 
   for (const server of servers) {
