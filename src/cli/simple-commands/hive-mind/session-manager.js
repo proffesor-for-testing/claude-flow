@@ -164,12 +164,20 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
     try {
       // Check if required columns exist
       const columns = this.db.prepare('PRAGMA table_info(sessions)').all();
+      
+      // Core columns
       const hasObjective = columns.some((col) => col.name === 'objective');
       const hasSwarmName = columns.some((col) => col.name === 'swarm_name');
       const hasCheckpointData = columns.some((col) => col.name === 'checkpoint_data');
       const hasMetadata = columns.some((col) => col.name === 'metadata');
       const hasParentPid = columns.some((col) => col.name === 'parent_pid');
       const hasChildPids = columns.some((col) => col.name === 'child_pids');
+      
+      // Timestamp columns
+      const hasUpdatedAt = columns.some((col) => col.name === 'updated_at');
+      const hasPausedAt = columns.some((col) => col.name === 'paused_at');
+      const hasResumedAt = columns.some((col) => col.name === 'resumed_at');
+      const hasCompletionPercentage = columns.some((col) => col.name === 'completion_percentage');
 
       if (!hasObjective) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN objective TEXT');
@@ -199,6 +207,26 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       if (!hasChildPids) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN child_pids TEXT');
         console.log('Added child_pids column to sessions table');
+      }
+
+      if (!hasUpdatedAt) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP');
+        console.log('Added updated_at column to sessions table');
+      }
+
+      if (!hasPausedAt) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN paused_at DATETIME');
+        console.log('Added paused_at column to sessions table');
+      }
+
+      if (!hasResumedAt) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN resumed_at DATETIME');
+        console.log('Added resumed_at column to sessions table');
+      }
+
+      if (!hasCompletionPercentage) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN completion_percentage REAL DEFAULT 0');
+        console.log('Added completion_percentage column to sessions table');
       }
     } catch (error) {
       console.error('Migration error:', error);
