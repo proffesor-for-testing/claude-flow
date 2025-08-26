@@ -1397,21 +1397,23 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log(`  ⚠️  ${gitignoreResult.message}`);
     }
 
-    // SPARC initialization (now included by default)
-    console.log('\n🚀 Initializing SPARC development environment...');
+    // SPARC initialization (only with --roo flag)
     let sparcInitialized = false;
-    try {
-      // Run create-sparc
-      console.log('  🔄 Running: npx -y create-sparc init --force');
-      execSync('npx -y create-sparc init --force', {
-        cwd: workingDir,
-        stdio: 'inherit',
-      });
-      sparcInitialized = true;
-      printSuccess('✅ SPARC environment initialized successfully');
-    } catch (err) {
-      console.log(`  ⚠️  Could not run create-sparc: ${err.message}`);
-      console.log('     SPARC features will be limited to basic functionality');
+    if (initSparc) {
+      console.log('\n🚀 Initializing SPARC development environment...');
+      try {
+        // Run create-sparc
+        console.log('  🔄 Running: npx -y create-sparc init --force');
+        execSync('npx -y create-sparc init --force', {
+          cwd: workingDir,
+          stdio: 'inherit',
+        });
+        sparcInitialized = true;
+        printSuccess('✅ SPARC environment initialized successfully');
+      } catch (err) {
+        console.log(`  ⚠️  Could not run create-sparc: ${err.message}`);
+        console.log('     SPARC features will be limited to basic functionality');
+      }
     }
 
     // Create Claude slash commands for SPARC
