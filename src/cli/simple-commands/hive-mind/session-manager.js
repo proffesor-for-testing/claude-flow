@@ -160,10 +160,16 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       return;
     }
     try {
-      // Check if parent_pid column exists
+      // Check if required columns exist
       const columns = this.db.prepare('PRAGMA table_info(sessions)').all();
+      const hasSwarmName = columns.some((col) => col.name === 'swarm_name');
       const hasParentPid = columns.some((col) => col.name === 'parent_pid');
       const hasChildPids = columns.some((col) => col.name === 'child_pids');
+
+      if (!hasSwarmName) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN swarm_name TEXT');
+        console.log('Added swarm_name column to sessions table');
+      }
 
       if (!hasParentPid) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN parent_pid INTEGER');
