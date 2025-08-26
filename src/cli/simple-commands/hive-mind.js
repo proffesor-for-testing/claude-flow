@@ -597,6 +597,44 @@ async function spawnSwarm(args, flags) {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (swarm_id) REFERENCES swarms(id)
       );
+      
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        swarm_id TEXT NOT NULL,
+        swarm_name TEXT NOT NULL,
+        objective TEXT,
+        status TEXT DEFAULT 'active',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        paused_at DATETIME,
+        resumed_at DATETIME,
+        completion_percentage REAL DEFAULT 0,
+        checkpoint_data TEXT,
+        metadata TEXT,
+        parent_pid INTEGER,
+        child_pids TEXT,
+        FOREIGN KEY (swarm_id) REFERENCES swarms(id)
+      );
+      
+      CREATE TABLE IF NOT EXISTS session_checkpoints (
+        id TEXT PRIMARY KEY,
+        session_id TEXT NOT NULL,
+        checkpoint_name TEXT NOT NULL,
+        checkpoint_data TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (session_id) REFERENCES sessions(id)
+      );
+      
+      CREATE TABLE IF NOT EXISTS session_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        log_level TEXT DEFAULT 'info',
+        message TEXT,
+        agent_id TEXT,
+        data TEXT,
+        FOREIGN KEY (session_id) REFERENCES sessions(id)
+      );
     `);
       spinner.text = 'Database schema created successfully';
     } catch (error) {
