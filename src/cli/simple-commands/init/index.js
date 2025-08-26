@@ -534,6 +534,7 @@ export async function initCommand(subArgs, flags) {
         console.log('  📋 Then add MCP servers manually with:');
         console.log('     claude mcp add claude-flow claude-flow mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
+        console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
       }
     }
   } catch (err) {
