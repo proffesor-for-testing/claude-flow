@@ -187,7 +187,7 @@ export async function initCommand(subArgs, flags) {
   // Parse init options
   const initForce = subArgs.includes('--force') || subArgs.includes('-f') || flags.force;
   const initMinimal = subArgs.includes('--minimal') || subArgs.includes('-m') || flags.minimal;
-  const initSparc = true; // SPARC is now included by default
+  const initSparc = flags.roo || (subArgs && subArgs.includes('--roo')); // SPARC only with --roo flag
   const initDryRun = subArgs.includes('--dry-run') || subArgs.includes('-d') || flags.dryRun;
   const initOptimized = initSparc && initForce; // Use optimized templates when both flags are present
   const selectedModes = flags.modes ? flags.modes.split(',') : null; // Support selective mode initialization
