@@ -1022,6 +1022,12 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
       if (!session || !session.child_pids) return [];
       return sessionSerializer.deserializeLogData(session.child_pids);
     } else {
+      // Check if database connection is still open
+      if (!this.db || !this.db.open) {
+        console.warn('Database connection closed, cannot get child PIDs during cleanup');
+        return [];
+      }
+      
       // Use SQLite
       const session = this.db.prepare('SELECT child_pids FROM sessions WHERE id = ?').get(sessionId);
       if (!session || !session.child_pids) return [];
