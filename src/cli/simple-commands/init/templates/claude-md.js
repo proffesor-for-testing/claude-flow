@@ -650,8 +650,8 @@ Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
 - **Storage**: \`storage_upload\`, \`storage_list\` (cloud file management)
 
 **Authentication Required:**
-- Register at flow-nexus.ruv.io first
-- Login: \`mcp__flow-nexus__user_login\` with email/password
+- Register: \`mcp__flow-nexus__user_register\` or \`npx flow-nexus@latest register\`
+- Login: \`mcp__flow-nexus__user_login\` or \`npx flow-nexus@latest login\`
 - Access 70+ specialized MCP tools for advanced orchestration
 
 ## 🚀 Agent Execution Flow with Claude Code
