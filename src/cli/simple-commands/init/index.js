@@ -1096,6 +1096,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
   const workingDir = process.cwd();
   const force = flags.force || flags.f;
   const dryRun = flags.dryRun || flags['dry-run'] || flags.d;
+  const initSparc = flags.roo || (subArgs && subArgs.includes('--roo')); // SPARC only with --roo flag
 
   // Store parameters to avoid scope issues in async context
   const args = subArgs || [];
