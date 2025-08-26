@@ -162,9 +162,15 @@ To enable persistence, see: https://github.com/ruvnet/claude-code-flow/docs/wind
     try {
       // Check if required columns exist
       const columns = this.db.prepare('PRAGMA table_info(sessions)').all();
+      const hasObjective = columns.some((col) => col.name === 'objective');
       const hasSwarmName = columns.some((col) => col.name === 'swarm_name');
       const hasParentPid = columns.some((col) => col.name === 'parent_pid');
       const hasChildPids = columns.some((col) => col.name === 'child_pids');
+
+      if (!hasObjective) {
+        this.db.exec('ALTER TABLE sessions ADD COLUMN objective TEXT');
+        console.log('Added objective column to sessions table');
+      }
 
       if (!hasSwarmName) {
         this.db.exec('ALTER TABLE sessions ADD COLUMN swarm_name TEXT');
