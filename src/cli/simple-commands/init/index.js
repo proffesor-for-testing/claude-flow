@@ -1443,6 +1443,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
         console.log('\n  📋 To add MCP servers manually:');
         console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
+        console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
         console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
       }
     } else if (!dryRun && !isClaudeCodeInstalled()) {
