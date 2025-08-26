@@ -637,13 +637,22 @@ claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud fea
 ### System
 \`benchmark_run\`, \`features_detect\`, \`swarm_monitor\`
 
-### Flow-Nexus Integration (Optional Advanced Features)
-Flow-Nexus provides additional cloud-based AI orchestration capabilities through MCP:
-- **Sandboxes**: Cloud execution environments (Node.js, Python, React, Claude Code)  
-- **Templates**: Pre-built project templates (GitHub integration, swarms, hive-mind)
-- **Challenges**: Gamified learning with rUv credits and leaderboards
-- **Queen Seraphina**: AI assistant for strategic guidance
-- **Note**: Requires registration at flow-nexus.ruv.io and login via \`mcp__flow-nexus__user_login\`
+### Flow-Nexus MCP Tools (Optional Advanced Features)
+Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
+
+**Key MCP Tool Categories:**
+- **Swarm & Agents**: \`swarm_init\`, \`swarm_scale\`, \`agent_spawn\`, \`task_orchestrate\`
+- **Sandboxes**: \`sandbox_create\`, \`sandbox_execute\`, \`sandbox_upload\` (cloud execution)
+- **Templates**: \`template_list\`, \`template_deploy\` (pre-built project templates)
+- **Neural AI**: \`neural_train\`, \`neural_patterns\`, \`seraphina_chat\` (AI assistant)
+- **GitHub**: \`github_repo_analyze\`, \`github_pr_manage\` (repository management)
+- **Real-time**: \`execution_stream_subscribe\`, \`realtime_subscribe\` (live monitoring)
+- **Storage**: \`storage_upload\`, \`storage_list\` (cloud file management)
+
+**Authentication Required:**
+- Register at flow-nexus.ruv.io first
+- Login: \`mcp__flow-nexus__user_login\` with email/password
+- Access 70+ specialized MCP tools for advanced orchestration
 
 ## 🚀 Agent Execution Flow with Claude Code
 
