@@ -1,10 +1,10 @@
 [
   {
-    "id": "cmd-swarm-1756475864673",
-    "type": "swarm",
+    "id": "cmd-mcp-1756475942531",
+    "type": "mcp",
     "success": true,
-    "duration": 9.951351999999986,
-    "timestamp": 1756475864683,
+    "duration": 0.9712330000000406,
+    "timestamp": 1756475942533,
     "metadata": {}
   }
 ]

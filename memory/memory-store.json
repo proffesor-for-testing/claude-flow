@@ -528,5 +528,19 @@
       "namespace": "default",
       "timestamp": 1755362446482
     }
+  ],
+  "swarm_1756475726467_c9ey1p9vm": [
+    {
+      "key": "performance/metrics",
+      "value": "{\"analysis_timestamp\":\"2025-08-29T13:58:07Z\",\"swarm_id\":\"swarm_1756475726467_c9ey1p9vm\",\"topology\":\"hierarchical\",\"agent_count\":0,\"active_agents\":0,\"task_count\":0,\"system_metrics\":{\"memory_usage_percent\":7.85,\"memory_efficiency\":92.15,\"cpu_load\":0.098,\"uptime\":5787,\"platform\":\"linux\"},\"performance_score\":85.7,\"bottlenecks_identified\":[],\"recommendations\":[\"Consider spawning agents for active workloads\",\"Monitor memory growth trend\",\"Implement task distribution strategies\"]}",
+      "namespace": "swarm_1756475726467_c9ey1p9vm",
+      "timestamp": 1756475912632
+    },
+    {
+      "key": "performance/recommendations",
+      "value": "{\"priority\":\"medium\",\"optimization_targets\":[\"agent_utilization\",\"task_distribution\",\"memory_management\"],\"suggested_actions\":[\"Initialize agent pool for faster task execution\",\"Implement load balancing across available resources\",\"Monitor memory usage trends and implement cleanup strategies\"],\"expected_improvements\":{\"agent_spawn_time\":\"40% faster\",\"memory_efficiency\":\"5% improvement\",\"task_throughput\":\"60% increase\"}}",
+      "namespace": "swarm_1756475726467_c9ey1p9vm",
+      "timestamp": 1756475918678
+    }
   ]
 }
