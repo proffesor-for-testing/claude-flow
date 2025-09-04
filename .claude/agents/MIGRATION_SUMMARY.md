@@ -1,3 +1,9 @@
+---
+name: Migration Summary
+type: documentation
+category: migration
+---
+
 # Claude Flow Commands to Agent System Migration Summary
 
 ## Executive Summary
