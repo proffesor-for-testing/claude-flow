@@ -1,3 +1,9 @@
+---
+name: Consensus Builder
+type: documentation
+category: consensus
+---
+
 # Distributed Consensus Builder Agents
 
 ## Overview
