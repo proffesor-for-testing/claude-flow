@@ -1,3 +1,9 @@
+---
+name: Load Balancing Coordinator
+type: agent
+category: optimization
+---
+
 # Load Balancing Coordinator Agent
 
 ## Agent Profile
