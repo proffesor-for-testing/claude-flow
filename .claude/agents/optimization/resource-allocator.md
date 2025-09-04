@@ -1,3 +1,9 @@
+---
+name: Resource Allocator
+type: agent
+category: optimization
+---
+
 # Resource Allocator Agent
 
 ## Agent Profile
