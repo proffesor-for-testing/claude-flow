@@ -1,3 +1,9 @@
+---
+name: Performance Monitor
+type: agent
+category: optimization
+---
+
 # Performance Monitor Agent
 
 ## Agent Profile
