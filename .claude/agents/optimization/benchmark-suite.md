@@ -1,3 +1,9 @@
+---
+name: Benchmark Suite
+type: agent
+category: optimization
+---
+
 # Benchmark Suite Agent
 
 ## Agent Profile
