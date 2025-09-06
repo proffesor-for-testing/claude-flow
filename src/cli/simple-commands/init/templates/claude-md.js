@@ -987,9 +987,9 @@ export function createFlowNexusClaudeMd() {
 Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
 
 ### Quick Start
-1. **Register**: Use \\`mcp__flow-nexus__user_register\\` with email/password
-2. **Login**: Use \\`mcp__flow-nexus__user_login\\` to access features
-3. **Check Balance**: Use \\`mcp__flow-nexus__check_balance\\` for credits
+1. **Register**: Use \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: Use \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: Use \`mcp__flow-nexus__check_balance\` for credits
 
 ### 🚀 Key Capabilities
 
