@@ -1558,3 +1558,91 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
     }
   }
 }
+
+/**
+ * Flow Nexus minimal initialization - only creates Flow Nexus CLAUDE.md, commands, and agents
+ */
+async function flowNexusMinimalInit(flags, subArgs) {
+  console.log('🌐 Flow Nexus: Initializing minimal setup...');
+  
+  try {
+    const force = flags.force || flags.f;
+    
+    // Import functions we need
+    const { createFlowNexusClaudeMd } = await import('./templates/claude-md.js');
+    const { promises: fs } = await import('fs');
+    
+    // Create Flow Nexus CLAUDE.md
+    console.log('📝 Creating Flow Nexus CLAUDE.md...');
+    const flowNexusClaudeMd = createFlowNexusClaudeMd();
+    await fs.writeFile('CLAUDE.md', flowNexusClaudeMd);
+    console.log('  ✅ Created CLAUDE.md with Flow Nexus integration');
+    
+    // Create .claude/commands/flow-nexus directory and copy commands
+    console.log('📁 Setting up Flow Nexus commands...');
+    await fs.mkdir('.claude/commands/flow-nexus', { recursive: true });
+    
+    // Copy Flow Nexus command files
+    const sourceCommandsDir = '/workspaces/claude-code-flow/.claude/commands/flow-nexus';
+    try {
+      const commandFiles = await fs.readdir(sourceCommandsDir);
+      let copiedCommands = 0;
+      
+      for (const file of commandFiles) {
+        if (file.endsWith('.md')) {
+          const sourcePath = `${sourceCommandsDir}/${file}`;
+          const destPath = `.claude/commands/flow-nexus/${file}`;
+          const content = await fs.readFile(sourcePath, 'utf8');
+          await fs.writeFile(destPath, content);
+          copiedCommands++;
+        }
+      }
+      
+      console.log(`  ✅ Copied ${copiedCommands} Flow Nexus command files`);
+    } catch (err) {
+      console.log('  ⚠️  Could not copy Flow Nexus commands:', err.message);
+    }
+    
+    // Create .claude/agents/flow-nexus directory and copy agents
+    console.log('🤖 Setting up Flow Nexus agents...');
+    await fs.mkdir('.claude/agents/flow-nexus', { recursive: true });
+    
+    // Copy Flow Nexus agent files
+    const sourceAgentsDir = '/workspaces/claude-code-flow/.claude/agents/flow-nexus';
+    try {
+      const agentFiles = await fs.readdir(sourceAgentsDir);
+      let copiedAgents = 0;
+      
+      for (const file of agentFiles) {
+        if (file.endsWith('.md')) {
+          const sourcePath = `${sourceAgentsDir}/${file}`;
+          const destPath = `.claude/agents/flow-nexus/${file}`;
+          const content = await fs.readFile(sourcePath, 'utf8');
+          await fs.writeFile(destPath, content);
+          copiedAgents++;
+        }
+      }
+      
+      console.log(`  ✅ Copied ${copiedAgents} Flow Nexus agent files`);
+    } catch (err) {
+      console.log('  ⚠️  Could not copy Flow Nexus agents:', err.message);
+    }
+    
+    console.log('\n🎉 Flow Nexus minimal initialization complete!');
+    console.log('📚 Created: CLAUDE.md with Flow Nexus documentation');
+    console.log('📁 Created: .claude/commands/flow-nexus/ directory with command documentation');
+    console.log('🤖 Created: .claude/agents/flow-nexus/ directory with specialized agents');
+    console.log('');
+    console.log('💡 Quick Start:');
+    console.log('  1. Register: mcp__flow-nexus__user_register({ email, password })');
+    console.log('  2. Login: mcp__flow-nexus__user_login({ email, password })');
+    console.log('  3. Deploy: mcp__flow-nexus__swarm_init({ topology: "mesh", maxAgents: 5 })');
+    console.log('');
+    console.log('🔗 Use Flow Nexus MCP tools in Claude Code for full functionality');
+    
+  } catch (err) {
+    console.log(`❌ Flow Nexus initialization failed: ${err.message}`);
+    console.log('Stack trace:', err.stack);
+    process.exit(1);
+  }
+}
