@@ -2,6 +2,7 @@
 name: Agents Directory
 type: documentation
 category: agents
+description: Sub-agent definitions organized by type and purpose with specific capabilities and tool restrictions
 ---
 
 # Claude Code Agents Directory Structure
