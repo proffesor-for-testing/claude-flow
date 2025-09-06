@@ -155,6 +155,11 @@ export async function initCommand(subArgs, flags) {
   const hasVerificationFlags = subArgs.includes('--verify') || subArgs.includes('--pair') || 
                                flags.verify || flags.pair;
   
+  // Handle Flow Nexus minimal init
+  if (flags['flow-nexus']) {
+    return await flowNexusMinimalInit(flags, subArgs);
+  }
+
   // Default to enhanced Claude Flow v2 init unless other modes are specified
   // Use --basic flag for old behavior, or verification flags for verification mode
   if (!flags.basic && !flags.minimal && !flags.sparc && !hasVerificationFlags) {
