@@ -1025,7 +1025,7 @@ Flow Nexus extends Claude Flow with cloud-powered features for AI development an
 
 ### 🤖 Flow Nexus Agents
 
-Specialized agents for Flow Nexus operations available in \\`.claude/agents/flow-nexus/\\`:
+Specialized agents for Flow Nexus operations available in \`.claude/agents/flow-nexus/\`:
 
 - **flow-nexus-auth**: Authentication and user management
 - **flow-nexus-sandbox**: E2B sandbox deployment and management  
