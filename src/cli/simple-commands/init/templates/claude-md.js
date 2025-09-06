@@ -1004,7 +1004,7 @@ Flow Nexus extends Claude Flow with cloud-powered features for AI development an
 - Real-time code execution with environment variables
 
 **⚡ Workflows**
-- \\`mcp__flow-nexus__workflow_create\\` - Event-driven automation
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
 - Parallel task processing with message queues
 - Reusable workflow templates
 
