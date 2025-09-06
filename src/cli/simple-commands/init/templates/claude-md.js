@@ -1082,7 +1082,7 @@ mcp__flow-nexus__task_orchestrate({
 
 Flow Nexus seamlessly integrates with Claude Code through MCP (Model Context Protocol):
 
-1. **Add MCP Server**: \\`claude mcp add flow-nexus npx flow-nexus@latest mcp start\\`
+1. **Add MCP Server**: \`claude mcp add flow-nexus npx flow-nexus@latest mcp start\`
 2. **Use in Claude Code**: Access all Flow Nexus tools through MCP interface
 3. **Agent Coordination**: Use Flow Nexus agents for specialized cloud operations
 4. **Command Reference**: Use slash commands for quick Flow Nexus operations
