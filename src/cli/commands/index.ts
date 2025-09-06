@@ -82,6 +82,7 @@ export function setupCommands(cli: CLI): void {
 
         const force = (ctx.flags.force as boolean) || (ctx.flags.f as boolean);
         const minimal = (ctx.flags.minimal as boolean) || (ctx.flags.m as boolean);
+        const flowNexus = ctx.flags['flow-nexus'] as boolean;
 
         // Check if files already exist
         const files = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
