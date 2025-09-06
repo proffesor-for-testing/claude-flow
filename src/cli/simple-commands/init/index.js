@@ -1583,7 +1583,11 @@ async function flowNexusMinimalInit(flags, subArgs) {
     await fs.mkdir('.claude/commands/flow-nexus', { recursive: true });
     
     // Copy Flow Nexus command files
-    const sourceCommandsDir = '/workspaces/claude-code-flow/.claude/commands/flow-nexus';
+    const { fileURLToPath } = await import('url');
+    const { dirname, join } = await import('path');
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const sourceCommandsDir = join(__dirname, '../../../../.claude/commands/flow-nexus');
     try {
       const commandFiles = await fs.readdir(sourceCommandsDir);
       let copiedCommands = 0;
