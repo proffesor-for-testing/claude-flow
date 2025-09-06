@@ -31,6 +31,33 @@
 
 > 🔥 **Revolutionary AI Coordination**: Build faster, smarter, and more efficiently with AI-powered development orchestration
 
+## 🌐 **Flow Nexus Cloud Platform**
+
+**NEW**: Claude-Flow v2.0.0 now includes **Flow Nexus integration** - a cloud-powered AI development platform featuring:
+
+- **E2B Sandboxes**: Secure isolated environments for Node.js, Python, React, Next.js
+- **AI Swarms**: Deploy multi-agent systems in cloud infrastructure  
+- **Neural Training**: Distributed machine learning with custom model deployment
+- **Challenges & Marketplace**: Coding challenges with rUv credit rewards and template marketplace
+- **Workflow Automation**: Event-driven automation with message queue processing
+
+### 🚀 **Quick Start with Flow Nexus**
+
+```bash
+# 1. Initialize Flow Nexus only (minimal setup)
+npx claude-flow init --flow-nexus
+
+# 2. Register and login (use MCP tools in Claude Code)
+mcp__flow-nexus__user_register({ email: "your@email.com", password: "secure" })
+mcp__flow-nexus__user_login({ email: "your@email.com", password: "secure" })
+
+# 3. Deploy your first cloud swarm
+mcp__flow-nexus__swarm_init({ topology: "mesh", maxAgents: 5 })
+mcp__flow-nexus__sandbox_create({ template: "node", name: "api-dev" })
+```
+
+> 📚 **Complete documentation**: Visit [flow-nexus.ruv.net](https://flow-nexus.ruv.net) for comprehensive guides, tutorials, and API reference.
+
 ## ⚡ **Try v2.0.0 Alpha in 4 Commands**
 
 ### 📋 **Prerequisites**
