@@ -2511,6 +2511,91 @@ This is a Claude-Flow AI agent orchestration system.
 `;
 }
 
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+`;
+}
+
 function createFullClaudeMd(): string {
   return `# Claude Code Configuration
 
@@ -2561,6 +2646,91 @@ This is a Claude-Flow AI agent orchestration system with the following component
 `;
 }
 
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+`;
+}
+
 function createMinimalMemoryBankMd(): string {
   return `# Memory Bank
 
@@ -2572,6 +2742,91 @@ function createMinimalMemoryBankMd(): string {
 ## Storage Location
 - Database: \`./memory/claude-flow-data.json\`
 - Sessions: \`./memory/sessions/\`
+`;
+}
+
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
 `;
 }
 
@@ -2637,6 +2892,91 @@ Memory settings are configured in \`claude-flow.config.json\`:
 `;
 }
 
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+`;
+}
+
 function createMinimalCoordinationMd(): string {
   return `# Agent Coordination
 
@@ -2647,6 +2987,91 @@ function createMinimalCoordinationMd(): string {
 
 ## Agent Types
 - researcher, coder, analyst, coordinator, general
+`;
+}
+
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
 `;
 }
 
@@ -2742,6 +3167,91 @@ Coordination settings in \`claude-flow.config.json\`:
 `;
 }
 
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+`;
+}
+
 function createAgentsReadme(): string {
   return `# Agent Memory Storage
 
@@ -2774,6 +3284,91 @@ memory/agents/
 
 ## Last Updated
 ${new Date().toISOString()}
+`;
+}
+
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
 `;
 }
 
@@ -2810,5 +3405,90 @@ memory/sessions/
 
 ## Last Updated
 ${new Date().toISOString()}
+`;
+}
+
+function createFlowNexusClaudeMd(): string {
+  return `# Claude Code Configuration - Flow Nexus Integration
+
+## 🌐 Flow Nexus Cloud Platform
+
+Flow Nexus extends Claude Flow with cloud-powered features for AI development and deployment.
+
+### 🚀 Core Features
+- **AI Swarms**: Deploy multi-agent systems in isolated cloud environments
+- **E2B Sandboxes**: Secure code execution with Node.js, Python, React, Next.js support
+- **Workflows**: Event-driven automation with parallel task processing
+- **Neural Networks**: Train and deploy custom ML models with distributed computing
+- **Challenges**: Coding challenges with leaderboards and credit rewards
+- **App Store**: Marketplace for templates, applications, and AI-powered tools
+- **rUv Credits**: Flexible credit system for pay-as-you-go usage
+
+### 🔐 Authentication Commands
+
+\`\`\`javascript
+// Register new account
+mcp__flow-nexus__user_register({
+  email: "user@example.com",
+  password: "secure_password",
+  full_name: "Your Name" // optional
+})
+
+// Login to access features
+mcp__flow-nexus__user_login({
+  email: "user@example.com", 
+  password: "your_password"
+})
+
+// Check account status
+mcp__flow-nexus__auth_status({ detailed: true })
+\`\`\`
+
+### ⚡ Quick Start
+1. **Register**: \`mcp__flow-nexus__user_register\` with email/password
+2. **Login**: \`mcp__flow-nexus__user_login\` to access features
+3. **Check Balance**: \`mcp__flow-nexus__check_balance\` for credits
+
+### Key Capabilities
+
+**🤖 AI Swarms**
+- Deploy multi-agent swarms in cloud sandboxes
+- Pre-built templates for common architectures
+- Auto-scaling and load balancing
+
+**📦 E2B Sandboxes**
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
+- Support for Node.js, Python, React, Next.js
+- Real-time code execution with environment variables
+
+**⚡ Workflows**
+- \`mcp__flow-nexus__workflow_create\` - Event-driven automation
+- Parallel task processing with message queues
+- Reusable workflow templates
+
+**🎯 Challenges & Learning**
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
+- Earn rUv credits by completing tasks
+- Global leaderboard and achievements
+
+**🧠 Neural Networks**
+- \`mcp__flow-nexus__neural_train\` - Train custom models
+- Distributed training across sandboxes
+- Pre-built templates for ML tasks
+
+**💰 Credits & Billing**
+- Pay-as-you-go with rUv credits
+- Auto-refill configuration available
+- Free tier for getting started
+
+### Example: Deploy a Swarm
+\`\`\`javascript
+// Login and deploy
+mcp__flow-nexus__user_login { email: "user@example.com", password: "***" }
+mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
+mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
+\`\`\`
+
+Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
 `;
 }
