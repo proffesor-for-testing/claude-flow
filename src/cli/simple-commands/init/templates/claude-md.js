@@ -1039,7 +1039,7 @@ Specialized agents for Flow Nexus operations available in \`.claude/agents/flow-
 
 ### 📁 Flow Nexus Commands
 
-Detailed Flow Nexus command documentation available in \\`.claude/commands/flow-nexus/\\`:
+Detailed Flow Nexus command documentation available in \`.claude/commands/flow-nexus/\`:
 
 - \\`login-registration.md\\` - Authentication workflows
 - \\`sandbox.md\\` - E2B sandbox management
