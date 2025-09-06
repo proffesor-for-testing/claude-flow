@@ -999,7 +999,7 @@ Flow Nexus extends Claude Flow with cloud-powered features for AI development an
 - Auto-scaling and load balancing
 
 **📦 E2B Sandboxes**
-- \\`mcp__flow-nexus__sandbox_create\\` - Isolated execution environments
+- \`mcp__flow-nexus__sandbox_create\` - Isolated execution environments
 - Support for Node.js, Python, React, Next.js
 - Real-time code execution with environment variables
 
