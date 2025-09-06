@@ -1076,7 +1076,7 @@ mcp__flow-nexus__task_orchestrate({
   task: "Build REST API with authentication",
   strategy: "parallel"
 })
-\\`\\`\\`
+\`\`\`
 
 ### 🔗 Integration with Claude Code
 
