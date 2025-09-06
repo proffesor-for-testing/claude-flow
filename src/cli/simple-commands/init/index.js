@@ -1468,6 +1468,20 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       
       if (agentResult.success) {
         await validateAgentSystem(workingDir);
+        
+        // Copy command files including Flow Nexus commands
+        console.log('\n📚 Setting up command system...');
+        const commandResult = await copyCommandFiles(workingDir, {
+          force: force,
+          dryRun: dryRun
+        });
+        
+        if (commandResult.success) {
+          console.log('✅ ✓ Command system setup complete with Flow Nexus integration');
+        } else {
+          console.log('⚠️  Command system setup failed:', commandResult.error);
+        }
+        
         console.log('✅ ✓ Agent system setup complete with 64 specialized agents');
       } else {
         console.log('⚠️  Agent system setup failed:', agentResult.error);
