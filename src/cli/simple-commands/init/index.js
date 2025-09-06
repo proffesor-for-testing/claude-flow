@@ -41,7 +41,7 @@ import { createOptimizedClaudeSlashCommands } from './claude-commands/optimized-
 import { promises as fs } from 'fs';
 import { copyTemplates } from './template-copier.js';
 import { copyRevisedTemplates, validateTemplatesExist } from './copy-revised-templates.js';
-import { copyAgentFiles, createAgentDirectories, validateAgentSystem } from './agent-copier.js';
+import { copyAgentFiles, createAgentDirectories, validateAgentSystem, copyCommandFiles } from './agent-copier.js';
 import { showInitHelp } from './help.js';
 import { batchInitCommand, batchInitFromConfig, validateBatchOptions } from './batch-init.js';
 import { ValidationSystem, runFullValidation } from './validation/index.js';
