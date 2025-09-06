@@ -1009,7 +1009,7 @@ Flow Nexus extends Claude Flow with cloud-powered features for AI development an
 - Reusable workflow templates
 
 **🎯 Challenges & Learning**
-- \\`mcp__flow-nexus__challenges_list\\` - Coding challenges
+- \`mcp__flow-nexus__challenges_list\` - Coding challenges
 - Earn rUv credits by completing tasks
 - Global leaderboard and achievements
 
