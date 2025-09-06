@@ -1612,7 +1612,7 @@ async function flowNexusMinimalInit(flags, subArgs) {
     await fs.mkdir('.claude/agents/flow-nexus', { recursive: true });
     
     // Copy Flow Nexus agent files
-    const sourceAgentsDir = '/workspaces/claude-code-flow/.claude/agents/flow-nexus';
+    const sourceAgentsDir = join(__dirname, '../../../../.claude/agents/flow-nexus');
     try {
       const agentFiles = await fs.readdir(sourceAgentsDir);
       let copiedAgents = 0;
