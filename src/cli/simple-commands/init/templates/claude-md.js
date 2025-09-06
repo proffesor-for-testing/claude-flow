@@ -1014,7 +1014,7 @@ Flow Nexus extends Claude Flow with cloud-powered features for AI development an
 - Global leaderboard and achievements
 
 **🧠 Neural Networks**
-- \\`mcp__flow-nexus__neural_train\\` - Train custom models
+- \`mcp__flow-nexus__neural_train\` - Train custom models
 - Distributed training across sandboxes
 - Pre-built templates for ML tasks
 
