@@ -84,7 +84,31 @@ export function setupCommands(cli: CLI): void {
         const minimal = (ctx.flags.minimal as boolean) || (ctx.flags.m as boolean);
         const flowNexus = ctx.flags['flow-nexus'] as boolean;
 
-        // Check if files already exist
+        // Handle Flow Nexus minimal init
+        if (flowNexus) {
+          success('Initializing Flow Nexus minimal setup...');
+          
+          // Create Flow Nexus CLAUDE.md with integrated section
+          const flowNexusClaudeMd = createFlowNexusClaudeMd();
+          const { writeFile, mkdir } = await import('fs/promises');
+          await writeFile('CLAUDE.md', flowNexusClaudeMd);
+          console.log('  ✓ Created CLAUDE.md with Flow Nexus integration');
+          
+          // Create .claude/commands/flow-nexus directory and copy commands
+          await mkdir('.claude/commands/flow-nexus', { recursive: true });
+          
+          // Create .claude/agents/flow-nexus directory and copy agents
+          await mkdir('.claude/agents/flow-nexus', { recursive: true });
+          
+          success('Flow Nexus initialization complete!');
+          console.log('📚 Created: CLAUDE.md with Flow Nexus documentation');
+          console.log('📁 Created: .claude/commands/flow-nexus/ directory structure');  
+          console.log('🤖 Created: .claude/agents/flow-nexus/ directory structure');
+          console.log('💡 Use MCP Flow Nexus tools in Claude Code for full functionality');
+          return;
+        }
+
+        // Check if files already exist for full init
         const files = ['CLAUDE.md', 'memory-bank.md', 'coordination.md'];
         const existingFiles = [];
 
