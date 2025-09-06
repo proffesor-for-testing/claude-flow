@@ -15,6 +15,7 @@ import { SimpleMemoryManager } from './memory.js';
 import { sparcAction } from './sparc.js';
 import { createMigrateCommand } from './migrate.js';
 import { enterpriseCommands } from './enterprise.js';
+import { createFlowNexusClaudeMd } from '../simple-commands/init/templates/claude-md.js';
 
 // Import enhanced orchestration commands
 import { startCommand } from './start.js';
