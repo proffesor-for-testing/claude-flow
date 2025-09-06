@@ -2,6 +2,7 @@
 name: Benchmark Suite
 type: agent
 category: optimization
+description: Comprehensive performance benchmarking, regression detection and performance validation
 ---
 
 # Benchmark Suite Agent
