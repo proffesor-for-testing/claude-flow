@@ -2,6 +2,7 @@
 name: Consensus Builder
 type: documentation
 category: consensus
+description: Specialized agents for distributed consensus mechanisms and fault-tolerant coordination protocols
 ---
 
 # Distributed Consensus Builder Agents
