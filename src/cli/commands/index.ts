@@ -70,6 +70,11 @@ export function setupCommands(cli: CLI): void {
         description: 'Create minimal configuration files',
         type: 'boolean',
       },
+      {
+        name: 'flow-nexus',
+        description: 'Initialize with Flow Nexus commands, agents, and CLAUDE.md only',
+        type: 'boolean',
+      },
     ],
     action: async (ctx: CommandContext) => {
       try {
