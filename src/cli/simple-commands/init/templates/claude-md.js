@@ -1052,7 +1052,7 @@ Detailed Flow Nexus command documentation available in \`.claude/commands/flow-n
 - \`user-tools.md\` - User utilities
 
 ### 💡 Example: Deploy a Swarm
-\\`\\`\\`javascript
+\`\`\`javascript
 // 1. Login to Flow Nexus
 mcp__flow-nexus__user_login({ 
   email: "user@example.com", 
