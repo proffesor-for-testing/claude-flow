@@ -1090,8 +1090,8 @@ Flow Nexus seamlessly integrates with Claude Code through MCP (Model Context Pro
 ### 📚 Learn More
 
 - Documentation: https://github.com/ruvnet/claude-flow#flow-nexus
-- MCP Integration: Use \\`mcp__flow-nexus__*\\` tools in Claude Code
-- Agent Usage: Type \\`/\\` in Claude Code to see Flow Nexus commands
+- MCP Integration: Use \`mcp__flow-nexus__*\` tools in Claude Code
+- Agent Usage: Type \`/\` in Claude Code to see Flow Nexus commands
 - Community: Join discussions and share templates
 
 ---
