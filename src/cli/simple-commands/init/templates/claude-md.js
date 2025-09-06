@@ -1098,3 +1098,4 @@ Flow Nexus seamlessly integrates with Claude Code through MCP (Model Context Pro
 
 **Ready to build with Flow Nexus? Start with authentication and explore the cloud-powered AI development platform!**
 `;
+}
