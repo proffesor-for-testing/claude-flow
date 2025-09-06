@@ -2,6 +2,7 @@
 name: Performance Optimization
 type: documentation
 category: optimization
+description: Comprehensive suite of performance optimization agents for swarm efficiency and scalability
 ---
 
 # Performance Optimization Agents
