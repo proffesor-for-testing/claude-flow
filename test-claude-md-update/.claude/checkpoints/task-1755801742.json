@@ -1,1 +1,0 @@
-{"checkpoint": "task-20250821-184221", "task": "update version for --help and --version to alpha 91. ./claude-flow --version v2.0.0-alpha.90  ", "timestamp": "2025-08-21T18:42:22Z", "commit": "20c4e3060427abb4288830585363022f340f2189", "github_release": "true"}
