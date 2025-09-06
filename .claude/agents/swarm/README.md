@@ -2,6 +2,7 @@
 name: Swarm Coordination
 type: documentation
 category: swarm
+description: Specialized swarm coordination agents for claude-code-flow hive-mind system with different topologies
 ---
 
 # Swarm Coordination Agents
