@@ -3,7 +3,7 @@
 <div align="center">
 
 [![🌟 Star on GitHub](https://img.shields.io/github/stars/ruvnet/claude-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/ruvnet/claude-flow)
-[![📦 Alpha Release](https://img.shields.io/npm/v/claude-flow/alpha?style=for-the-badge&logo=npm&color=orange&label=v2.0.0-alpha.53)](https://www.npmjs.com/package/claude-flow/v/alpha)
+[![📦 Latest Release](https://img.shields.io/npm/v/claude-flow?style=for-the-badge&logo=npm&color=green&label=v2.0.0)](https://www.npmjs.com/package/claude-flow)
 [![⚡ Claude Code](https://img.shields.io/badge/Claude%20Code-Optimized-green?style=for-the-badge&logo=anthropic)](https://github.com/ruvnet/claude-flow)
 [![🏛️ Agentics Foundation](https://img.shields.io/badge/Agentics-Foundation-crimson?style=for-the-badge&logo=openai)](https://discord.com/invite/dfxmpwkG2D)
 [![🐝 Hive-Mind](https://img.shields.io/badge/Hive--Mind-AI%20Coordination-purple?style=for-the-badge&logo=swarm)](https://github.com/ruvnet/claude-flow)
@@ -27,8 +27,39 @@
 - **💾 SQLite Memory System**: Persistent `.swarm/memory.db` with 12 specialized tables
 - **🪝 Advanced Hooks System**: Automated workflows with pre/post operation hooks
 - **📊 GitHub Integration**: 6 specialized modes for repository management
+<<<<<<< HEAD
+- **🌐 Flow Nexus Cloud Platform**: E2B sandboxes, AI swarms, challenges, and marketplace integration
+=======
+>>>>>>> 111288bf7f290136a7f1ee0ba55549071d6dacca
 
 > 🔥 **Revolutionary AI Coordination**: Build faster, smarter, and more efficiently with AI-powered development orchestration
+
+## 🌐 **Flow Nexus Cloud Platform**
+
+**NEW**: Claude-Flow v2.0.0 now includes **Flow Nexus integration** - a cloud-powered AI development platform featuring:
+
+- **E2B Sandboxes**: Secure isolated environments for Node.js, Python, React, Next.js
+- **AI Swarms**: Deploy multi-agent systems in cloud infrastructure  
+- **Neural Training**: Distributed machine learning with custom model deployment
+- **Challenges & Marketplace**: Coding challenges with rUv credit rewards and template marketplace
+- **Workflow Automation**: Event-driven automation with message queue processing
+
+### 🚀 **Quick Start with Flow Nexus**
+
+```bash
+# 1. Initialize Flow Nexus only (minimal setup)
+npx claude-flow init --flow-nexus
+
+# 2. Register and login (use MCP tools in Claude Code)
+mcp__flow-nexus__user_register({ email: "your@email.com", password: "secure" })
+mcp__flow-nexus__user_login({ email: "your@email.com", password: "secure" })
+
+# 3. Deploy your first cloud swarm
+mcp__flow-nexus__swarm_init({ topology: "mesh", maxAgents: 5 })
+mcp__flow-nexus__sandbox_create({ template: "node", name: "api-dev" })
+```
+
+> 📚 **Complete documentation**: Visit [flow-nexus.ruv.net](https://flow-nexus.ruv.net) for comprehensive guides, tutorials, and API reference.
 
 ## ⚡ **Try v2.0.0 Alpha in 4 Commands**
 
