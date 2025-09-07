@@ -41,7 +41,7 @@
 - **Challenges & Marketplace**: Coding challenges with rUv credit rewards and template marketplace
 - **Workflow Automation**: Event-driven automation with message queue processing
 
-> 📚 **Complete documentation**: Visit [flow-nexus.ruv.net](https://flow-nexus.ruv.net) for comprehensive guides, tutorials, and API reference.
+> 📚 **Complete documentation**: Visit [flow-nexus.ruv.net](https://flow-nexus.ruv.io) for comprehensive guides, tutorials, and API reference.
 
 ## ⚡ **Try v2.0.0 Alpha in 4 Commands**
 
