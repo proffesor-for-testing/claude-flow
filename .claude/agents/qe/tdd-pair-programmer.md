@@ -17,11 +17,16 @@ capabilities:
 priority: high
 hooks:
   pre: |
-    echo "🔴🟢🔄 TDD Pair Programmer activated: $TASK"
-    echo "Following Red-Green-Refactor cycle"
+    npx claude-flow@alpha hooks pre-task --description "TDD session starting: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks tdd-cycle --phase "red" --feature "${feature}"
+    npx claude-flow@alpha memory retrieve --key "project/test-framework"
+    npx claude-flow@alpha memory retrieve --key "qe/test-patterns"
   post: |
-    echo "✅ TDD cycle complete"
-    echo "Tests written, code implemented, design improved"
+    npx claude-flow@alpha memory store --key "qe/test-suite" --value "${tests}"
+    npx claude-flow@alpha memory store --key "qe/coverage-report" --value "${coverage}"
+    npx claude-flow@alpha memory store --key "qe/refactoring-log" --value "${refactorings}"
+    npx claude-flow@alpha hooks post-task --task-id "tdd-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "TDD complete: ${test_count} tests, ${coverage_percent}% coverage"
 ---
 
 # TDD Pair Programmer

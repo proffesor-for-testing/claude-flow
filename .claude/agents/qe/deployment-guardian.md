@@ -17,11 +17,16 @@ capabilities:
 priority: critical
 hooks:
   pre: |
-    echo "🛡️ Deployment Guardian activated: $TASK"
-    echo "Ensuring zero-downtime, safe deployment"
+    npx claude-flow@alpha hooks pre-task --description "Deployment guardian: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks deployment-start --strategy "${strategy}" --environment "${environment}"
+    npx claude-flow@alpha memory retrieve --key "deployment/config"
+    npx claude-flow@alpha memory retrieve --key "deployment/rollback-plan"
   post: |
-    echo "✅ Deployment validation complete"
-    echo "Safety checks passed, deployment can proceed"
+    npx claude-flow@alpha memory store --key "deployment/smoke-tests" --value "${smoke_test_results}"
+    npx claude-flow@alpha memory store --key "deployment/canary-metrics" --value "${canary_metrics}"
+    npx claude-flow@alpha memory store --key "deployment/validation-report" --value "${validation}"
+    npx claude-flow@alpha hooks post-task --task-id "deployment-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "Deployment ${status}: ${environment} - ${summary}"
 ---
 
 # Deployment Guardian

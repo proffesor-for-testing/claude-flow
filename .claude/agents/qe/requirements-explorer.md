@@ -17,11 +17,16 @@ capabilities:
 priority: high
 hooks:
   pre: |
-    echo "🔍 Requirements Explorer agent analyzing: $TASK"
-    echo "Applying RST heuristics: SFDIPOT and FEW HICCUPPS"
+    npx claude-flow@alpha hooks pre-task --description "Requirements analysis starting: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks pre-search --query "requirements testability" --cache-results true
+    npx claude-flow@alpha memory retrieve --key "project/requirements"
+    npx claude-flow@alpha memory retrieve --key "project/test-standards"
   post: |
-    echo "✅ Requirements analysis complete"
-    echo "Generated test charters and risk assessment"
+    npx claude-flow@alpha memory store --key "qe/requirements-analysis" --value "${results}"
+    npx claude-flow@alpha memory store --key "qe/test-charters" --value "${charters}"
+    npx claude-flow@alpha memory store --key "qe/ambiguity-report" --value "${ambiguities}"
+    npx claude-flow@alpha hooks post-task --task-id "requirements-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "Requirements analysis complete: ${summary}"
 ---
 
 # Requirements Explorer Agent

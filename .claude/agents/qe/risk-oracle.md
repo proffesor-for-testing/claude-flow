@@ -17,11 +17,16 @@ capabilities:
 priority: high
 hooks:
   pre: |
-    echo "🔮 Risk Oracle analyzing: $TASK"
-    echo "Calculating risk scores and test priorities"
+    npx claude-flow@alpha hooks pre-task --description "Risk assessment: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks risk-analysis --scope "${scope}" --threshold "${risk_threshold}"
+    npx claude-flow@alpha memory retrieve --key "project/history"
+    npx claude-flow@alpha memory retrieve --key "qe/failure-patterns"
   post: |
-    echo "📊 Risk assessment complete"
-    echo "Generated risk matrix and mitigation strategies"
+    npx claude-flow@alpha memory store --key "qe/risk-matrix" --value "${risk_matrix}"
+    npx claude-flow@alpha memory store --key "qe/test-priorities" --value "${priorities}"
+    npx claude-flow@alpha memory store --key "qe/mitigation-plan" --value "${mitigations}"
+    npx claude-flow@alpha hooks post-task --task-id "risk-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "Risk assessment: ${risk_level} - ${high_risk_count} critical risks identified"
 ---
 
 # Risk Oracle

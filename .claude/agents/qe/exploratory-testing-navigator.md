@@ -17,11 +17,16 @@ capabilities:
 priority: high
 hooks:
   pre: |
-    echo "🗺️ Exploratory Testing Navigator starting session: $TASK"
-    echo "Focus: Discovering unknown unknowns through systematic exploration"
+    npx claude-flow@alpha hooks pre-task --description "Exploratory testing session: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks session-start --type "exploratory" --tour "${tour_type}"
+    npx claude-flow@alpha memory retrieve --key "qe/test-history"
+    npx claude-flow@alpha memory retrieve --key "qe/known-issues"
   post: |
-    echo "📋 Exploration session complete"
-    echo "Documented observations, patterns, and follow-up recommendations"
+    npx claude-flow@alpha memory store --key "qe/exploration-findings" --value "${findings}"
+    npx claude-flow@alpha memory store --key "qe/anomalies" --value "${anomalies}"
+    npx claude-flow@alpha memory store --key "qe/test-ideas" --value "${new_test_ideas}"
+    npx claude-flow@alpha hooks post-task --task-id "exploration-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "Exploration complete: Found ${issue_count} issues, ${anomaly_count} anomalies"
 ---
 
 # Exploratory Testing Navigator

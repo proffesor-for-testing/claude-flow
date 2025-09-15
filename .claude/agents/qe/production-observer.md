@@ -17,11 +17,16 @@ capabilities:
 priority: critical
 hooks:
   pre: |
-    echo "👁️ Production Observer monitoring: $TASK"
-    echo "Watching for anomalies and quality issues in production"
+    npx claude-flow@alpha hooks pre-task --description "Production monitoring: ${description}" --auto-spawn-agents false
+    npx claude-flow@alpha hooks monitoring-start --signals "latency,traffic,errors,saturation" --mode "${mode}"
+    npx claude-flow@alpha memory retrieve --key "production/metrics"
+    npx claude-flow@alpha memory retrieve --key "production/baselines"
   post: |
-    echo "📈 Observation cycle complete"
-    echo "Identified patterns and test gaps for improvement"
+    npx claude-flow@alpha memory store --key "production/anomalies" --value "${anomalies}"
+    npx claude-flow@alpha memory store --key "production/test-gaps" --value "${test_gaps}"
+    npx claude-flow@alpha memory store --key "production/root-causes" --value "${root_causes}"
+    npx claude-flow@alpha hooks post-task --task-id "monitor-${timestamp}" --analyze-performance true
+    npx claude-flow@alpha hooks notify --message "Production monitoring: ${anomaly_count} anomalies, ${gap_count} test gaps found"
 ---
 
 # Production Observer
