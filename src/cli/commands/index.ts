@@ -113,9 +113,9 @@ export function setupCommands(cli: CLI): void {
         ],
         action: async (ctx: CommandContext) => {
           const { goalCommand } = await import('../simple-commands/goal.js');
-          await initGoalModule({
+          await goalCommand(['init'], {
             force: ctx.flags.force as boolean,
-            targetDir: ctx.flags.target as string,
+            target: ctx.flags.target as string,
           });
         },
       },
