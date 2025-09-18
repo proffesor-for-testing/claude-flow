@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "neural": {
+    "enabled": true,
+    "defaultModel": "safla",
+    "wasmOptimization": true,
+    "memoryCompression": 0.6,
+    "memory": {
+      "tiers": [
+        "vector",
+        "episodic",
+        "semantic",
+        "working"
+      ],
+      "persistence": true,
+      "compression": 0.6
+    },
+    "processing": {
+      "opsPerSecond": 172000,
+      "parallelization": true,
+      "wasmAcceleration": true
+    },
+    "safety": {
+      "constraints": true,
+      "emergencyControls": true,
+      "auditLogging": true
+    }
+  }
+}
