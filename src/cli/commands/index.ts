@@ -78,7 +78,7 @@ export function setupCommands(cli: CLI): void {
           },
         ],
         action: async (ctx: CommandContext) => {
-          const { initNeuralModule } = await import('../../scripts/init-neural.js');
+          const { neuralCommand } = await import('../simple-commands/neural.js');
           await initNeuralModule({
             force: ctx.flags.force as boolean,
             targetDir: ctx.flags.target as string,
