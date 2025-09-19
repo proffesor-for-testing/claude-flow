@@ -1,5 +1,9 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 interface SystemMetrics {
   timestamp: number;
@@ -49,6 +53,14 @@ interface SessionData {
   agents: Agent[];
   tasks: any[];
   status: 'active' | 'completed' | 'paused';
+}
+
+interface MCPServerStatus {
+  running: boolean;
+  processCount: number;
+  orchestratorRunning: boolean;
+  port: number | null;
+  connections: number;
 }
 
 export class MetricsReader {
@@ -217,6 +229,50 @@ export class MetricsReader {
       return files.filter(f => f.endsWith('.json')).sort();
     } catch (error) {
       return [];
+    }
+  }
+
+  async getMCPServerStatus(): Promise<MCPServerStatus> {
+    try {
+      // Check if MCP server process is running
+      const { stdout } = await execAsync('ps aux | grep -E "mcp-server\\.js|claude-flow mcp start" | grep -v grep | wc -l');
+      const processCount = parseInt(stdout.trim(), 10);
+      
+      // Check for orchestrator running
+      const { stdout: orchestratorOut } = await execAsync('ps aux | grep -E "claude-flow start" | grep -v grep | wc -l');
+      const orchestratorRunning = parseInt(orchestratorOut.trim(), 10) > 0;
+      
+      // Determine status
+      const isRunning = processCount > 0;
+      
+      // Try to get port from process (default is 3000)
+      let port: number | null = 3000;
+      try {
+        const { stdout: portOut } = await execAsync('lsof -i :3000 2>/dev/null | grep LISTEN | wc -l');
+        if (parseInt(portOut.trim(), 10) === 0) {
+          // If port 3000 not listening, check other common ports
+          port = null;
+        }
+      } catch {
+        // lsof might not be available or port not in use
+      }
+      
+      return {
+        running: isRunning,
+        processCount,
+        orchestratorRunning,
+        port,
+        connections: processCount > 0 ? Math.max(1, processCount - 1) : 0 // Estimate connections
+      };
+    } catch (error) {
+      // Fallback if commands fail
+      return {
+        running: false,
+        processCount: 0,
+        orchestratorRunning: false,
+        port: null,
+        connections: 0
+      };
     }
   }
 }

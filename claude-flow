@@ -29,7 +29,18 @@
 
   // Try multiple strategies to find claude-flow
   const strategies = [
-    // 1. Local node_modules
+    // 1. Use local source directly (PRIORITY for development)
+    async () => {
+      try {
+        const { existsSync } = await import('fs');
+        const localSrc = resolve(process.cwd(), 'src/cli/simple-cli.js');
+        if (existsSync(localSrc)) {
+          return spawn('node', [localSrc, ...process.argv.slice(2)], { stdio: 'inherit' });
+        }
+      } catch {}
+    },
+    
+    // 2. Local node_modules
     async () => {
       try {
         const localPath = resolve(process.cwd(), 'node_modules/.bin/claude-flow');
