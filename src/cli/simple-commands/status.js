@@ -2,6 +2,7 @@
 import { printSuccess, printError, printWarning } from '../utils.js';
 import { promises as fs } from 'fs';
 // Removed Deno import from '../node-compat.js';
+import { MetricsReader } from '../../utils/metrics-reader.js';
 
 export async function statusCommand(subArgs, flags) {
   const verbose = subArgs.includes('--verbose') || subArgs.includes('-v') || flags.verbose;
@@ -17,39 +18,57 @@ export async function statusCommand(subArgs, flags) {
 }
 
 async function getSystemStatus(verbose = false) {
+  const reader = new MetricsReader();
+  
+  // Get real metrics from files
+  const [systemMetrics, perfMetrics, agents, recentTasks, overallHealth] = await Promise.all([
+    reader.getSystemMetrics(),
+    reader.getPerformanceMetrics(),
+    reader.getActiveAgents(),
+    reader.getRecentTasks(5),
+    reader.getOverallHealth()
+  ]);
+  
+  // Count active agents
+  const activeAgentCount = agents.filter(a => a.status === 'active' || a.status === 'busy').length;
+  
+  // Build status object with real data
   const status = {
     timestamp: Date.now(),
     version: '2.0.0-alpha.83',
     orchestrator: {
-      running: false,
-      uptime: 0,
-      status: 'Not Running',
+      running: perfMetrics && perfMetrics.totalTasks > 0,
+      uptime: systemMetrics ? systemMetrics.uptime : 0,
+      status: perfMetrics && perfMetrics.totalTasks > 0 ? 'Running' : 'Not Running',
     },
     agents: {
-      active: 0,
-      total: 0,
-      types: {},
+      active: activeAgentCount,
+      total: agents.length,
+      types: agents.reduce((acc, agent) => {
+        acc[agent.type] = (acc[agent.type] || 0) + 1;
+        return acc;
+      }, {}),
     },
     tasks: {
-      queued: 0,
-      running: 0,
-      completed: 0,
-      failed: 0,
+      queued: 0, // TODO: Get from task queue
+      running: agents.filter(a => a.status === 'busy').length,
+      completed: perfMetrics ? perfMetrics.successfulTasks : 0,
+      failed: perfMetrics ? perfMetrics.failedTasks : 0,
     },
     memory: {
-      status: 'Ready',
+      status: systemMetrics && systemMetrics.memoryUsagePercent < 80 ? 'Ready' : 'Warning',
       entries: await getMemoryStats(),
-      size: '0.37 KB',
+      size: systemMetrics ? `${(systemMetrics.memoryUsed / (1024 * 1024)).toFixed(2)} MB` : '0 KB',
     },
     terminal: {
       status: 'Ready',
       poolSize: 10,
-      active: 0,
+      active: perfMetrics ? perfMetrics.activeAgents : 0,
     },
     mcp: {
-      status: 'Stopped',
+      status: agents.length > 0 ? 'Running' : 'Stopped',
       port: null,
-      connections: 0,
+      connections: agents.length,
     },
     resources: verbose ? await getResourceUsage() : null,
   };
