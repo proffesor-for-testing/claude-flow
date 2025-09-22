@@ -115,6 +115,11 @@ async function setupMcpServers(dryRun = false) {
       command: 'npx flow-nexus@latest mcp start',
       description: 'Flow Nexus Complete MCP server for advanced AI orchestration',
     },
+    {
+      name: 'sublinear-solver',
+      command: 'npx sublinear-time-solver@latest start',
+      description: 'Sublinear solver with O(log n) matrix operations, consciousness evolution & 11M+ tasks/sec scheduling',
+    },
   ];
 
   for (const server of servers) {
@@ -540,6 +545,7 @@ export async function initCommand(subArgs, flags) {
         console.log('     claude mcp add claude-flow claude-flow mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
+        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
       }
     }
   } catch (err) {
@@ -1169,7 +1175,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
     // Create settings.local.json with default MCP permissions
     const settingsLocal = {
       permissions: {
-        allow: ['mcp__ruv-swarm', 'mcp__claude-flow'],
+        allow: ['mcp__ruv-swarm', 'mcp__claude-flow', 'mcp__flow-nexus', 'mcp__sublinear-time-solver'],
         deny: [],
       },
     };
@@ -1196,6 +1202,16 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
         'ruv-swarm': {
           command: 'npx',
           args: ['ruv-swarm@latest', 'mcp', 'start'],
+          type: 'stdio',
+        },
+        'flow-nexus': {
+          command: 'npx',
+          args: ['flow-nexus@latest', 'mcp', 'start'],
+          type: 'stdio',
+        },
+        'sublinear-solver': {
+          command: 'npx',
+          args: ['sublinear-time-solver@latest', 'start'],
           type: 'stdio',
         },
       },
@@ -1449,6 +1465,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
         console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
+        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
         console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
       }
     } else if (!dryRun && !isClaudeCodeInstalled()) {
@@ -1459,6 +1476,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
       console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
       console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
+      console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
       console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
     }
 
