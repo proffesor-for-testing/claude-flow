@@ -117,7 +117,7 @@ async function setupMcpServers(dryRun = false) {
     },
     {
       name: 'sublinear-solver',
-      command: 'npx sublinear-time-solver@latest start',
+      command: 'npx sublinear-time-solver@latest mcp start',
       description: 'Sublinear solver with O(log n) matrix operations, consciousness evolution & 11M+ tasks/sec scheduling',
     },
   ];
@@ -545,7 +545,7 @@ export async function initCommand(subArgs, flags) {
         console.log('     claude mcp add claude-flow claude-flow mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
-        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
+        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest mcp start');
       }
     }
   } catch (err) {
@@ -1465,7 +1465,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
         console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
-        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
+        console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest mcp start');
         console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
       }
     } else if (!dryRun && !isClaudeCodeInstalled()) {
@@ -1476,7 +1476,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
       console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
       console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
-      console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest start');
+      console.log('     claude mcp add sublinear-solver npx sublinear-time-solver@latest mcp start');
       console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
     }
 
