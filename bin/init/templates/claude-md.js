@@ -638,21 +638,10 @@ export function createOptimizedSparcClaudeMd() {
 ### Reasoning-First Workflow
 Before complex tasks, use psycho-symbolic reasoning:
 \`\`\`javascript
-// For security analysis
-mcp__sublinear-time-solver__psycho_symbolic_reason({
-  query: "What vulnerabilities might exist in [system]?",
-  depth: 10,
-  use_cache: true,
-  context: { mode: "critical", focus: "zero-day" }
-})
-
-// For architecture design
-mcp__sublinear-time-solver__psycho_symbolic_reason({
-  query: "What patterns should guide [architecture]?",
-  depth: 12,
-  use_cache: true,
-  context: { mode: "divergent", focus: "scalability" }
-})
+// Use MCP tools for advanced coordination:
+// - mcp__claude-flow__swarm_init for agent orchestration
+// - mcp__claude-flow__neural_patterns for intelligent analysis
+// - mcp__claude-flow__memory_usage for persistent context
 \`\`\`
 
 ### Cognitive Role Specialization
@@ -892,7 +881,7 @@ npx claude-flow@alpha hooks pre-task --description "[task]" --reasoning-pattern 
 npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]" --load-cognitive-state true
 
 # Use psycho-symbolic reasoning for complex decisions
-npx sublinear-time-solver mcp-server call psycho_symbolic_reason '{"query": "[task analysis]", "use_cache": true}'
+npx claude-flow@alpha swarm run 'intelligent analysis of [task]'
 \`\`\`
 
 **2️⃣ DURING Work:**
@@ -920,10 +909,10 @@ npx claude-flow@alpha hooks session-end --export-metrics true
   mcp__claude-flow__agent_spawn { type: "tester", cognitivePattern: "critical" }
   
   // Initialize psycho-symbolic reasoning for the swarm
-  mcp__sublinear-time-solver__psycho_symbolic_reason { 
-    query: "What patterns should guide this implementation?",
-    depth: 10,
-    use_cache: true
+  mcp__claude-flow__neural_patterns { 
+    action: "analyze",
+    operation: "What patterns should guide this implementation?",
+    metadata: { depth: 10, cache: true }
   }
 
 // Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
