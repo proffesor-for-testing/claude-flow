@@ -42,8 +42,8 @@ export function createWrapperScript(type = 'unix') {
     }
   }
 
-  const filename =
-    type === 'unix' ? 'claude-flow@alpha' : type === 'windows' ? 'claude-flow@alpha.bat' : 'claude-flow@alpha.ps1';
+  // Only support Unix wrapper - Windows wrappers removed per user request
+  const filename = 'claude-flow@alpha';
 
   const template = loadTemplate(filename);
   if (!template) {

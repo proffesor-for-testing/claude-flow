@@ -1124,7 +1124,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
       'CLAUDE.md',
       '.claude/settings.json',
       '.mcp.json',
-      'claude-flow@alpha.config.json',
+      // Removed claude-flow@alpha.config.json per user request
     ];
 
     for (const file of filesToCheck) {
@@ -1213,36 +1213,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
       console.log('[DRY RUN] Would create .mcp.json at project root for MCP server configuration');
     }
 
-    // Create claude-flow@alpha.config.json for Claude Flow specific settings
-    const claudeFlowConfig = {
-      features: {
-        autoTopologySelection: true,
-        parallelExecution: true,
-        neuralTraining: true,
-        bottleneckAnalysis: true,
-        smartAutoSpawning: true,
-        selfHealingWorkflows: true,
-        crossSessionMemory: true,
-        githubIntegration: true,
-      },
-      performance: {
-        maxAgents: 10,
-        defaultTopology: 'hierarchical',
-        executionStrategy: 'parallel',
-        tokenOptimization: true,
-        cacheEnabled: true,
-        telemetryLevel: 'detailed',
-      },
-    };
-
-    if (!dryRun) {
-      await fs.writeFile(
-        `${workingDir}/claude-flow@alpha.config.json`, JSON.stringify(claudeFlowConfig, null, 2, 'utf8'),
-      );
-      printSuccess('✓ Created claude-flow@alpha.config.json for Claude Flow settings');
-    } else {
-      console.log('[DRY RUN] Would create claude-flow@alpha.config.json for Claude Flow settings');
-    }
+    // Removed claude-flow@alpha.config.json creation per user request
 
     // Create command documentation
     for (const [category, commands] of Object.entries(COMMAND_STRUCTURE)) {

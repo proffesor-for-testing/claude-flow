@@ -76,7 +76,7 @@ export function showInitHelp() {
   console.log('  • .claude/settings.json - Claude Code configuration with hooks');
   console.log('  • .claude/settings.local.json - Pre-approved MCP permissions (no prompts!)');
   console.log('  • .mcp.json - Project-scoped MCP server configuration');
-  console.log('  • claude-flow@alpha.config.json - Claude Flow features and performance settings');
+  // Removed claude-flow@alpha.config.json reference per user request
   console.log('  • .claude/commands/ directory with 20+ Claude Code slash commands');
   console.log('  • CLAUDE.md with project instructions (v2.0.0 enhanced by default)');
   console.log('  • memory/ directory for persistent context storage');

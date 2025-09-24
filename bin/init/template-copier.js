@@ -349,7 +349,7 @@ async function copyHelperScripts(templatesDir, targetDir, options, results) {
  */
 async function copyWrapperScripts(templatesDir, targetDir, options, results) {
   try {
-    // Unix wrapper
+    // Unix wrapper only
     const unixWrapperPath = join(targetDir, 'claude-flow');
     const unixWrapperSource = join(templatesDir, 'claude-flow-universal');
     
@@ -360,21 +360,7 @@ async function copyWrapperScripts(templatesDir, targetDir, options, results) {
       results.copiedFiles.push('claude-flow');
     }
 
-    // Windows batch wrapper
-    const batchWrapperPath = join(targetDir, 'claude-flow.bat');
-    const batchWrapperSource = join(templatesDir, 'claude-flow.bat');
-    
-    if (await copyFile(batchWrapperSource, batchWrapperPath, options)) {
-      results.copiedFiles.push('claude-flow.bat');
-    }
-
-    // PowerShell wrapper
-    const psWrapperPath = join(targetDir, 'claude-flow.ps1');
-    const psWrapperSource = join(templatesDir, 'claude-flow.ps1');
-    
-    if (await copyFile(psWrapperSource, psWrapperPath, options)) {
-      results.copiedFiles.push('claude-flow.ps1');
-    }
+    // Removed Windows batch and PowerShell wrappers per user request
   } catch (err) {
     results.errors.push(`Failed to copy wrapper scripts: ${err.message}`);
   }
@@ -535,12 +521,7 @@ async function getTemplateContent(templatePath) {
     'claude-flow-universal': async () => {
       return await fs.readFile(join(__dirname, 'templates', 'claude-flow-universal'), 'utf8');
     },
-    'claude-flow.bat': async () => {
-      return await fs.readFile(join(__dirname, 'templates', 'claude-flow.bat'), 'utf8');
-    },
-    'claude-flow.ps1': async () => {
-      return await fs.readFile(join(__dirname, 'templates', 'claude-flow.ps1'), 'utf8');
-    },
+    // Removed Windows wrapper templates per user request
   };
 
   const generator = templateGenerators[filename] || templateGenerators[filename.replace(/\.(sparc|minimal|optimized|enhanced)$/, '')];
