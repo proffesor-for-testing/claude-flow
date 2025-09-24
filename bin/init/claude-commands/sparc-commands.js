@@ -41,7 +41,7 @@ ${
 
 ### Option 1: Using MCP Tools (Preferred in Claude Code)
 \`\`\`javascript
-mcp__claude-flow__sparc_mode {
+mcp__claude-flow@alpha__sparc_mode {
   mode: "${mode.slug}",
   task_description: "${getExampleTask(mode.slug)}",
   options: {
@@ -54,22 +54,22 @@ mcp__claude-flow__sparc_mode {
 ### Option 2: Using NPX CLI (Fallback when MCP not available)
 \`\`\`bash
 # Use when running from terminal or MCP tools unavailable
-npx claude-flow sparc run ${mode.slug} "${getExampleTask(mode.slug)}"
+npx claude-flow@alpha sparc run ${mode.slug} "${getExampleTask(mode.slug)}"
 
 # For alpha features
 npx claude-flow@alpha sparc run ${mode.slug} "${getExampleTask(mode.slug)}"
 
 # With namespace
-npx claude-flow sparc run ${mode.slug} "your task" --namespace ${mode.slug}
+npx claude-flow@alpha sparc run ${mode.slug} "your task" --namespace ${mode.slug}
 
 # Non-interactive mode
-npx claude-flow sparc run ${mode.slug} "your task" --non-interactive
+npx claude-flow@alpha sparc run ${mode.slug} "your task" --non-interactive
 \`\`\`
 
 ### Option 3: Local Installation
 \`\`\`bash
-# If claude-flow is installed locally
-./claude-flow sparc run ${mode.slug} "${getExampleTask(mode.slug)}"
+# If claude-flow@alpha is installed locally
+./claude-flow@alpha sparc run ${mode.slug} "${getExampleTask(mode.slug)}"
 \`\`\`
 
 ## Memory Integration
@@ -77,7 +77,7 @@ npx claude-flow sparc run ${mode.slug} "your task" --non-interactive
 ### Using MCP Tools (Preferred)
 \`\`\`javascript
 // Store mode-specific context
-mcp__claude-flow__memory_usage {
+mcp__claude-flow@alpha__memory_usage {
   action: "store",
   key: "${mode.slug}_context",
   value: "important decisions",
@@ -85,7 +85,7 @@ mcp__claude-flow__memory_usage {
 }
 
 // Query previous work
-mcp__claude-flow__memory_search {
+mcp__claude-flow@alpha__memory_search {
   pattern: "${mode.slug}",
   namespace: "${mode.slug}",
   limit: 5
@@ -95,10 +95,10 @@ mcp__claude-flow__memory_search {
 ### Using NPX CLI (Fallback)
 \`\`\`bash
 # Store mode-specific context
-npx claude-flow memory store "${mode.slug}_context" "important decisions" --namespace ${mode.slug}
+npx claude-flow@alpha memory store "${mode.slug}_context" "important decisions" --namespace ${mode.slug}
 
 # Query previous work
-npx claude-flow memory query "${mode.slug}" --limit 5
+npx claude-flow@alpha memory query "${mode.slug}" --limit 5
 \`\`\`
 `;
 }
@@ -172,19 +172,19 @@ ${modeList}
 ### Option 1: Using MCP Tools (Preferred in Claude Code)
 \`\`\`javascript
 // Run SPARC orchestrator (default)
-mcp__claude-flow__sparc_mode {
+mcp__claude-flow@alpha__sparc_mode {
   mode: "sparc",
   task_description: "build complete authentication system"
 }
 
 // Run a specific mode
-mcp__claude-flow__sparc_mode {
+mcp__claude-flow@alpha__sparc_mode {
   mode: "architect",
   task_description: "design API structure"
 }
 
 // TDD workflow
-mcp__claude-flow__sparc_mode {
+mcp__claude-flow@alpha__sparc_mode {
   mode: "tdd",
   task_description: "implement user authentication",
   options: {workflow: "full"}
@@ -194,17 +194,17 @@ mcp__claude-flow__sparc_mode {
 ### Option 2: Using NPX CLI (Fallback when MCP not available)
 \`\`\`bash
 # Run SPARC orchestrator (default)
-npx claude-flow sparc "build complete authentication system"
+npx claude-flow@alpha sparc "build complete authentication system"
 
 # Run a specific mode
-npx claude-flow sparc run architect "design API structure"
-npx claude-flow sparc run tdd "implement user service"
+npx claude-flow@alpha sparc run architect "design API structure"
+npx claude-flow@alpha sparc run tdd "implement user service"
 
 # Execute full TDD workflow
-npx claude-flow sparc tdd "implement user authentication"
+npx claude-flow@alpha sparc tdd "implement user authentication"
 
 # List all modes with details
-npx claude-flow sparc modes --verbose
+npx claude-flow@alpha sparc modes --verbose
 
 # For alpha features
 npx claude-flow@alpha sparc run <mode> "your task"
@@ -212,9 +212,9 @@ npx claude-flow@alpha sparc run <mode> "your task"
 
 ### Option 3: Local Installation
 \`\`\`bash
-# If claude-flow is installed locally
-./claude-flow sparc "build complete authentication system"
-./claude-flow sparc run architect "design API structure"
+# If claude-flow@alpha is installed locally
+./claude-flow@alpha sparc "build complete authentication system"
+./claude-flow@alpha sparc run architect "design API structure"
 \`\`\`
 
 ## SPARC Methodology Phases
@@ -230,7 +230,7 @@ npx claude-flow@alpha sparc run <mode> "your task"
 ### Using MCP Tools (Preferred)
 \`\`\`javascript
 // Store specifications
-mcp__claude-flow__memory_usage {
+mcp__claude-flow@alpha__memory_usage {
   action: "store",
   key: "spec_auth",
   value: "OAuth2 + JWT requirements",
@@ -238,7 +238,7 @@ mcp__claude-flow__memory_usage {
 }
 
 // Store architectural decisions
-mcp__claude-flow__memory_usage {
+mcp__claude-flow@alpha__memory_usage {
   action: "store",
   key: "arch_decisions",
   value: "Microservices with API Gateway",
@@ -249,16 +249,16 @@ mcp__claude-flow__memory_usage {
 ### Using NPX CLI (Fallback)
 \`\`\`bash
 # Store specifications
-npx claude-flow memory store "spec_auth" "OAuth2 + JWT requirements" --namespace spec
+npx claude-flow@alpha memory store "spec_auth" "OAuth2 + JWT requirements" --namespace spec
 
 # Store architectural decisions
-./claude-flow memory store "arch_api" "RESTful microservices design" --namespace arch
+./claude-flow@alpha memory store "arch_api" "RESTful microservices design" --namespace arch
 
 # Query previous work
-./claude-flow memory query "authentication" --limit 10
+./claude-flow@alpha memory query "authentication" --limit 10
 
 # Export project memory
-./claude-flow memory export sparc-project-backup.json
+./claude-flow@alpha memory export sparc-project-backup.json
 \`\`\`
 
 ## Advanced Swarm Mode
@@ -266,21 +266,21 @@ npx claude-flow memory store "spec_auth" "OAuth2 + JWT requirements" --namespace
 For complex tasks requiring multiple agents with timeout-free execution:
 \`\`\`bash
 # Development swarm with monitoring
-./claude-flow swarm "Build e-commerce platform" --strategy development --monitor --review
+./claude-flow@alpha swarm "Build e-commerce platform" --strategy development --monitor --review
 
 # Background optimization swarm
-./claude-flow swarm "Optimize system performance" --strategy optimization --background
+./claude-flow@alpha swarm "Optimize system performance" --strategy optimization --background
 
 # Distributed research swarm
-./claude-flow swarm "Analyze market trends" --strategy research --distributed --ui
+./claude-flow@alpha swarm "Analyze market trends" --strategy research --distributed --ui
 \`\`\`
 
 ## Non-Interactive Mode
 
 For CI/CD integration and automation:
 \`\`\`bash
-./claude-flow sparc run code "implement API" --non-interactive
-./claude-flow sparc tdd "user tests" --non-interactive --enable-permissions
+./claude-flow@alpha sparc run code "implement API" --non-interactive
+./claude-flow@alpha sparc tdd "user tests" --non-interactive --enable-permissions
 \`\`\`
 
 ## Best Practices
@@ -291,6 +291,6 @@ For CI/CD integration and automation:
 ✅ **Memory Usage**: Store important decisions and context
 ✅ **Task Completion**: All tasks should end with \`attempt_completion\`
 
-See \`/claude-flow-help\` for all available commands.
+See \`/claude-flow@alpha-help\` for all available commands.
 `;
 }

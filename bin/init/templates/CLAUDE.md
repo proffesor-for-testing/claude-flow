@@ -61,15 +61,15 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ## SPARC Development Commands
 
 ### Core SPARC Commands
-- `npx claude-flow sparc modes`: List all available SPARC development modes
-- `npx claude-flow sparc run <mode> "<task>"`: Execute specific SPARC mode for a task
-- `npx claude-flow sparc tdd "<feature>"`: Run complete TDD workflow using SPARC methodology
-- `npx claude-flow sparc info <mode>`: Get detailed information about a specific mode
+- `npx claude-flow@alpha sparc modes`: List all available SPARC development modes
+- `npx claude-flow@alpha sparc run <mode> "<task>"`: Execute specific SPARC mode for a task
+- `npx claude-flow@alpha sparc tdd "<feature>"`: Run complete TDD workflow using SPARC methodology
+- `npx claude-flow@alpha sparc info <mode>`: Get detailed information about a specific mode
 
 ### Batchtools Commands (Optimized)
-- `npx claude-flow sparc batch <modes> "<task>"`: Execute multiple SPARC modes in parallel
-- `npx claude-flow sparc pipeline "<task>"`: Execute full SPARC pipeline with parallel processing
-- `npx claude-flow sparc concurrent <mode> "<tasks-file>"`: Process multiple tasks concurrently
+- `npx claude-flow@alpha sparc batch <modes> "<task>"`: Execute multiple SPARC modes in parallel
+- `npx claude-flow@alpha sparc pipeline "<task>"`: Execute full SPARC pipeline with parallel processing
+- `npx claude-flow@alpha sparc concurrent <mode> "<tasks-file>"`: Process multiple tasks concurrently
 
 ### Standard Build Commands
 - `npm run build`: Build the project
@@ -82,35 +82,35 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 1. Specification Phase (Parallel Analysis)
 ```bash
 # Create detailed specifications with concurrent requirements analysis
-npx claude-flow sparc run spec-pseudocode "Define user authentication requirements" --parallel
+npx claude-flow@alpha sparc run spec-pseudocode "Define user authentication requirements" --parallel
 ```
 **Batchtools Optimization**: Simultaneously analyze multiple requirement sources, validate constraints in parallel, and generate comprehensive specifications.
 
 ### 2. Pseudocode Phase (Concurrent Logic Design)
 ```bash
 # Develop algorithmic logic with parallel pattern analysis
-npx claude-flow sparc run spec-pseudocode "Create authentication flow pseudocode" --batch-optimize
+npx claude-flow@alpha sparc run spec-pseudocode "Create authentication flow pseudocode" --batch-optimize
 ```
 **Batchtools Optimization**: Process multiple algorithm patterns concurrently, validate logic flows in parallel, and optimize data structures simultaneously.
 
 ### 3. Architecture Phase (Parallel Component Design)
 ```bash
 # Design system architecture with concurrent component analysis
-npx claude-flow sparc run architect "Design authentication service architecture" --parallel
+npx claude-flow@alpha sparc run architect "Design authentication service architecture" --parallel
 ```
 **Batchtools Optimization**: Generate multiple architectural alternatives simultaneously, validate integration points in parallel, and create comprehensive documentation concurrently.
 
 ### 4. Refinement Phase (Parallel TDD Implementation)
 ```bash
 # Execute Test-Driven Development with parallel test generation
-npx claude-flow sparc tdd "implement user authentication system" --batch-tdd
+npx claude-flow@alpha sparc tdd "implement user authentication system" --batch-tdd
 ```
 **Batchtools Optimization**: Generate multiple test scenarios simultaneously, implement and validate code in parallel, and optimize performance concurrently.
 
 ### 5. Completion Phase (Concurrent Integration)
 ```bash
 # Integration with parallel validation and documentation
-npx claude-flow sparc run integration "integrate authentication with user management" --parallel
+npx claude-flow@alpha sparc run integration "integrate authentication with user management" --parallel
 ```
 **Batchtools Optimization**: Run integration tests in parallel, generate documentation concurrently, and validate requirements simultaneously.
 
@@ -402,17 +402,17 @@ If ANY answer is "No", you MUST combine operations into a single message!
 
 **✅ CORRECT Workflow:**
 
-1. **MCP**: `mcp__claude-flow__swarm_init` (coordination setup)
-2. **MCP**: `mcp__claude-flow__agent_spawn` (planning agents)
-3. **MCP**: `mcp__claude-flow__task_orchestrate` (task coordination)
+1. **MCP**: `mcp__claude-flow@alpha__swarm_init` (coordination setup)
+2. **MCP**: `mcp__claude-flow@alpha__agent_spawn` (planning agents)
+3. **MCP**: `mcp__claude-flow@alpha__task_orchestrate` (task coordination)
 4. **Claude Code**: `Task` tool to spawn agents with coordination instructions
 5. **Claude Code**: `TodoWrite` with ALL todos batched (5-10+ in ONE call)
 6. **Claude Code**: `Read`, `Write`, `Edit`, `Bash` (actual work)
-7. **MCP**: `mcp__claude-flow__memory_usage` (store results)
+7. **MCP**: `mcp__claude-flow@alpha__memory_usage` (store results)
 
 **❌ WRONG Workflow:**
 
-1. **MCP**: `mcp__claude-flow__terminal_execute` (DON'T DO THIS)
+1. **MCP**: `mcp__claude-flow@alpha__terminal_execute` (DON'T DO THIS)
 2. **MCP**: File creation via MCP (DON'T DO THIS)
 3. **MCP**: Code generation via MCP (DON'T DO THIS)
 4. **Claude Code**: Sequential Task calls (DON'T DO THIS)
@@ -455,12 +455,12 @@ If you need to do X operations, they should be in 1 message, not X messages
 ```javascript
 [Single Message with BatchTool]:
   // MCP coordination setup
-  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__claude-flow__agent_spawn { type: "researcher" }
-  mcp__claude-flow__agent_spawn { type: "coder" }
-  mcp__claude-flow__agent_spawn { type: "code-analyzer" }
-  mcp__claude-flow__agent_spawn { type: "tester" }
-  mcp__claude-flow__agent_spawn { type: "task-orchestrator" }
+  mcp__claude-flow@alpha__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow@alpha__agent_spawn { type: "researcher" }
+  mcp__claude-flow@alpha__agent_spawn { type: "coder" }
+  mcp__claude-flow@alpha__agent_spawn { type: "code-analyzer" }
+  mcp__claude-flow@alpha__agent_spawn { type: "tester" }
+  mcp__claude-flow@alpha__agent_spawn { type: "task-orchestrator" }
 
   // Claude Code execution - ALL in parallel
   Task("You are researcher agent. MUST coordinate via hooks...")
@@ -479,7 +479,7 @@ If you need to do X operations, they should be in 1 message, not X messages
 **❌ WRONG - Multiple Messages (NEVER DO THIS):**
 
 ```javascript
-Message 1: mcp__claude-flow__swarm_init
+Message 1: mcp__claude-flow@alpha__swarm_init
 Message 2: Task("researcher agent")
 Message 3: Task("coder agent")
 Message 4: TodoWrite({ todo: "single todo" })
@@ -522,7 +522,7 @@ Message 6: Write "package.json"
 
 ```bash
 # Add Claude Flow MCP server to Claude Code using stdio
-claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start
 ```
 
 ### 2. Use MCP Tools for Coordination in Claude Code
@@ -531,19 +531,19 @@ Once configured, Claude Flow MCP tools enhance Claude Code's coordination:
 
 **Initialize a swarm:**
 
-- Use the `mcp__claude-flow__swarm_init` tool to set up coordination topology
+- Use the `mcp__claude-flow@alpha__swarm_init` tool to set up coordination topology
 - Choose: mesh, hierarchical, ring, or star
 - This creates a coordination framework for Claude Code's work
 
 **Spawn agents:**
 
-- Use `mcp__claude-flow__agent_spawn` tool to create specialized coordinators
+- Use `mcp__claude-flow@alpha__agent_spawn` tool to create specialized coordinators
 - Agent types represent different thinking patterns, not actual coders
 - They help Claude Code approach problems from different angles
 
 **Orchestrate tasks:**
 
-- Use `mcp__claude-flow__task_orchestrate` tool to coordinate complex workflows
+- Use `mcp__claude-flow@alpha__task_orchestrate` tool to coordinate complex workflows
 - This breaks down tasks for Claude Code to execute systematically
 - The agents don't write code - they coordinate Claude Code's actions
 
@@ -551,38 +551,38 @@ Once configured, Claude Flow MCP tools enhance Claude Code's coordination:
 
 ### Coordination Tools:
 
-- `mcp__claude-flow__swarm_init` - Set up coordination topology for Claude Code
-- `mcp__claude-flow__agent_spawn` - Create cognitive patterns to guide Claude Code
-- `mcp__claude-flow__task_orchestrate` - Break down and coordinate complex tasks
+- `mcp__claude-flow@alpha__swarm_init` - Set up coordination topology for Claude Code
+- `mcp__claude-flow@alpha__agent_spawn` - Create cognitive patterns to guide Claude Code
+- `mcp__claude-flow@alpha__task_orchestrate` - Break down and coordinate complex tasks
 
 ### Monitoring Tools:
 
-- `mcp__claude-flow__swarm_status` - Monitor coordination effectiveness
-- `mcp__claude-flow__agent_list` - View active cognitive patterns
-- `mcp__claude-flow__agent_metrics` - Track coordination performance
-- `mcp__claude-flow__task_status` - Check workflow progress
-- `mcp__claude-flow__task_results` - Review coordination outcomes
+- `mcp__claude-flow@alpha__swarm_status` - Monitor coordination effectiveness
+- `mcp__claude-flow@alpha__agent_list` - View active cognitive patterns
+- `mcp__claude-flow@alpha__agent_metrics` - Track coordination performance
+- `mcp__claude-flow@alpha__task_status` - Check workflow progress
+- `mcp__claude-flow@alpha__task_results` - Review coordination outcomes
 
 ### Memory & Neural Tools:
 
-- `mcp__claude-flow__memory_usage` - Persistent memory across sessions
-- `mcp__claude-flow__neural_status` - Neural pattern effectiveness
-- `mcp__claude-flow__neural_train` - Improve coordination patterns
-- `mcp__claude-flow__neural_patterns` - Analyze thinking approaches
+- `mcp__claude-flow@alpha__memory_usage` - Persistent memory across sessions
+- `mcp__claude-flow@alpha__neural_status` - Neural pattern effectiveness
+- `mcp__claude-flow@alpha__neural_train` - Improve coordination patterns
+- `mcp__claude-flow@alpha__neural_patterns` - Analyze thinking approaches
 
 ### GitHub Integration Tools (NEW!):
 
-- `mcp__claude-flow__github_swarm` - Create specialized GitHub management swarms
-- `mcp__claude-flow__repo_analyze` - Deep repository analysis with AI
-- `mcp__claude-flow__pr_enhance` - AI-powered pull request improvements
-- `mcp__claude-flow__issue_triage` - Intelligent issue classification
-- `mcp__claude-flow__code_review` - Automated code review with swarms
+- `mcp__claude-flow@alpha__github_swarm` - Create specialized GitHub management swarms
+- `mcp__claude-flow@alpha__repo_analyze` - Deep repository analysis with AI
+- `mcp__claude-flow@alpha__pr_enhance` - AI-powered pull request improvements
+- `mcp__claude-flow@alpha__issue_triage` - Intelligent issue classification
+- `mcp__claude-flow@alpha__code_review` - Automated code review with swarms
 
 ### System Tools:
 
-- `mcp__claude-flow__benchmark_run` - Measure coordination efficiency
-- `mcp__claude-flow__features_detect` - Available capabilities
-- `mcp__claude-flow__swarm_monitor` - Real-time coordination tracking
+- `mcp__claude-flow@alpha__benchmark_run` - Measure coordination efficiency
+- `mcp__claude-flow@alpha__features_detect` - Available capabilities
+- `mcp__claude-flow@alpha__swarm_monitor` - Real-time coordination tracking
 
 ## Workflow Examples (Coordination-Focused)
 
@@ -592,21 +592,21 @@ Once configured, Claude Flow MCP tools enhance Claude Code's coordination:
 
 **Step 1:** Set up research coordination
 
-- Tool: `mcp__claude-flow__swarm_init`
+- Tool: `mcp__claude-flow@alpha__swarm_init`
 - Parameters: `{"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}`
 - Result: Creates a mesh topology for comprehensive exploration
 
 **Step 2:** Define research perspectives
 
-- Tool: `mcp__claude-flow__agent_spawn`
+- Tool: `mcp__claude-flow@alpha__agent_spawn`
 - Parameters: `{"type": "researcher", "name": "Literature Review"}`
-- Tool: `mcp__claude-flow__agent_spawn`
+- Tool: `mcp__claude-flow@alpha__agent_spawn`
 - Parameters: `{"type": "code-analyzer", "name": "Data Analysis"}`
 - Result: Different cognitive patterns for Claude Code to use
 
 **Step 3:** Coordinate research execution
 
-- Tool: `mcp__claude-flow__task_orchestrate`
+- Tool: `mcp__claude-flow@alpha__task_orchestrate`
 - Parameters: `{"task": "Research neural architecture search papers", "strategy": "adaptive"}`
 - Result: Claude Code systematically searches, reads, and analyzes papers
 
@@ -627,19 +627,19 @@ Once configured, Claude Flow MCP tools enhance Claude Code's coordination:
 
 **Step 1:** Set up development coordination
 
-- Tool: `mcp__claude-flow__swarm_init`
+- Tool: `mcp__claude-flow@alpha__swarm_init`
 - Parameters: `{"topology": "hierarchical", "maxAgents": 8, "strategy": "specialized"}`
 - Result: Hierarchical structure for organized development
 
 **Step 2:** Define development perspectives
 
-- Tool: `mcp__claude-flow__agent_spawn`
+- Tool: `mcp__claude-flow@alpha__agent_spawn`
 - Parameters: `{"type": "system-architect", "name": "System Design"}`
 - Result: Architectural thinking pattern for Claude Code
 
 **Step 3:** Coordinate implementation
 
-- Tool: `mcp__claude-flow__task_orchestrate`
+- Tool: `mcp__claude-flow@alpha__task_orchestrate`
 - Parameters: `{"task": "Implement user authentication with JWT", "strategy": "parallel"}`
 - Result: Claude Code implements features using its native tools
 
@@ -660,19 +660,19 @@ Once configured, Claude Flow MCP tools enhance Claude Code's coordination:
 
 **Step 1:** Initialize GitHub swarm
 
-- Tool: `mcp__claude-flow__github_swarm`
+- Tool: `mcp__claude-flow@alpha__github_swarm`
 - Parameters: `{"repository": "owner/repo", "agents": 5, "focus": "maintenance"}`
 - Result: Specialized swarm for repository management
 
 **Step 2:** Analyze repository health
 
-- Tool: `mcp__claude-flow__repo_analyze`
+- Tool: `mcp__claude-flow@alpha__repo_analyze`
 - Parameters: `{"deep": true, "include": ["issues", "prs", "code"]}`
 - Result: Comprehensive repository analysis
 
 **Step 3:** Enhance pull requests
 
-- Tool: `mcp__claude-flow__pr_enhance`
+- Tool: `mcp__claude-flow@alpha__pr_enhance`
 - Parameters: `{"pr_number": 123, "add_tests": true, "improve_docs": true}`
 - Result: AI-powered PR improvements
 
@@ -790,7 +790,7 @@ See `.claude/commands/` for detailed documentation on all features.
 1. **SPAWN ALL AGENTS IN ONE BATCH** - Use multiple tool calls in a SINGLE message
 2. **EXECUTE TASKS IN PARALLEL** - Never wait for one task before starting another
 3. **USE BATCHTOOL FOR EVERYTHING** - Multiple operations = Single message with multiple tools
-4. **ALL AGENTS MUST USE COORDINATION TOOLS** - Every spawned agent MUST use claude-flow hooks and memory
+4. **ALL AGENTS MUST USE COORDINATION TOOLS** - Every spawned agent MUST use claude-flow@alpha hooks and memory
 
 ### 🎯 AGENT COUNT CONFIGURATION
 
@@ -893,12 +893,12 @@ Message 6: TodoWrite (another single todo)
 ```
 Message 1: [BatchTool]
   // MCP coordination setup
-  - mcp__claude-flow__swarm_init
-  - mcp__claude-flow__agent_spawn (researcher)
-  - mcp__claude-flow__agent_spawn (coder)
-  - mcp__claude-flow__agent_spawn (code-analyzer)
-  - mcp__claude-flow__agent_spawn (tester)
-  - mcp__claude-flow__agent_spawn (task-orchestrator)
+  - mcp__claude-flow@alpha__swarm_init
+  - mcp__claude-flow@alpha__agent_spawn (researcher)
+  - mcp__claude-flow@alpha__agent_spawn (coder)
+  - mcp__claude-flow@alpha__agent_spawn (code-analyzer)
+  - mcp__claude-flow@alpha__agent_spawn (tester)
+  - mcp__claude-flow@alpha__agent_spawn (task-orchestrator)
 
 Message 2: [BatchTool - Claude Code execution]
   // Task agents with full coordination instructions
@@ -932,7 +932,7 @@ When given ANY complex task with swarms:
 STEP 1: IMMEDIATE PARALLEL SPAWN (Single Message!)
 [BatchTool]:
   // IMPORTANT: Check CLI args for agent count, otherwise auto-decide based on task complexity
-  - mcp__claude-flow__swarm_init {
+  - mcp__claude-flow@alpha__swarm_init {
       topology: "hierarchical",
       maxAgents: CLI_ARGS.agents || AUTO_DECIDE(task_complexity), // Use CLI args or auto-decide
       strategy: "parallel"
@@ -940,19 +940,19 @@ STEP 1: IMMEDIATE PARALLEL SPAWN (Single Message!)
 
   // Spawn agents based on maxAgents count and task requirements
   // If CLI specifies 3 agents, spawn 3. If no args, auto-decide optimal count (3-12)
-  - mcp__claude-flow__agent_spawn { type: "system-architect", name: "System Designer" }
-  - mcp__claude-flow__agent_spawn { type: "coder", name: "API Developer" }
-  - mcp__claude-flow__agent_spawn { type: "coder", name: "Frontend Dev" }
-  - mcp__claude-flow__agent_spawn { type: "code-analyzer", name: "DB Designer" }
-  - mcp__claude-flow__agent_spawn { type: "tester", name: "QA Engineer" }
-  - mcp__claude-flow__agent_spawn { type: "researcher", name: "Tech Lead" }
-  - mcp__claude-flow__agent_spawn { type: "task-orchestrator", name: "PM" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "system-architect", name: "System Designer" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "coder", name: "API Developer" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "coder", name: "Frontend Dev" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "code-analyzer", name: "DB Designer" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "tester", name: "QA Engineer" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "researcher", name: "Tech Lead" }
+  - mcp__claude-flow@alpha__agent_spawn { type: "task-orchestrator", name: "PM" }
   - TodoWrite { todos: [multiple todos at once] }
 
 STEP 2: PARALLEL TASK EXECUTION (Single Message!)
 [BatchTool]:
-  - mcp__claude-flow__task_orchestrate { task: "main task", strategy: "parallel" }
-  - mcp__claude-flow__memory_usage { action: "store", key: "init", value: {...} }
+  - mcp__claude-flow@alpha__task_orchestrate { task: "main task", strategy: "parallel" }
+  - mcp__claude-flow@alpha__memory_usage { action: "store", key: "init", value: {...} }
   - Multiple Read operations
   - Multiple Write operations
   - Multiple Bash commands
@@ -997,13 +997,13 @@ Dependencies: ↳ X deps | Actionable: ▶
 // ✅ CORRECT: SINGLE MESSAGE with ALL operations
 [BatchTool - Message 1]:
   // Initialize and spawn ALL agents at once
-  mcp__claude-flow__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
-  mcp__claude-flow__agent_spawn { type: "system-architect", name: "System Designer" }
-  mcp__claude-flow__agent_spawn { type: "coder", name: "API Developer" }
-  mcp__claude-flow__agent_spawn { type: "coder", name: "Auth Expert" }
-  mcp__claude-flow__agent_spawn { type: "code-analyzer", name: "DB Designer" }
-  mcp__claude-flow__agent_spawn { type: "tester", name: "Test Engineer" }
-  mcp__claude-flow__agent_spawn { type: "task-orchestrator", name: "Lead" }
+  mcp__claude-flow@alpha__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
+  mcp__claude-flow@alpha__agent_spawn { type: "system-architect", name: "System Designer" }
+  mcp__claude-flow@alpha__agent_spawn { type: "coder", name: "API Developer" }
+  mcp__claude-flow@alpha__agent_spawn { type: "coder", name: "Auth Expert" }
+  mcp__claude-flow@alpha__agent_spawn { type: "code-analyzer", name: "DB Designer" }
+  mcp__claude-flow@alpha__agent_spawn { type: "tester", name: "Test Engineer" }
+  mcp__claude-flow@alpha__agent_spawn { type: "task-orchestrator", name: "Lead" }
 
   // Update ALL todos at once - NEVER split todos!
   TodoWrite { todos: [
@@ -1018,10 +1018,10 @@ Dependencies: ↳ X deps | Actionable: ▶
   ]}
 
   // Start orchestration
-  mcp__claude-flow__task_orchestrate { task: "Build REST API", strategy: "parallel" }
+  mcp__claude-flow@alpha__task_orchestrate { task: "Build REST API", strategy: "parallel" }
 
   // Store initial memory
-  mcp__claude-flow__memory_usage { action: "store", key: "project/init", value: { started: Date.now() } }
+  mcp__claude-flow@alpha__memory_usage { action: "store", key: "project/init", value: { started: Date.now() } }
 
 [BatchTool - Message 2]:
   // Create ALL directories at once
@@ -1052,9 +1052,9 @@ Dependencies: ↳ X deps | Actionable: ▶
 
 ```javascript
 // ❌ WRONG: Multiple messages, one operation each
-Message 1: mcp__claude-flow__swarm_init
-Message 2: mcp__claude-flow__agent_spawn (just one agent)
-Message 3: mcp__claude-flow__agent_spawn (another agent)
+Message 1: mcp__claude-flow@alpha__swarm_init
+Message 2: mcp__claude-flow@alpha__agent_spawn (just one agent)
+Message 3: mcp__claude-flow@alpha__agent_spawn (another agent)
 Message 4: TodoWrite (single todo)
 Message 5: Write (single file)
 // This is 5x slower and wastes swarm coordination!
@@ -1066,7 +1066,7 @@ Every agent coordination step MUST use memory:
 
 ```
 // After each major decision or implementation
-mcp__claude-flow__memory_usage
+mcp__claude-flow@alpha__memory_usage
   action: "store"
   key: "swarm-{id}/agent-{name}/{step}"
   value: {
@@ -1078,12 +1078,12 @@ mcp__claude-flow__memory_usage
   }
 
 // To retrieve coordination data
-mcp__claude-flow__memory_usage
+mcp__claude-flow@alpha__memory_usage
   action: "retrieve"
   key: "swarm-{id}/agent-{name}/{step}"
 
 // To check all swarm progress
-mcp__claude-flow__memory_usage
+mcp__claude-flow@alpha__memory_usage
   action: "list"
   pattern: "swarm-{id}/*"
 ```
@@ -1093,7 +1093,7 @@ mcp__claude-flow__memory_usage
 1. **Batch Everything**: Never operate on single files when multiple are needed
 2. **Parallel First**: Always think "what can run simultaneously?"
 3. **Memory is Key**: Use memory for ALL cross-agent coordination
-4. **Monitor Progress**: Use mcp**claude-flow**swarm_monitor for real-time tracking
+4. **Monitor Progress**: Use mcp**claude-flow@alpha**swarm_monitor for real-time tracking
 5. **Auto-Optimize**: Let hooks handle topology and agent selection
 
 ### 🎨 VISUAL SWARM STATUS
@@ -1176,10 +1176,10 @@ Claude Flow extends the base coordination with:
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/claude-flow
-- Issues: https://github.com/ruvnet/claude-flow/issues
-- Examples: https://github.com/ruvnet/claude-flow/tree/main/examples
+- Documentation: https://github.com/ruvnet/claude-flow@alpha
+- Issues: https://github.com/ruvnet/claude-flow@alpha/issues
+- Examples: https://github.com/ruvnet/claude-flow@alpha/tree/main/examples
 
 ---
 
-Remember: **Claude Flow coordinates, Claude Code creates!** Start with `mcp__claude-flow__swarm_init` to enhance your development workflow.
+Remember: **Claude Flow coordinates, Claude Code creates!** Start with `mcp__claude-flow@alpha__swarm_init` to enhance your development workflow.

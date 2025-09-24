@@ -85,7 +85,7 @@ mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
 mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
 \`\`\`
 
-Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+Learn more: https://github.com/ruvnet/claude-flow@alpha#flow-nexus
 
 ## Project Info
 This is a Claude-Flow AI agent orchestration system.
@@ -153,8 +153,8 @@ If ANY answer is "No", you MUST combine operations into a single message!
 - \`npm run test\`: Run the full test suite
 - \`npm run lint\`: Run ESLint and format checks
 - \`npm run typecheck\`: Run TypeScript type checking
-- \`./claude-flow start\`: Start the orchestration system
-- \`./claude-flow --help\`: Show all available commands
+- \`./claude-flow@alpha start\`: Start the orchestration system
+- \`./claude-flow@alpha --help\`: Show all available commands
 
 ## Code Style Preferences
 - Use ES modules (import/export) syntax, not CommonJS (require)
@@ -188,9 +188,9 @@ This is a Claude-Flow AI agent orchestration system with the following component
 - All components are event-driven for scalability
 
 ## Debugging
-- Check logs in \`./claude-flow.log\`
-- Use \`./claude-flow status\` to check system health
-- Monitor with \`./claude-flow monitor\` for real-time updates
+- Check logs in \`./claude-flow@alpha.log\`
+- Use \`./claude-flow@alpha status\` to check system health
+- Monitor with \`./claude-flow@alpha monitor\` for real-time updates
 - Verbose output available with \`--verbose\` flag on most commands
 
 ## 🌐 Flow Nexus Cloud Platform
@@ -242,7 +242,7 @@ mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
 mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
 \`\`\`
 
-Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+Learn more: https://github.com/ruvnet/claude-flow@alpha#flow-nexus
 `;
 }
 
@@ -308,10 +308,10 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ## SPARC Development Commands
 
 ### Core SPARC Commands
-- \`./claude-flow sparc modes\`: List all available SPARC development modes
-- \`./claude-flow sparc run <mode> "<task>"\`: Execute specific SPARC mode for a task
-- \`./claude-flow sparc tdd "<feature>"\`: Run complete TDD workflow using SPARC methodology
-- \`./claude-flow sparc info <mode>\`: Get detailed information about a specific mode
+- \`./claude-flow@alpha sparc modes\`: List all available SPARC development modes
+- \`./claude-flow@alpha sparc run <mode> "<task>"\`: Execute specific SPARC mode for a task
+- \`./claude-flow@alpha sparc tdd "<feature>"\`: Run complete TDD workflow using SPARC methodology
+- \`./claude-flow@alpha sparc info <mode>\`: Get detailed information about a specific mode
 
 ### Standard Build Commands
 - \`npm run build\`: Build the project
@@ -324,7 +324,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 1. Specification Phase
 \`\`\`bash
 # Create detailed specifications and requirements
-./claude-flow sparc run spec-pseudocode "Define user authentication requirements"
+./claude-flow@alpha sparc run spec-pseudocode "Define user authentication requirements"
 \`\`\`
 - Define clear functional requirements
 - Document edge cases and constraints
@@ -334,7 +334,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 2. Pseudocode Phase
 \`\`\`bash
 # Develop algorithmic logic and data flows
-./claude-flow sparc run spec-pseudocode "Create authentication flow pseudocode"
+./claude-flow@alpha sparc run spec-pseudocode "Create authentication flow pseudocode"
 \`\`\`
 - Break down complex logic into steps
 - Define data structures and interfaces
@@ -344,7 +344,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 3. Architecture Phase
 \`\`\`bash
 # Design system architecture and component structure
-./claude-flow sparc run architect "Design authentication service architecture"
+./claude-flow@alpha sparc run architect "Design authentication service architecture"
 \`\`\`
 - Create system diagrams and component relationships
 - Define API contracts and interfaces
@@ -354,7 +354,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 4. Refinement Phase (TDD Implementation)
 \`\`\`bash
 # Execute Test-Driven Development cycle
-./claude-flow sparc tdd "implement user authentication system"
+./claude-flow@alpha sparc tdd "implement user authentication system"
 \`\`\`
 
 **TDD Cycle:**
@@ -366,7 +366,7 @@ This project uses the SPARC (Specification, Pseudocode, Architecture, Refinement
 ### 5. Completion Phase
 \`\`\`bash
 # Integration, documentation, and validation
-./claude-flow sparc run integration "integrate authentication with user management"
+./claude-flow@alpha sparc run integration "integrate authentication with user management"
 \`\`\`
 - Integrate all components
 - Perform end-to-end testing
@@ -400,9 +400,9 @@ Claude Code slash commands are available in \`.claude/commands/\`:
 ### Project Commands
 - \`/sparc\`: Execute SPARC methodology workflows
 - \`/sparc-<mode>\`: Run specific SPARC mode (e.g., /sparc-architect)
-- \`/claude-flow-help\`: Show all Claude-Flow commands
-- \`/claude-flow-memory\`: Interact with memory system
-- \`/claude-flow-swarm\`: Coordinate multi-agent swarms
+- \`/claude-flow@alpha-help\`: Show all Claude-Flow commands
+- \`/claude-flow@alpha-memory\`: Interact with memory system
+- \`/claude-flow@alpha-swarm\`: Coordinate multi-agent swarms
 
 ### Using Slash Commands
 1. Type \`/\` in Claude Code to see available commands
@@ -427,7 +427,7 @@ Claude Code slash commands are available in \`.claude/commands/\`:
 - Prefer composition over inheritance
 
 ### Memory and State Management
-- Use claude-flow memory system for persistent state across sessions
+- Use claude-flow@alpha memory system for persistent state across sessions
 - Store progress and findings using namespaced keys
 - Query previous work before starting new tasks
 - Export/import memory for backup and sharing
@@ -437,19 +437,19 @@ Claude Code slash commands are available in \`.claude/commands/\`:
 ### Memory Commands for SPARC Development
 \`\`\`bash
 # Store project specifications
-./claude-flow memory store spec_auth "User authentication requirements and constraints"
+./claude-flow@alpha memory store spec_auth "User authentication requirements and constraints"
 
 # Store architectural decisions
-./claude-flow memory store arch_decisions "Database schema and API design choices"
+./claude-flow@alpha memory store arch_decisions "Database schema and API design choices"
 
 # Store test results and coverage
-./claude-flow memory store test_coverage "Authentication module: 95% coverage, all tests passing"
+./claude-flow@alpha memory store test_coverage "Authentication module: 95% coverage, all tests passing"
 
 # Query previous work
-./claude-flow memory query auth_implementation
+./claude-flow@alpha memory query auth_implementation
 
 # Export project memory
-./claude-flow memory export project_backup.json
+./claude-flow@alpha memory export project_backup.json
 \`\`\`
 
 ### Memory Namespaces
@@ -464,37 +464,37 @@ Claude Code slash commands are available in \`.claude/commands/\`:
 ### Feature Development Workflow
 \`\`\`bash
 # 1. Start with specification
-./claude-flow sparc run spec-pseudocode "User profile management feature"
+./claude-flow@alpha sparc run spec-pseudocode "User profile management feature"
 
 # 2. Design architecture
-./claude-flow sparc run architect "Profile service architecture with data validation"
+./claude-flow@alpha sparc run architect "Profile service architecture with data validation"
 
 # 3. Implement with TDD
-./claude-flow sparc tdd "user profile CRUD operations"
+./claude-flow@alpha sparc tdd "user profile CRUD operations"
 
 # 4. Security review
-./claude-flow sparc run security-review "profile data access and validation"
+./claude-flow@alpha sparc run security-review "profile data access and validation"
 
 # 5. Integration testing
-./claude-flow sparc run integration "profile service with authentication system"
+./claude-flow@alpha sparc run integration "profile service with authentication system"
 
 # 6. Documentation
-./claude-flow sparc run docs-writer "profile service API documentation"
+./claude-flow@alpha sparc run docs-writer "profile service API documentation"
 \`\`\`
 
 ### Bug Fix Workflow
 \`\`\`bash
 # 1. Debug and analyze
-./claude-flow sparc run debug "authentication token expiration issue"
+./claude-flow@alpha sparc run debug "authentication token expiration issue"
 
 # 2. Write regression tests
-./claude-flow sparc run tdd "token refresh mechanism tests"
+./claude-flow@alpha sparc run tdd "token refresh mechanism tests"
 
 # 3. Implement fix
-./claude-flow sparc run code "fix token refresh in authentication service"
+./claude-flow@alpha sparc run code "fix token refresh in authentication service"
 
 # 4. Security review
-./claude-flow sparc run security-review "token handling security implications"
+./claude-flow@alpha sparc run security-review "token handling security implications"
 \`\`\`
 
 ## Configuration Files
@@ -537,16 +537,16 @@ Claude Code slash commands are available in \`.claude/commands/\`:
 ### Debug Commands
 \`\`\`bash
 # Check SPARC configuration
-./claude-flow sparc modes
+./claude-flow@alpha sparc modes
 
 # Verify memory system
-./claude-flow memory stats
+./claude-flow@alpha memory stats
 
 # Check system status
-./claude-flow status
+./claude-flow@alpha status
 
 # View detailed mode information
-./claude-flow sparc info <mode-name>
+./claude-flow@alpha sparc info <mode-name>
 \`\`\`
 
 ## Project Architecture
@@ -618,7 +618,7 @@ mcp__flow-nexus__swarm_init { topology: "mesh", maxAgents: 5 }
 mcp__flow-nexus__sandbox_create { template: "node", name: "api-dev" }
 \`\`\`
 
-Learn more: https://github.com/ruvnet/claude-flow#flow-nexus
+Learn more: https://github.com/ruvnet/claude-flow@alpha#flow-nexus
 `;
 }
 
@@ -639,9 +639,9 @@ export function createOptimizedSparcClaudeMd() {
 Before complex tasks, use psycho-symbolic reasoning:
 \`\`\`javascript
 // Use MCP tools for advanced coordination:
-// - mcp__claude-flow__swarm_init for agent orchestration
-// - mcp__claude-flow__neural_patterns for intelligent analysis
-// - mcp__claude-flow__memory_usage for persistent context
+// - mcp__claude-flow@alpha__swarm_init for agent orchestration
+// - mcp__claude-flow@alpha__neural_patterns for intelligent analysis
+// - mcp__claude-flow@alpha__memory_usage for persistent context
 \`\`\`
 
 ### Cognitive Role Specialization
@@ -683,9 +683,9 @@ Agents now have cognitive patterns:
 \`\`\`
 
 **MCP tools are ONLY for coordination setup:**
-- \`mcp__claude-flow__swarm_init\` - Initialize coordination topology
-- \`mcp__claude-flow__agent_spawn\` - Define agent types for coordination
-- \`mcp__claude-flow__task_orchestrate\` - Orchestrate high-level workflows
+- \`mcp__claude-flow@alpha__swarm_init\` - Initialize coordination topology
+- \`mcp__claude-flow@alpha__agent_spawn\` - Define agent types for coordination
+- \`mcp__claude-flow@alpha__task_orchestrate\` - Orchestrate high-level workflows
 
 ### 📁 File Organization Rules
 
@@ -704,15 +704,15 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 ## SPARC Commands
 
 ### Core Commands
-- \`npx claude-flow sparc modes\` - List available modes
-- \`npx claude-flow sparc run <mode> "<task>"\` - Execute specific mode
-- \`npx claude-flow sparc tdd "<feature>"\` - Run complete TDD workflow
-- \`npx claude-flow sparc info <mode>\` - Get mode details
+- \`npx claude-flow@alpha sparc modes\` - List available modes
+- \`npx claude-flow@alpha sparc run <mode> "<task>"\` - Execute specific mode
+- \`npx claude-flow@alpha sparc tdd "<feature>"\` - Run complete TDD workflow
+- \`npx claude-flow@alpha sparc info <mode>\` - Get mode details
 
 ### Batchtools Commands
-- \`npx claude-flow sparc batch <modes> "<task>"\` - Parallel execution
-- \`npx claude-flow sparc pipeline "<task>"\` - Full pipeline processing
-- \`npx claude-flow sparc concurrent <mode> "<tasks-file>"\` - Multi-task processing
+- \`npx claude-flow@alpha sparc batch <modes> "<task>"\` - Parallel execution
+- \`npx claude-flow@alpha sparc pipeline "<task>"\` - Full pipeline processing
+- \`npx claude-flow@alpha sparc concurrent <mode> "<tasks-file>"\` - Multi-task processing
 
 ### Build Commands
 - \`npm run build\` - Build project
@@ -794,7 +794,7 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 
 \`\`\`bash
 # Add MCP servers (Claude Flow required, others optional)
-claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start
 claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
 claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 \`\`\`
@@ -903,13 +903,13 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 \`\`\`javascript
 // Step 1: MCP tools set up coordination with cognitive patterns
 [Single Message - Enhanced Coordination Setup]:
-  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__claude-flow__agent_spawn { type: "researcher", cognitivePattern: "divergent" }
-  mcp__claude-flow__agent_spawn { type: "coder", cognitivePattern: "systems" }
-  mcp__claude-flow__agent_spawn { type: "tester", cognitivePattern: "critical" }
+  mcp__claude-flow@alpha__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow@alpha__agent_spawn { type: "researcher", cognitivePattern: "divergent" }
+  mcp__claude-flow@alpha__agent_spawn { type: "coder", cognitivePattern: "systems" }
+  mcp__claude-flow@alpha__agent_spawn { type: "tester", cognitivePattern: "critical" }
   
   // Initialize psycho-symbolic reasoning for the swarm
-  mcp__claude-flow__neural_patterns { 
+  mcp__claude-flow@alpha__neural_patterns { 
     action: "analyze",
     operation: "What patterns should guide this implementation?",
     metadata: { depth: 10, cache: true }
@@ -946,7 +946,7 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 
 ### ❌ WRONG (Multiple Messages):
 \`\`\`javascript
-Message 1: mcp__claude-flow__swarm_init
+Message 1: mcp__claude-flow@alpha__swarm_init
 Message 2: Task("agent 1")
 Message 3: TodoWrite { todos: [single todo] }
 Message 4: Write "file.js"
@@ -1006,8 +1006,8 @@ Message 4: Write "file.js"
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/claude-flow
-- Issues: https://github.com/ruvnet/claude-flow/issues
+- Documentation: https://github.com/ruvnet/claude-flow@alpha
+- Issues: https://github.com/ruvnet/claude-flow@alpha/issues
 - Flow-Nexus Platform: https://flow-nexus.ruv.io (registration required for cloud features)
 
 ---
@@ -1133,7 +1133,7 @@ Flow Nexus seamlessly integrates with Claude Code through MCP (Model Context Pro
 
 ### 📚 Learn More
 
-- Documentation: https://github.com/ruvnet/claude-flow#flow-nexus
+- Documentation: https://github.com/ruvnet/claude-flow@alpha#flow-nexus
 - MCP Integration: Use \`mcp__flow-nexus__*\` tools in Claude Code
 - Agent Usage: Type \`/\` in Claude Code to see Flow Nexus commands
 - Community: Join discussions and share templates

@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2025-09-24
+## [2.0.0-alpha.118] - 2025-09-24
 
-> **🎉 STABLE RELEASE**: Claude Flow v2.0.0 is now stable! Removed sublinear-time-solver MCP dependency for cleaner initialization and focused core functionality.
+> **🧹 CLEANUP RELEASE**: Removed sublinear-time-solver MCP dependency for cleaner initialization and focused core functionality.
 
 ### 🗑️ Removed
 - **Sublinear-time-solver Integration**: Removed sublinear-time-solver MCP server from initialization
