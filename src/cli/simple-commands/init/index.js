@@ -101,9 +101,9 @@ async function setupMcpServers(dryRun = false) {
 
   const servers = [
     {
-      name: 'claude-flow@alpha',
+      name: 'claude-flow',
       command: 'npx claude-flow@alpha mcp start',
-      description: 'Claude Flow MCP server with swarm orchestration (alpha)',
+      description: 'Claude Flow MCP server with swarm orchestration',
     },
     {
       name: 'ruv-swarm',
