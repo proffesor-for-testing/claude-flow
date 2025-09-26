@@ -34,6 +34,7 @@
 - `mcp__claude-flow__swarm_init` - Initialize coordination topology
 - `mcp__claude-flow__agent_spawn` - Define agent types for coordination
 - `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
+- `mcp__claude-flow__memory_usage` - CRITICAL for agent coordination (see below)
 
 ### 📁 File Organization Rules
 
