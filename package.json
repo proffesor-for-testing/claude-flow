@@ -18,7 +18,7 @@
     "build:esm": "swc src -d dist --config-file .swcrc --ignore 'src/ui/extension/node_modules/**/*'",
     "build:cjs": "swc src -d dist-cjs --config-file .swcrc --ignore 'src/ui/extension/node_modules/**/*'",
     "build:ts": "npm run build:esm && npm run build:cjs",
-    "build:binary": "pkg dist/cli/main.js --targets node20-linux-x64,node20-macos-x64,node20-win-x64 --output bin/claude-flow",
+    "build:binary": "pkg dist/src/cli/main.js --targets node20-linux-x64,node20-macos-x64,node20-win-x64 --output bin/claude-flow",
     "build:simple": "npm run build:ts && pkg dist/cli/simple-cli.js --output bin/claude-flow-simple",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
