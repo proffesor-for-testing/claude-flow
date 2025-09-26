@@ -28,12 +28,5 @@
     "noInterop": false
   },
   "minify": false,
-  "sourceMaps": true,
-  "exclude": [
-    "node_modules/**/*",
-    "src/ui/extension/node_modules/**/*",
-    "**/*.d.ts",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "sourceMaps": true
 }
