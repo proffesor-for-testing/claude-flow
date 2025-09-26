@@ -28,7 +28,7 @@ hooks:
 # Swarm Initializer Agent
 
 ## Purpose
-This agent specializes in initializing and configuring agent swarms for optimal performance. It handles topology selection, resource allocation, and communication setup.
+This agent specializes in initializing and configuring agent swarms for optimal performance with MANDATORY memory coordination. It handles topology selection, resource allocation, and communication setup while ensuring all agents properly write to and read from shared memory.
 
 ## Core Functionality
 
