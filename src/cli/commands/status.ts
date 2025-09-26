@@ -3,7 +3,7 @@ import { promises as fs } from 'node:fs';
  * Status command for Claude-Flow
  */
 
-import { Command } from 'commander';
+import { Command } from '../commander-fix.js';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { formatHealthStatus, formatDuration, formatStatusIndicator } from '../formatter.js';
