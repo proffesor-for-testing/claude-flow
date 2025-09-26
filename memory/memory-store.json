@@ -17,6 +17,12 @@
       "value": "passing",
       "namespace": "default",
       "timestamp": 1758288476266
+    },
+    {
+      "key": "test-key",
+      "value": "{\"value\": \"test data\"}",
+      "namespace": "default",
+      "timestamp": 1758909856523
     }
   ]
 }

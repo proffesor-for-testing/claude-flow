@@ -1,6 +1,6 @@
 {
   "name": "claude-flow",
-  "version": "2.0.0-alpha.127",
+  "version": "2.0.0-alpha.128",
   "description": "Enterprise-grade AI agent orchestration with ruv-swarm integration",
   "mcpName": "io.github.ruvnet/claude-flow",
   "main": "cli.mjs",
@@ -15,8 +15,8 @@
     "build": "npm run clean && npm run update-version && npm run build:esm && npm run build:cjs && npm run build:binary",
     "update-version": "node scripts/update-bin-version.js",
     "clean": "rm -rf dist dist-cjs",
-    "build:esm": "swc src -d dist --config-file .swcrc --ignore 'src/ui/extension/node_modules/**/*'",
-    "build:cjs": "swc src -d dist-cjs --config-file .swcrc --ignore 'src/ui/extension/node_modules/**/*'",
+    "build:esm": "swc src -d dist --config-file .swcrc",
+    "build:cjs": "swc src -d dist-cjs --config-file .swcrc",
     "build:ts": "npm run build:esm && npm run build:cjs",
     "build:binary": "pkg dist/src/cli/main.js --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --output bin/claude-flow",
     "build:simple": "npm run build:ts && pkg dist/cli/simple-cli.js --output bin/claude-flow-simple",
