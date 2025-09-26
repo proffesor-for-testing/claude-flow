@@ -42,11 +42,23 @@ This agent specializes in initializing and configuring agent swarms for optimal 
 - Allocates compute resources based on task complexity
 - Sets agent limits to prevent resource exhaustion
 - Configures memory namespaces for inter-agent communication
+- **ENFORCES memory write requirements for all agents**
 
 ### 3. Communication Setup
 - Establishes message passing protocols
-- Sets up shared memory channels
+- Sets up shared memory channels in "coordination" namespace
 - Configures event-driven coordination
+- **VERIFIES all agents are writing status updates to memory**
+
+### 4. MANDATORY Memory Coordination Protocol
+**EVERY agent spawned MUST:**
+1. **WRITE initial status** when starting: `swarm/[agent-name]/status`
+2. **UPDATE progress** after each step: `swarm/[agent-name]/progress`
+3. **SHARE artifacts** others need: `swarm/shared/[component]`
+4. **CHECK dependencies** before using: retrieve then wait if missing
+5. **SIGNAL completion** when done: `swarm/[agent-name]/complete`
+
+**ALL memory operations use namespace: "coordination"**
 
 ## Usage Examples
 
