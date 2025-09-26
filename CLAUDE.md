@@ -85,6 +85,183 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 - **Clean Architecture**: Separate concerns
 - **Documentation**: Keep updated
 
+## 🧠 MANDATORY MEMORY COORDINATION PROTOCOL
+
+### 🚨 CRITICAL: Every Agent MUST Write AND Read Memory
+
+**THE PROBLEM**: Agents check memory but NEVER write data, breaking coordination!
+
+### ✅ MANDATORY MEMORY WRITE PROTOCOL
+
+**EVERY spawned agent MUST follow this exact pattern:**
+
+```javascript
+// 1️⃣ IMMEDIATELY when agent starts - WRITE initial status
+mcp__claude-flow__memory_usage {
+  action: "store",
+  key: "swarm/[agent-name]/status",
+  namespace: "coordination",  // ALWAYS use "coordination" namespace
+  value: JSON.stringify({
+    agent: "[agent-name]",
+    status: "starting",
+    timestamp: Date.now(),
+    tasks: ["list", "of", "assigned", "tasks"],
+    progress: 0
+  })
+}
+
+// 2️⃣ AFTER EACH MAJOR STEP - WRITE progress update
+mcp__claude-flow__memory_usage {
+  action: "store",
+  key: "swarm/[agent-name]/progress",
+  namespace: "coordination",
+  value: JSON.stringify({
+    completed: ["task1", "task2"],
+    current: "working on task3",
+    progress: 35,  // percentage
+    files_created: ["path/to/file1.js", "path/to/file2.js"],
+    interfaces: { "APIName": "definition" },
+    blocking_issues: [],
+    dependencies_needed: ["waiting for agent-2 interfaces"]
+  })
+}
+
+// 3️⃣ SHARE ARTIFACTS - WRITE what other agents need
+mcp__claude-flow__memory_usage {
+  action: "store",
+  key: "swarm/shared/[component-name]",
+  namespace: "coordination",
+  value: JSON.stringify({
+    type: "interface|api|config|schema",
+    definition: "actual code/config here",
+    usage_example: "how to use this",
+    created_by: "[agent-name]",
+    timestamp: Date.now()
+  })
+}
+
+// 4️⃣ CHECK DEPENDENCIES - READ then WAIT if not found
+const dependency = mcp__claude-flow__memory_usage {
+  action: "retrieve",
+  key: "swarm/shared/[component-name]",
+  namespace: "coordination"
+}
+if (!dependency.found) {
+  // WRITE that you're waiting
+  mcp__claude-flow__memory_usage {
+    action: "store",
+    key: "swarm/[agent-name]/waiting",
+    namespace: "coordination",
+    value: JSON.stringify({
+      waiting_for: "[component-name]",
+      from_agent: "[other-agent]",
+      since: Date.now()
+    })
+  }
+  // Then implement stub or wait
+}
+
+// 5️⃣ SIGNAL COMPLETION - WRITE when ready for integration
+mcp__claude-flow__memory_usage {
+  action: "store",
+  key: "swarm/[agent-name]/complete",
+  namespace: "coordination",
+  value: JSON.stringify({
+    status: "complete",
+    deliverables: ["list", "of", "completed", "items"],
+    integration_points: ["how", "to", "integrate"],
+    test_coverage: "85%",
+    documentation: "path/to/docs.md"
+  })
+}
+```
+
+### 🔴 AGENT PROMPT TEMPLATE WITH MEMORY WRITES
+
+**EVERY Task() call MUST include these instructions:**
+
+```javascript
+Task("Agent Type", `
+You are the [agent-type] agent. 
+
+🚨 MANDATORY MEMORY COORDINATION:
+
+1. START - IMMEDIATELY write status:
+   mcp__claude-flow__memory_usage { action: "store", key: "swarm/[your-name]/status", namespace: "coordination", value: {status: "starting", tasks: [...]} }
+
+2. PROGRESS - After EVERY major step write update:
+   mcp__claude-flow__memory_usage { action: "store", key: "swarm/[your-name]/progress", namespace: "coordination", value: {progress: X%, completed: [...]} }
+
+3. SHARE - Write ALL interfaces/APIs/configs others need:
+   mcp__claude-flow__memory_usage { action: "store", key: "swarm/shared/[component]", namespace: "coordination", value: {definition: "..."} }
+
+4. CHECK - Before using dependencies, READ and VERIFY they exist:
+   mcp__claude-flow__memory_usage { action: "retrieve", key: "swarm/shared/[component]", namespace: "coordination" }
+   If not found, WRITE that you're waiting and implement stub.
+
+5. COMPLETE - Write final status when done:
+   mcp__claude-flow__memory_usage { action: "store", key: "swarm/[your-name]/complete", namespace: "coordination", value: {deliverables: [...]} }
+
+Your specific task: [detailed task description]
+
+REMEMBER: If you don't WRITE to memory, other agents can't coordinate with you!
+`, "agent-type")
+```
+
+### 📊 MEMORY KEY STRUCTURE
+
+**ALWAYS use this consistent structure:**
+
+```
+coordination/              # Namespace (ALWAYS use "coordination")
+  swarm/                  # Swarm prefix
+    [agent-name]/         # Individual agent data
+      status              # Current status
+      progress            # Progress updates
+      waiting             # Blocking dependencies
+      complete            # Completion signal
+    shared/               # Shared artifacts
+      [component-name]    # Interfaces, APIs, schemas
+    metrics/              # Performance data
+      [metric-name]       # Measurements
+```
+
+### ❌ COMMON MISTAKES TO AVOID
+
+1. **Only Reading, Never Writing** - Agents MUST write their own data
+2. **Wrong Namespace** - ALWAYS use "coordination" namespace
+3. **No Status Updates** - Write progress at least every 2-3 steps
+4. **Missing Shared Artifacts** - Share ALL interfaces other agents need
+5. **Not Checking Dependencies** - Always verify dependencies exist before using
+
+### ✅ CORRECT COORDINATION EXAMPLE
+
+```javascript
+// Agent 1 writes interface
+mcp__claude-flow__memory_usage {
+  action: "store",
+  key: "swarm/shared/plugin-interface",
+  namespace: "coordination",
+  value: JSON.stringify({
+    type: "interface",
+    definition: "trait Plugin: Send + Sync { fn execute(&self); }",
+    usage: "impl Plugin for YourPlugin { ... }"
+  })
+}
+
+// Agent 2 reads and uses it
+const interface = mcp__claude-flow__memory_usage {
+  action: "retrieve",
+  key: "swarm/shared/plugin-interface",
+  namespace: "coordination"
+}
+if (interface.found) {
+  // Use the interface definition
+  const pluginTrait = JSON.parse(interface.value).definition;
+  // Implement based on this interface
+}
+```
+
 ## 🚀 Available Agents (54 Total)
 
 ### Core Development
