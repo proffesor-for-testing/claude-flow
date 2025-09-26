@@ -1,74 +1,14 @@
 [
   {
-    "timestamp": 1758899141868,
+    "timestamp": 1758899339932,
     "memoryTotal": 67427545088,
-    "memoryUsed": 6895316992,
-    "memoryFree": 60532228096,
-    "memoryUsagePercent": 10.226261363958736,
-    "memoryEfficiency": 89.77373863604126,
+    "memoryUsed": 6693584896,
+    "memoryFree": 60733960192,
+    "memoryUsagePercent": 9.92707785410869,
+    "memoryEfficiency": 90.07292214589131,
     "cpuCount": 16,
-    "cpuLoad": 0.090625,
+    "cpuLoad": 0.016875,
     "platform": "linux",
-    "uptime": 2870
-  },
-  {
-    "timestamp": 1758899171873,
-    "memoryTotal": 67427545088,
-    "memoryUsed": 6584094720,
-    "memoryFree": 60843450368,
-    "memoryUsagePercent": 9.76469588416287,
-    "memoryEfficiency": 90.23530411583712,
-    "cpuCount": 16,
-    "cpuLoad": 0.059375,
-    "platform": "linux",
-    "uptime": 2900
-  },
-  {
-    "timestamp": 1758899201902,
-    "memoryTotal": 67427545088,
-    "memoryUsed": 6784204800,
-    "memoryFree": 60643340288,
-    "memoryUsagePercent": 10.061473825193996,
-    "memoryEfficiency": 89.938526174806,
-    "cpuCount": 16,
-    "cpuLoad": 0.039375,
-    "platform": "linux",
-    "uptime": 2930.03
-  },
-  {
-    "timestamp": 1758899231933,
-    "memoryTotal": 67427545088,
-    "memoryUsed": 6719586304,
-    "memoryFree": 60707958784,
-    "memoryUsagePercent": 9.965639851236222,
-    "memoryEfficiency": 90.03436014876378,
-    "cpuCount": 16,
-    "cpuLoad": 0.028125,
-    "platform": "linux",
-    "uptime": 2960.06
-  },
-  {
-    "timestamp": 1758899261941,
-    "memoryTotal": 67427545088,
-    "memoryUsed": 6355832832,
-    "memoryFree": 61071712256,
-    "memoryUsagePercent": 9.426166744918524,
-    "memoryEfficiency": 90.57383325508148,
-    "cpuCount": 16,
-    "cpuLoad": 0.025625,
-    "platform": "linux",
-    "uptime": 2990.07
-  },
-  {
-    "timestamp": 1758899291972,
-    "memoryTotal": 67427545088,
-    "memoryUsed": 6361497600,
-    "memoryFree": 61066047488,
-    "memoryUsagePercent": 9.43456801177854,
-    "memoryEfficiency": 90.56543198822146,
-    "cpuCount": 16,
-    "cpuLoad": 0.019375,
-    "platform": "linux",
-    "uptime": 3020.1
+    "uptime": 3068.06
   }
 ]
