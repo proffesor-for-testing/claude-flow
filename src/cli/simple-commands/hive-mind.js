@@ -2052,6 +2052,19 @@ async function spawnClaudeCodeInstances(swarmId, swarmName, objective, workers, 
       }
 
       if (claudeAvailable && !flags.dryRun) {
+        // Inject memory coordination protocol into CLAUDE.md
+        try {
+          const { injectMemoryProtocol, enhanceHiveMindPrompt } = await import('./inject-memory-protocol.js');
+          await injectMemoryProtocol();
+          
+          // Enhance the prompt with memory coordination instructions
+          hiveMindPrompt = enhanceHiveMindPrompt(hiveMindPrompt, workers);
+          console.log(chalk.green('📝 Memory coordination protocol injected into CLAUDE.md'));
+        } catch (err) {
+          // If injection module not available, continue with original prompt
+          console.log(chalk.yellow('⚠️  Memory protocol injection not available, using standard prompt'));
+        }
+        
         // Check if we should run in non-interactive mode
         // Respect --non-interactive flag regardless of --claude
         const isNonInteractive = flags['non-interactive'] || flags.nonInteractive;
