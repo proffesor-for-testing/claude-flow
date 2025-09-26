@@ -1247,20 +1247,9 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       }
     }
 
-    // Create wrapper scripts
+    // Create wrapper scripts using the dedicated function
     if (!dryRun) {
-      // Unix wrapper - now uses universal ES module compatible wrapper
-      const unixWrapper = createWrapperScript('unix');
-      await fs.writeFile(`${workingDir}/claude-flow@alpha`, unixWrapper, 'utf8');
-      await fs.chmod(`${workingDir}/claude-flow@alpha`, 0o755);
-
-      // Windows wrapper
-      await fs.writeFile(`${workingDir}/claude-flow@alpha.bat`, createWrapperScript('windows', 'utf8'));
-
-      // PowerShell wrapper
-      await fs.writeFile(`${workingDir}/claude-flow@alpha.ps1`, createWrapperScript('powershell', 'utf8'));
-
-      printSuccess('✓ Created platform-specific wrapper scripts');
+      await createLocalExecutable(workingDir, dryRun);
     } else {
       console.log('[DRY RUN] Would create wrapper scripts');
     }

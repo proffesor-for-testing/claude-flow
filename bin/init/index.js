@@ -101,9 +101,9 @@ async function setupMcpServers(dryRun = false) {
 
   const servers = [
     {
-      name: 'claude-flow@alpha',
+      name: 'claude-flow',
       command: 'npx claude-flow@alpha mcp start',
-      description: 'Claude Flow MCP server with swarm orchestration (alpha)',
+      description: 'Claude Flow MCP server with swarm orchestration',
     },
     {
       name: 'ruv-swarm',
@@ -565,7 +565,7 @@ export async function initCommand(subArgs, flags) {
         console.log('\n⚠️  Claude Code CLI not detected!');
         console.log('  📥 Install with: npm install -g @anthropic-ai/claude-code');
         console.log('  📋 Then add MCP servers manually with:');
-        console.log('     claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start');
+        console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
       }
@@ -1270,16 +1270,9 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       }
     }
 
-    // Create wrapper scripts
+    // Create wrapper scripts using the dedicated function
     if (!dryRun) {
-      // Unix wrapper - now uses universal ES module compatible wrapper
-      const unixWrapper = createWrapperScript('unix');
-      await fs.writeFile(`${workingDir}/claude-flow@alpha`, unixWrapper, 'utf8');
-      await fs.chmod(`${workingDir}/claude-flow@alpha`, 0o755);
-
-      // Removed Windows and PowerShell wrappers per user request
-
-      printSuccess('✓ Created platform-specific wrapper scripts');
+      await createLocalExecutable(workingDir, dryRun);
     } else {
       console.log('[DRY RUN] Would create wrapper scripts');
     }
@@ -1441,7 +1434,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       } else {
         console.log('  ℹ️  Skipping MCP setup (--skip-mcp flag used)');
         console.log('\n  📋 To add MCP servers manually:');
-        console.log('     claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start');
+        console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
         console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
         console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
         console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');
@@ -1451,7 +1444,7 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
       console.log('\n  📥 To install Claude Code:');
       console.log('     npm install -g @anthropic-ai/claude-code');
       console.log('\n  📋 After installing, add MCP servers:');
-      console.log('     claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start');
+      console.log('     claude mcp add claude-flow npx claude-flow@alpha mcp start');
       console.log('     claude mcp add ruv-swarm npx ruv-swarm@latest mcp start');
       console.log('     claude mcp add flow-nexus npx flow-nexus@latest mcp start');
       console.log('\n  💡 MCP servers are defined in .mcp.json (project scope)');

@@ -31,9 +31,9 @@
 ```
 
 **MCP tools are ONLY for coordination setup:**
-- `mcp__claude-flow@alpha__swarm_init` - Initialize coordination topology
-- `mcp__claude-flow@alpha__agent_spawn` - Define agent types for coordination
-- `mcp__claude-flow@alpha__task_orchestrate` - Orchestrate high-level workflows
+- `mcp__claude-flow__swarm_init` - Initialize coordination topology
+- `mcp__claude-flow__agent_spawn` - Define agent types for coordination
+- `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
 
 ### 📁 File Organization Rules
 
@@ -52,15 +52,15 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 ## SPARC Commands
 
 ### Core Commands
-- `npx claude-flow@alpha sparc modes` - List available modes
-- `npx claude-flow@alpha sparc run <mode> "<task>"` - Execute specific mode
-- `npx claude-flow@alpha sparc tdd "<feature>"` - Run complete TDD workflow
-- `npx claude-flow@alpha sparc info <mode>` - Get mode details
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
 
 ### Batchtools Commands
-- `npx claude-flow@alpha sparc batch <modes> "<task>"` - Parallel execution
-- `npx claude-flow@alpha sparc pipeline "<task>"` - Full pipeline processing
-- `npx claude-flow@alpha sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
 
 ### Build Commands
 - `npm run build` - Build project
@@ -142,7 +142,7 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 
 ```bash
 # Add MCP servers (Claude Flow required, others optional)
-claude mcp add claude-flow@alpha npx claude-flow@alpha mcp start
+claude mcp add claude-flow npx claude-flow@alpha mcp start
 claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
 claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 ```
@@ -240,10 +240,10 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 ```javascript
 // Step 1: MCP tools set up coordination (optional, for complex tasks)
 [Single Message - Coordination Setup]:
-  mcp__claude-flow@alpha__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__claude-flow@alpha__agent_spawn { type: "researcher" }
-  mcp__claude-flow@alpha__agent_spawn { type: "coder" }
-  mcp__claude-flow@alpha__agent_spawn { type: "tester" }
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
 
 // Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
 [Single Message - Parallel Agent Execution]:
@@ -276,7 +276,7 @@ npx claude-flow@alpha hooks session-end --export-metrics true
 
 ### ❌ WRONG (Multiple Messages):
 ```javascript
-Message 1: mcp__claude-flow@alpha__swarm_init
+Message 1: mcp__claude-flow__swarm_init
 Message 2: Task("agent 1")
 Message 3: TodoWrite { todos: [single todo] }
 Message 4: Write "file.js"
@@ -336,8 +336,8 @@ Message 4: Write "file.js"
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/claude-flow@alpha
-- Issues: https://github.com/ruvnet/claude-flow@alpha/issues
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
 - Flow-Nexus Platform: https://flow-nexus.ruv.io (registration required for cloud features)
 
 ---
