@@ -706,12 +706,20 @@ Start by spawning a coordinator agent and creating the initial task structure. U
 
 The swarm should be self-documenting - use memory_store to save all important information, decisions, and results throughout the execution.`;
             if (flags && flags.claude) {
+                try {
+                    const { injectMemoryProtocol, enhanceSwarmPrompt } = await import('./inject-memory-protocol.js');
+                    await injectMemoryProtocol();
+                    swarmPrompt = enhanceSwarmPrompt(swarmPrompt, maxAgents);
+                } catch (err) {
+                    console.log('⚠️  Memory protocol injection not available, using standard prompt');
+                }
                 console.log('🐝 Launching Claude Flow Swarm System...');
                 console.log(`📋 Objective: ${objective}`);
                 console.log(`🎯 Strategy: ${strategy}`);
                 console.log(`🏗️  Mode: ${mode}`);
                 console.log(`🤖 Max Agents: ${maxAgents}\n`);
                 console.log('🚀 Launching Claude Code with Swarm Coordination');
+                console.log('📝 Memory protocol injected into CLAUDE.md');
                 console.log('─'.repeat(60));
                 const claudeArgs = [];
                 if (flags['dangerously-skip-permissions'] !== false && !flags['no-auto-permissions']) {
