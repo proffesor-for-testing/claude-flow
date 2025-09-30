@@ -1,6 +1,7 @@
 import { printSuccess, printError, printWarning } from '../../utils.js';
 import { existsSync } from 'fs';
 import process from 'process';
+import os from 'os';
 import { spawn, execSync } from 'child_process';
 function runCommand(command, args, options = {}) {
     return new Promise((resolve, reject)=>{
@@ -1049,9 +1050,15 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
             if (!dryRun1) {
                 await fs.writeFile(`${claudeDir}/statusline-command.sh`, statuslineTemplate, 'utf8');
                 await fs.chmod(`${claudeDir}/statusline-command.sh`, 0o755);
-                printSuccess('✓ Created .claude/statusline-command.sh for enhanced Claude Code statusline');
+                const homeClaudeDir = path.join(os.homedir(), '.claude');
+                await fs.mkdir(homeClaudeDir, {
+                    recursive: true
+                });
+                await fs.writeFile(path.join(homeClaudeDir, 'statusline-command.sh'), statuslineTemplate, 'utf8');
+                await fs.chmod(path.join(homeClaudeDir, 'statusline-command.sh'), 0o755);
+                printSuccess('✓ Created statusline-command.sh in both .claude/ and ~/.claude/');
             } else {
-                console.log('[DRY RUN] Would create .claude/statusline-command.sh');
+                console.log('[DRY RUN] Would create .claude/statusline-command.sh and ~/.claude/statusline-command.sh');
             }
         } catch (err) {
             if (!dryRun1) {

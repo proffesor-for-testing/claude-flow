@@ -109,6 +109,6 @@
   "includeCoAuthoredBy": true,
   "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"],
   "statusLine": {
-    "command": "/home/codespace/.claude/statusline-command.sh"
+    "command": "~/.claude/statusline-command.sh"
   }
 }
