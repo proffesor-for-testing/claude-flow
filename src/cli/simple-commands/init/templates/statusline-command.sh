@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Claude Code Status Line with Claude-Flow Integration
-# Displays model, directory, git branch, and real-time swarm metrics
-
 # Read JSON input from stdin
 INPUT=$(cat)
 MODEL=$(echo "$INPUT" | jq -r '.model.display_name // "Claude"')
