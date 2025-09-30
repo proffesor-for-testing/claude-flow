@@ -2318,7 +2318,7 @@ function createEnhancedSettingsJsonFallback() {
       includeCoAuthoredBy: true,
       statusLine: {
         type: 'command',
-        command: '~/.claude/statusline-command.sh',
+        command: '.claude/statusline-command.sh',
       },
     },
     null,
