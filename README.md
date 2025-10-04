@@ -12,56 +12,7 @@
 [![🛡️ MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 
 </div>
-
----
-
-## 🎉 What's New in v2.5.0-alpha.130
-
-**🚀 Claude Code SDK Integration** - Major performance breakthrough with 100-600x potential speedup!
-
-### ✨ New Features
-
-**Session Forking & Real-Time Control** 🔥
-- ⚡ **10-20x faster** parallel agent spawning using Claude Code SDK's session forking
-- 🎮 Real-time query control: pause, resume, terminate agents mid-execution
-- 🔄 Dynamic model and permission changes during runtime
-- 📊 26 new methods for advanced agent orchestration
-
-**Hook Matchers & 4-Level Permissions** 🎯
-- 🎨 **2-3x faster** hook execution with pattern-based selective triggering
-- 🔐 Hierarchical permission system: USER → PROJECT → LOCAL → SESSION
-- 🔍 Glob and regex pattern matching for file-based hooks
-- ⚡ Intelligent caching for near-instant permission resolution
-
-**In-Process MCP Server** 🚄
-- 🏎️ **50-100x faster** tool calls by eliminating IPC overhead
-- 📦 Direct in-process execution for all 50+ Claude-Flow tools
-- 💾 10MB memory savings per MCP server (no extra processes)
-- 🔌 Automatic routing: in-process for local tools, stdio/SSE for external
-
-
-
-### 📊 Performance Impact
-
-| Feature | Speedup | Impact |
-|---------|---------|--------|
-| Session Forking | 10-20x | Parallel agent spawning |
-| Hook Matchers | 2-3x | Selective hook execution |
-| In-Process MCP | 50-100x | Tool call latency |
-| **Combined** | **100-600x** | Full workflow orchestration |
-
-**Real-World Example**: Spawning 10 agents now takes ~750ms instead of ~7,500ms! 🚀
-
-### 🔧 SDK Integration Benefits
-
-- ✅ Native Claude Code SDK features instead of custom implementations
-- ✅ Automatic retry handling and error management
-- ✅ Optimized streaming and artifact durability
-- ✅ Context checkpoints and session management
-- ✅ Reduced codebase by 200+ lines of redundant retry logic
-
-**See Full Details**: [GitHub Issue #780](https://github.com/ruvnet/claude-flow/issues/780)
-
+ 
 ---
 
 ## 🌟 **Overview**
