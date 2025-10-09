@@ -1,0 +1,118 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks pre-task --description '${TOOL_DESCRIPTION}'",
+            "description": "Prepare coordination before spawning agents"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks pre-edit --file '${FILE_PATH}'",
+            "description": "Setup agent coordination before file modifications"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks post-task --task-id '${TASK_ID}'",
+            "description": "Store task completion metrics and learnings"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks post-edit --file '${FILE_PATH}' --memory-key 'swarm/${AGENT_ID}/${STEP_ID}'",
+            "description": "Format code and update neural patterns"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks notify --message 'Command executed: ${COMMAND}'",
+            "description": "Log bash command execution"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks session-restore --session-id 'swarm-${SESSION_ID}'",
+            "description": "Restore swarm context from previous session"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks session-start --enable-memory true",
+            "description": "Initialize coordination system and restore context"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks session-end --export-metrics true",
+            "description": "Persist state, export metrics, and train neural patterns"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "error|warning",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks error-log --level '${LEVEL}' --message '${MESSAGE}'",
+            "description": "Log errors and warnings for pattern analysis"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx claude-flow@alpha hooks agent-cleanup --agent-id '${AGENT_ID}'",
+            "description": "Clean up agent resources and store completion status"
+          }
+        ]
+      }
+    ]
+  }
+}
