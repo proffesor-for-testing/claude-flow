@@ -41,6 +41,14 @@
 - ⚡ **Productivity**: Alias expansion (`ll`→`ls -lah`), conventional commits
 
 **Quick Start:**
+
+**Option 1: Direct Plugin Installation** (Recommended)
+```bash
+# In Claude Code, run:
+/plugin ruvnet/claude-flow
+```
+
+**Option 2: Via NPM**
 ```bash
 npx claude-flow@alpha init --force  # Auto-configures .claude-plugin/hooks/hooks.json
 ```
@@ -89,11 +97,18 @@ claude --dangerously-skip-permissions
 
 ### 🎯 **Instant Alpha Testing**
 
+**Method 1: Plugin Installation** (Easiest - includes PreToolUse hooks!)
+```bash
+# In Claude Code:
+/plugin ruvnet/claude-flow
+```
+
+**Method 2: NPM Installation** (For MCP server + CLI)
 ```bash
 # 1. Initialize Claude Flow with enhanced MCP setup (auto-configures permissions!)
 npx claude-flow@alpha init --force
 
-# 2. Explore all revolutionary capabilities  
+# 2. Explore all revolutionary capabilities
 npx claude-flow@alpha --help
 
 # 3a. Quick AI coordination (recommended for most tasks)
@@ -319,25 +334,6 @@ For detailed information about all features, advanced usage, and comprehensive g
 - **87 MCP tools** - Comprehensive automation toolkit
 
 ---
-
-## 📈 **Market Plan: PreToolUse Plugin**
-
-**Tagline:** "The Safety Net for AI-Powered Development"
-
-### 🎯 Markets
-**Primary:** Enterprise teams, open source maintainers, AI tool developers, DevOps engineers
-**Secondary:** Individual devs, bootcamps, agent developers
-
-### 💰 Tiers
-- **Free**: Core hooks, community support
-- **Pro** ($19/mo): Advanced memory, swarm coordination, neural training
-- **Enterprise**: Custom hooks, SLA, training
-
-### 🚀 GTM Strategy
-**Phase 1 (Weeks 1-4):** Launch, announce (Twitter/Reddit/HN), blog, demo video
-**Phase 2 (Weeks 5-12):** Partner with agent-booster, webinar, marketplace templates
-**Phase 3 (Weeks 13-24):** Launch Pro, enterprise sales, marketplace submission
-**Phase 4 (Month 7+):** International expansion, certification, ecosystem
 
 ### 📊 Targets (Month 12)
 - 5K+ GitHub stars, 50K npm downloads/month
