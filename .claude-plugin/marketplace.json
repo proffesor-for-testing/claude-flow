@@ -13,18 +13,15 @@
   "plugins": [
     {
       "name": "claude-flow",
-      "source": "ruvnet/claude-flow",
+      "source": "./",
       "description": "Enterprise AI agent orchestration plugin with 150+ commands, 74+ specialized agents, SPARC methodology, swarm coordination, GitHub integration, and neural training capabilities",
       "version": "2.5.0",
       "author": {
         "name": "rUv",
         "email": "ruv@ruv.net"
       },
-      "homepage": "https://github.com/ruvnet/claude-flow",
-      "repository": {
-        "type": "git",
-        "url": "https://github.com/ruvnet/claude-flow.git"
-      },
+      "homepage": "https://claude-flow.ruv.io",
+      "repository": "https://github.com/ruvnet/claude-flow",
       "bugs": {
         "url": "https://github.com/ruvnet/claude-flow/issues"
       },
