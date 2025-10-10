@@ -3,13 +3,17 @@ import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
 import { promises as fs } from 'fs';
 import { cwd, exit, existsSync } from '../node-compat.js';
 import { getUnifiedMemory } from '../../memory/unified-memory-manager.js';
+import { KeyRedactor } from '../../utils/key-redactor.js';
 
 export async function memoryCommand(subArgs, flags) {
   const memorySubcommand = subArgs[0];
   const memoryStore = './memory/memory-store.json';
-  
+
   // Extract namespace from flags or subArgs
   const namespace = flags?.namespace || flags?.ns || getNamespaceFromArgs(subArgs) || 'default';
+
+  // Check for redaction flag
+  const enableRedaction = flags?.redact || subArgs.includes('--redact') || subArgs.includes('--secure');
 
   // Helper to load memory data
   async function loadMemory() {
@@ -29,11 +33,11 @@ export async function memoryCommand(subArgs, flags) {
 
   switch (memorySubcommand) {
     case 'store':
-      await storeMemory(subArgs, loadMemory, saveMemory, namespace);
+      await storeMemory(subArgs, loadMemory, saveMemory, namespace, enableRedaction);
       break;
 
     case 'query':
-      await queryMemory(subArgs, loadMemory, namespace);
+      await queryMemory(subArgs, loadMemory, namespace, enableRedaction);
       break;
 
     case 'stats':
@@ -61,16 +65,39 @@ export async function memoryCommand(subArgs, flags) {
   }
 }
 
-async function storeMemory(subArgs, loadMemory, saveMemory, namespace) {
+async function storeMemory(subArgs, loadMemory, saveMemory, namespace, enableRedaction = false) {
   const key = subArgs[1];
-  const value = subArgs.slice(2).join(' ');
+  let value = subArgs.slice(2).join(' ');
 
   if (!key || !value) {
-    printError('Usage: memory store <key> <value> [--namespace <ns>]');
+    printError('Usage: memory store <key> <value> [--namespace <ns>] [--redact]');
     return;
   }
 
   try {
+    // Apply redaction if enabled
+    let redactedValue = value;
+    let securityWarnings = [];
+
+    if (enableRedaction) {
+      redactedValue = KeyRedactor.redact(value, true);
+      const validation = KeyRedactor.validate(value);
+
+      if (!validation.safe) {
+        securityWarnings = validation.warnings;
+        printWarning('🔒 Redaction enabled: Sensitive data detected and redacted');
+        securityWarnings.forEach(warning => console.log(`   ⚠️  ${warning}`));
+      }
+    } else {
+      // Even if redaction is not explicitly enabled, validate and warn
+      const validation = KeyRedactor.validate(value);
+      if (!validation.safe) {
+        printWarning('⚠️  Potential sensitive data detected! Use --redact flag for automatic redaction');
+        validation.warnings.forEach(warning => console.log(`   ⚠️  ${warning}`));
+        console.log('   💡 Tip: Add --redact flag to automatically redact API keys');
+      }
+    }
+
     const data = await loadMemory();
 
     if (!data[namespace]) {
@@ -80,29 +107,33 @@ async function storeMemory(subArgs, loadMemory, saveMemory, namespace) {
     // Remove existing entry with same key
     data[namespace] = data[namespace].filter((e) => e.key !== key);
 
-    // Add new entry
+    // Add new entry with redacted value
     data[namespace].push({
       key,
-      value,
+      value: redactedValue,
       namespace,
       timestamp: Date.now(),
+      redacted: enableRedaction && securityWarnings.length > 0,
     });
 
     await saveMemory(data);
-    printSuccess('Stored successfully');
+    printSuccess(enableRedaction && securityWarnings.length > 0 ? '🔒 Stored successfully (with redaction)' : '✅ Stored successfully');
     console.log(`📝 Key: ${key}`);
     console.log(`📦 Namespace: ${namespace}`);
-    console.log(`💾 Size: ${new TextEncoder().encode(value).length} bytes`);
+    console.log(`💾 Size: ${new TextEncoder().encode(redactedValue).length} bytes`);
+    if (enableRedaction && securityWarnings.length > 0) {
+      console.log(`🔒 Security: ${securityWarnings.length} sensitive pattern(s) redacted`);
+    }
   } catch (err) {
     printError(`Failed to store: ${err.message}`);
   }
 }
 
-async function queryMemory(subArgs, loadMemory, namespace) {
+async function queryMemory(subArgs, loadMemory, namespace, enableRedaction = false) {
   const search = subArgs.slice(1).join(' ');
 
   if (!search) {
-    printError('Usage: memory query <search> [--namespace <ns>]');
+    printError('Usage: memory query <search> [--namespace <ns>] [--redact]');
     return;
   }
 
@@ -133,10 +164,24 @@ async function queryMemory(subArgs, loadMemory, namespace) {
     for (const entry of results.slice(0, 10)) {
       console.log(`\n📌 ${entry.key}`);
       console.log(`   Namespace: ${entry.namespace}`);
+
+      // Apply redaction to displayed value if requested
+      let displayValue = entry.value;
+      if (enableRedaction) {
+        displayValue = KeyRedactor.redact(displayValue, true);
+      }
+
       console.log(
-        `   Value: ${entry.value.substring(0, 100)}${entry.value.length > 100 ? '...' : ''}`,
+        `   Value: ${displayValue.substring(0, 100)}${displayValue.length > 100 ? '...' : ''}`,
       );
       console.log(`   Stored: ${new Date(entry.timestamp).toLocaleString()}`);
+
+      // Show redaction status
+      if (entry.redacted) {
+        console.log(`   🔒 Status: Redacted on storage`);
+      } else if (enableRedaction) {
+        console.log(`   🔒 Status: Redacted for display`);
+      }
     }
 
     if (results.length > 10) {
@@ -335,11 +380,23 @@ function showMemoryHelp() {
   console.log('Options:');
   console.log('  --namespace <ns>       Specify namespace for operations');
   console.log('  --ns <ns>              Short form of --namespace');
+  console.log('  --redact               🔒 Enable API key redaction (security feature)');
+  console.log('  --secure               Alias for --redact');
+  console.log();
+  console.log('🔒 Security Features (NEW in v2.6.0):');
+  console.log('  API Key Protection:    Automatically detects and redacts sensitive data');
+  console.log('  Patterns Detected:     Anthropic, OpenRouter, Gemini, Bearer tokens, etc.');
+  console.log('  Auto-Validation:       Warns when storing unredacted sensitive data');
+  console.log('  Display Redaction:     Redact sensitive data when querying with --redact');
   console.log();
   console.log('Examples:');
   console.log('  memory store previous_work "Research findings from yesterday"');
+  console.log('  memory store api_config "key=sk-ant-..." --redact  # 🔒 Redacts API key');
   console.log('  memory query research --namespace sparc');
+  console.log('  memory query config --redact  # 🔒 Shows redacted values');
   console.log('  memory export backup.json --namespace default');
   console.log('  memory import project-memory.json');
   console.log('  memory stats');
+  console.log();
+  console.log('💡 Tip: Always use --redact when storing API keys or secrets!');
 }
