@@ -45,7 +45,8 @@ export async function runRedactionCheck() {
     console.log('✅ No sensitive data detected - safe to commit\n');
     return 0;
 }
-if (require.main === module) {
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
     runRedactionCheck().then((code)=>process.exit(code)).catch((error)=>{
         console.error('Error:', error);
         process.exit(1);

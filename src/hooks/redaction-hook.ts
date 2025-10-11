@@ -61,8 +61,9 @@ export async function runRedactionCheck(): Promise<number> {
   return 0;
 }
 
-// CLI execution
-if (require.main === module) {
+// CLI execution (ES module compatible)
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
   runRedactionCheck()
     .then(code => process.exit(code))
     .catch(error => {
