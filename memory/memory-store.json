@@ -30,6 +30,13 @@
       "namespace": "default",
       "timestamp": 1760200201854,
       "redacted": true
+    },
+    {
+      "key": "test_basic",
+      "value": "Testing backward compatibility",
+      "namespace": "default",
+      "timestamp": 1760284936974,
+      "redacted": false
     }
   ],
   "swarm": [

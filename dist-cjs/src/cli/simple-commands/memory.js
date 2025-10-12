@@ -1,11 +1,15 @@
-import { printSuccess, printError, printWarning } from '../utils.js';
+import { printSuccess, printError, printWarning, printInfo } from '../utils.js';
 import { promises as fs } from 'fs';
 import { KeyRedactor } from '../../utils/key-redactor.js';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+const execAsync = promisify(exec);
 export async function memoryCommand(subArgs, flags) {
     const memorySubcommand = subArgs[0];
     const memoryStore = './memory/memory-store.json';
     const namespace = flags?.namespace || flags?.ns || getNamespaceFromArgs(subArgs) || 'default';
     const enableRedaction = flags?.redact || subArgs.includes('--redact') || subArgs.includes('--secure');
+    const mode = await detectMemoryMode(flags, subArgs);
     async function loadMemory() {
         try {
             const content = await fs.readFile(memoryStore, 'utf8');
@@ -19,6 +23,30 @@ export async function memoryCommand(subArgs, flags) {
             recursive: true
         });
         await fs.writeFile(memoryStore, JSON.stringify(data, null, 2, 'utf8'));
+    }
+    if (mode === 'reasoningbank' && [
+        'init',
+        'status',
+        'consolidate',
+        'demo',
+        'test',
+        'benchmark'
+    ].includes(memorySubcommand)) {
+        return await handleReasoningBankCommand(memorySubcommand, subArgs, flags);
+    }
+    if ([
+        'detect',
+        'mode',
+        'migrate'
+    ].includes(memorySubcommand)) {
+        return await handleModeCommand(memorySubcommand, subArgs, flags);
+    }
+    if (mode === 'reasoningbank' && [
+        'store',
+        'query',
+        'list'
+    ].includes(memorySubcommand)) {
+        return await handleReasoningBankCommand(memorySubcommand, subArgs, flags);
     }
     switch(memorySubcommand){
         case 'store':
@@ -279,6 +307,198 @@ async function loadMemory() {
         return {};
     }
 }
+async function detectMemoryMode(flags, subArgs) {
+    if (flags?.reasoningbank || flags?.rb || subArgs.includes('--reasoningbank') || subArgs.includes('--rb')) {
+        return 'reasoningbank';
+    }
+    if (flags?.auto || subArgs.includes('--auto')) {
+        const initialized = await isReasoningBankInitialized();
+        return initialized ? 'reasoningbank' : 'basic';
+    }
+    return 'basic';
+}
+async function isReasoningBankInitialized() {
+    try {
+        const dbPath = '.swarm/memory.db';
+        await fs.access(dbPath);
+        return true;
+    } catch  {
+        return false;
+    }
+}
+async function handleReasoningBankCommand(command, subArgs, flags) {
+    const initialized = await isReasoningBankInitialized();
+    if (command === 'init') {
+        if (initialized) {
+            printWarning('⚠️  ReasoningBank already initialized');
+            console.log('Database: .swarm/memory.db');
+            console.log('\nTo reinitialize, delete .swarm/memory.db first');
+            return;
+        }
+        printInfo('🧠 Initializing ReasoningBank...');
+        console.log('This will create: .swarm/memory.db\n');
+        try {
+            const { stdout, stderr } = await execAsync('npx agentic-flow reasoningbank init', {
+                timeout: 30000
+            });
+            if (stdout) console.log(stdout);
+            printSuccess('✅ ReasoningBank initialized successfully!');
+            console.log('\nNext steps:');
+            console.log('  1. Store memories: memory store key "value" --reasoningbank');
+            console.log('  2. Query memories: memory query "search" --reasoningbank');
+            console.log('  3. Check status: memory status --reasoningbank');
+        } catch (error) {
+            printError('❌ Failed to initialize ReasoningBank');
+            console.error(error.message);
+            if (error.stderr) {
+                console.error('Details:', error.stderr);
+            }
+        }
+        return;
+    }
+    if (!initialized) {
+        printError('❌ ReasoningBank not initialized');
+        console.log('\nTo use ReasoningBank mode, first run:');
+        console.log('  memory init --reasoningbank\n');
+        return;
+    }
+    printInfo(`🧠 Using ReasoningBank mode...`);
+    try {
+        const cmd = buildReasoningBankCommand(command, subArgs, flags);
+        const { stdout, stderr } = await execAsync(cmd, {
+            timeout: 30000
+        });
+        if (stdout) console.log(stdout);
+        if (stderr && !stderr.includes('Warning')) console.error(stderr);
+    } catch (error) {
+        printError(`❌ ReasoningBank command failed`);
+        console.error(error.message);
+    }
+}
+function buildReasoningBankCommand(command, subArgs, flags) {
+    const parts = [
+        'npx',
+        'agentic-flow',
+        'reasoningbank'
+    ];
+    const commandMap = {
+        store: 'store',
+        query: 'query',
+        list: 'list',
+        status: 'status',
+        consolidate: 'consolidate',
+        demo: 'demo',
+        test: 'test',
+        benchmark: 'benchmark'
+    };
+    parts.push(commandMap[command] || command);
+    const args = subArgs.slice(1);
+    args.forEach((arg)=>{
+        if (!arg.startsWith('--reasoningbank') && !arg.startsWith('--rb') && !arg.startsWith('--auto')) {
+            parts.push(`"${arg}"`);
+        }
+    });
+    return parts.join(' ');
+}
+async function handleModeCommand(command, subArgs, flags) {
+    switch(command){
+        case 'detect':
+            await detectModes();
+            break;
+        case 'mode':
+            await showCurrentMode();
+            break;
+        case 'migrate':
+            await migrateMemory(subArgs, flags);
+            break;
+        default:
+            printError(`Unknown mode command: ${command}`);
+    }
+}
+async function detectModes() {
+    printInfo('🔍 Detecting memory modes...\n');
+    const basicAvailable = await checkBasicMode();
+    console.log(basicAvailable ? '✅ Basic Mode (active)' : '❌ Basic Mode (unavailable)');
+    if (basicAvailable) {
+        console.log('   Location: ./memory/memory-store.json');
+        console.log('   Features: Simple key-value storage, fast');
+    }
+    console.log('');
+    const rbAvailable = await isReasoningBankInitialized();
+    console.log(rbAvailable ? '✅ ReasoningBank Mode (available)' : '⚠️  ReasoningBank Mode (not initialized)');
+    if (rbAvailable) {
+        console.log('   Location: .swarm/memory.db');
+        console.log('   Features: AI-powered semantic search, learning');
+    } else {
+        console.log('   To enable: memory init --reasoningbank');
+    }
+    console.log('\n💡 Usage:');
+    console.log('   Basic: memory store key "value"');
+    console.log('   ReasoningBank: memory store key "value" --reasoningbank');
+    console.log('   Auto-detect: memory query search --auto');
+}
+async function checkBasicMode() {
+    try {
+        const memoryDir1 = './memory';
+        await fs.access(memoryDir1);
+        return true;
+    } catch  {
+        try {
+            await fs.mkdir(memoryDir, {
+                recursive: true
+            });
+            return true;
+        } catch  {
+            return false;
+        }
+    }
+}
+async function showCurrentMode() {
+    const rbInitialized = await isReasoningBankInitialized();
+    printInfo('📊 Current Memory Configuration:\n');
+    console.log('Default Mode: Basic (backward compatible)');
+    console.log('Available Modes:');
+    console.log('  • Basic Mode: Always available');
+    console.log(`  • ReasoningBank Mode: ${rbInitialized ? 'Initialized ✅' : 'Not initialized ⚠️'}`);
+    console.log('\n💡 To use a specific mode:');
+    console.log('   --reasoningbank or --rb  → Use ReasoningBank');
+    console.log('   --auto                   → Auto-detect best mode');
+    console.log('   (no flag)                → Use Basic mode');
+}
+async function migrateMemory(subArgs, flags) {
+    const targetMode = flags?.to || getArgValue(subArgs, '--to');
+    if (!targetMode || ![
+        'basic',
+        'reasoningbank'
+    ].includes(targetMode)) {
+        printError('Usage: memory migrate --to <basic|reasoningbank>');
+        return;
+    }
+    printInfo(`🔄 Migrating to ${targetMode} mode...\n`);
+    if (targetMode === 'reasoningbank') {
+        const rbInitialized = await isReasoningBankInitialized();
+        if (!rbInitialized) {
+            printError('❌ ReasoningBank not initialized');
+            console.log('First run: memory init --reasoningbank\n');
+            return;
+        }
+        printWarning('⚠️  Migration from basic to ReasoningBank is not yet implemented');
+        console.log('This feature is coming in v2.7.1\n');
+        console.log('For now, you can:');
+        console.log('  1. Export basic memory: memory export backup.json');
+        console.log('  2. Manually import to ReasoningBank');
+    } else {
+        printWarning('⚠️  Migration from ReasoningBank to basic is not yet implemented');
+        console.log('This feature is coming in v2.7.1\n');
+    }
+}
+function getArgValue(args, flag) {
+    const index = args.indexOf(flag);
+    if (index !== -1 && index + 1 < args.length) {
+        return args[index + 1];
+    }
+    return null;
+}
 function showMemoryHelp() {
     console.log('Memory commands:');
     console.log('  store <key> <value>    Store a key-value pair');
@@ -289,28 +509,54 @@ function showMemoryHelp() {
     console.log('  clear --namespace <ns> Clear a namespace');
     console.log('  list                   List all namespaces');
     console.log();
+    console.log('🧠 ReasoningBank Commands (NEW in v2.7.0):');
+    console.log('  init --reasoningbank   Initialize ReasoningBank (AI-powered memory)');
+    console.log('  status --reasoningbank Show ReasoningBank statistics');
+    console.log('  detect                 Show available memory modes');
+    console.log('  mode                   Show current memory configuration');
+    console.log('  migrate --to <mode>    Migrate between basic/reasoningbank');
+    console.log();
     console.log('Options:');
     console.log('  --namespace <ns>       Specify namespace for operations');
     console.log('  --ns <ns>              Short form of --namespace');
     console.log('  --redact               🔒 Enable API key redaction (security feature)');
     console.log('  --secure               Alias for --redact');
     console.log();
-    console.log('🔒 Security Features (NEW in v2.6.0):');
+    console.log('🎯 Mode Selection (NEW):');
+    console.log('  --reasoningbank, --rb  Use ReasoningBank mode (AI-powered)');
+    console.log('  --auto                 Auto-detect best available mode');
+    console.log('  (no flag)              Use Basic mode (default, backward compatible)');
+    console.log();
+    console.log('🔒 Security Features (v2.6.0):');
     console.log('  API Key Protection:    Automatically detects and redacts sensitive data');
     console.log('  Patterns Detected:     Anthropic, OpenRouter, Gemini, Bearer tokens, etc.');
     console.log('  Auto-Validation:       Warns when storing unredacted sensitive data');
     console.log('  Display Redaction:     Redact sensitive data when querying with --redact');
     console.log();
     console.log('Examples:');
+    console.log('  # Basic mode (default - backward compatible)');
     console.log('  memory store previous_work "Research findings from yesterday"');
     console.log('  memory store api_config "key=sk-ant-..." --redact  # 🔒 Redacts API key');
     console.log('  memory query research --namespace sparc');
-    console.log('  memory query config --redact  # 🔒 Shows redacted values');
-    console.log('  memory export backup.json --namespace default');
-    console.log('  memory import project-memory.json');
-    console.log('  memory stats');
     console.log();
-    console.log('💡 Tip: Always use --redact when storing API keys or secrets!');
+    console.log('  # ReasoningBank mode (AI-powered, opt-in)');
+    console.log('  memory init --reasoningbank  # One-time setup');
+    console.log('  memory store api_pattern "Always use env vars" --reasoningbank');
+    console.log('  memory query "API configuration" --reasoningbank  # Semantic search!');
+    console.log('  memory status --reasoningbank  # Show AI metrics');
+    console.log();
+    console.log('  # Auto-detect mode (smart selection)');
+    console.log('  memory query config --auto  # Uses ReasoningBank if available');
+    console.log();
+    console.log('  # Mode management');
+    console.log('  memory detect  # Show available modes');
+    console.log('  memory mode    # Show current configuration');
+    console.log();
+    console.log('💡 Tips:');
+    console.log('  • Use Basic mode for simple key-value storage (fast, always available)');
+    console.log('  • Use ReasoningBank for AI-powered semantic search (learns from patterns)');
+    console.log('  • Use --auto to let claude-flow choose the best mode for you');
+    console.log('  • Always use --redact when storing API keys or secrets!');
 }
 
 //# sourceMappingURL=memory.js.map
