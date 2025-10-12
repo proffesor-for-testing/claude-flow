@@ -1,0 +1,31 @@
+# Dockerfile for testing ReasoningBank integration
+FROM node:20-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and scripts
+COPY package*.json ./
+COPY scripts ./scripts
+
+# Install dependencies
+RUN npm install --legacy-peer-deps || true
+
+# Copy application code
+COPY . .
+
+# Build TypeScript
+RUN npm run build:cjs
+
+# Create .swarm directory
+RUN mkdir -p .swarm
+
+# Set default command
+CMD ["npm", "test"]

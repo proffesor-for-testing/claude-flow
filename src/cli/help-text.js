@@ -78,6 +78,10 @@ USAGE:
       - list               List stored memories
   sparc <mode>             SPARC development modes (13 available)
   memory <action>          ReasoningBank persistent memory system
+  proxy <action>           OpenRouter proxy server (85-98% cost savings)
+    - start                Start proxy server
+    - status               Check proxy status
+    - config               Configuration guide
   github <mode>            GitHub workflow automation (6 modes)
   status                   System status and health
   

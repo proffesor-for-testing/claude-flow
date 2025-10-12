@@ -97,13 +97,8 @@ claude --dangerously-skip-permissions
 
 ### 🎯 **Instant Alpha Testing**
 
-**Method 1: Plugin Installation** (Easiest - includes PreToolUse hooks!)
-```bash
-# In Claude Code:
-/plugin ruvnet/claude-flow
-```
 
-**Method 2: NPM Installation** (For MCP server + CLI)
+NPX Installation** (For MCP server + CLI)
 ```bash
 # 1. Initialize Claude Flow with enhanced MCP setup (auto-configures permissions!)
 npx claude-flow@alpha init --force

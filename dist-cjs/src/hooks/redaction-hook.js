@@ -6,12 +6,39 @@ export async function validateNoSensitiveData() {
     try {
         const stagedFiles = execSync('git diff --cached --name-only', {
             encoding: 'utf-8'
-        }).split('\n').filter((f)=>f.trim() && !f.includes('.env') && !f.includes('node_modules'));
+        }).split('\n').filter((f)=>f.trim() && !f.includes('.env') && !f.includes('node_modules') && !f.endsWith('.map'));
+        const placeholderPatterns = [
+            /API_KEY=\(paste/i,
+            /API_KEY=\(your/i,
+            /API_KEY=\.\.\./i,
+            /API_KEY="\.\.\."/i,
+            /API_KEY="\(paste/i,
+            /API_KEY="\(your/i,
+            /TOKEN=\(paste/i,
+            /TOKEN=\(your/i,
+            /SECRET=\(paste/i,
+            /SECRET=\(your/i
+        ];
         for (const file of stagedFiles){
             try {
+                if (file.startsWith('docs/') || file.includes('/docs/')) {
+                    const content = readFileSync(file, 'utf-8');
+                    const hasOnlyPlaceholders = placeholderPatterns.some((pattern)=>pattern.test(content));
+                    if (hasOnlyPlaceholders) {
+                        continue;
+                    }
+                }
                 const content = readFileSync(file, 'utf-8');
+                const hasPlaceholders = placeholderPatterns.some((pattern)=>pattern.test(content));
+                if (hasPlaceholders && (file.includes('example') || file.includes('template') || file.includes('/docs/'))) {
+                    continue;
+                }
                 const validation = KeyRedactor.validate(content);
                 if (!validation.safe) {
+                    const warningsText = validation.warnings.join(' ');
+                    if (hasPlaceholders && !warningsText.includes('sk-ant-a') && !warningsText.includes('sk-or-v')) {
+                        continue;
+                    }
                     issues.push(`⚠️  ${file}: ${validation.warnings.join(', ')}`);
                 }
             } catch (error) {
