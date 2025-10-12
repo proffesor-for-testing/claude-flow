@@ -22,6 +22,15 @@ export interface AgentExecutionOptions {
   verbose?: boolean;
   retryOnError?: boolean;
   timeout?: number;
+
+  // ReasoningBank memory options
+  enableMemory?: boolean;           // Enable ReasoningBank learning
+  memoryDatabase?: string;          // Path to .swarm/memory.db
+  memoryRetrievalK?: number;        // Top-k memories to retrieve (default: 3)
+  memoryLearning?: boolean;         // Enable post-task learning (default: true)
+  memoryDomain?: string;            // Domain filter for memories
+  memoryMinConfidence?: number;     // Minimum confidence threshold (default: 0.5)
+  memoryTaskId?: string;            // Unique task ID for tracking
 }
 
 export interface AgentExecutionResult {
@@ -35,11 +44,22 @@ export interface AgentExecutionResult {
   duration: number;
   agent: string;
   task: string;
+
+  // ReasoningBank metrics
+  memoryEnabled?: boolean;
+  memoriesRetrieved?: number;
+  memoriesUsed?: string[];          // IDs of memories applied
+  memoryLearned?: boolean;          // Whether new memories were created
+  memoryVerdict?: 'success' | 'failure';
+  memoryConfidence?: number;
+  newMemoryIds?: string[];          // IDs of newly created memories
 }
 
 export class AgentExecutor {
   private readonly agenticFlowPath: string;
   private readonly hooksManager: any;
+  private memoryEnabled: boolean = false;
+  private memoryDatabase: string = '.swarm/memory.db';
 
   constructor(hooksManager?: any) {
     this.hooksManager = hooksManager;
@@ -48,19 +68,84 @@ export class AgentExecutor {
   }
 
   /**
+   * Initialize ReasoningBank database
+   */
+  async initializeMemory(dbPath?: string): Promise<void> {
+    const db = dbPath || this.memoryDatabase;
+
+    try {
+      const { stdout } = await execAsync(
+        `${this.agenticFlowPath} reasoningbank init`
+      );
+
+      this.memoryEnabled = true;
+      this.memoryDatabase = db;
+      console.log('✅ ReasoningBank initialized:', db);
+    } catch (error: any) {
+      console.error('Failed to initialize ReasoningBank:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get memory statistics
+   */
+  async getMemoryStats(): Promise<any> {
+    if (!this.memoryEnabled) {
+      return { enabled: false, totalMemories: 0 };
+    }
+
+    try {
+      const { stdout } = await execAsync(
+        `${this.agenticFlowPath} reasoningbank status`
+      );
+      return { enabled: true, output: stdout };
+    } catch (error: any) {
+      return { enabled: true, error: error.message };
+    }
+  }
+
+  /**
+   * Run memory consolidation (dedup + prune)
+   */
+  async consolidateMemories(): Promise<void> {
+    if (!this.memoryEnabled) return;
+
+    try {
+      await execAsync(
+        `${this.agenticFlowPath} reasoningbank consolidate`
+      );
+      console.log('✅ Memory consolidation complete');
+    } catch (error: any) {
+      console.warn('Consolidation failed:', error.message);
+    }
+  }
+
+  /**
    * Execute an agent with agentic-flow
    */
   async execute(options: AgentExecutionOptions): Promise<AgentExecutionResult> {
     const startTime = Date.now();
+    const taskId = options.memoryTaskId || `task-${Date.now()}`;
 
     try {
+      // Initialize memory if requested
+      if (options.enableMemory && !this.memoryEnabled) {
+        try {
+          await this.initializeMemory(options.memoryDatabase);
+        } catch (error) {
+          console.warn('Memory initialization failed, continuing without memory');
+        }
+      }
+
       // Trigger pre-execution hook
       if (this.hooksManager) {
         await this.hooksManager.trigger('pre-agent-execute', {
           agent: options.agent,
           task: options.task,
           provider: options.provider || 'anthropic',
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          memoryEnabled: this.memoryEnabled || options.enableMemory,
         });
       }
 
@@ -70,7 +155,7 @@ export class AgentExecutor {
       // Execute command
       const { stdout, stderr } = await execAsync(command, {
         timeout: options.timeout || 300000, // 5 minutes default
-        maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+        maxBuffer: 10 * 1024 * 1024, // 10MB buffer,
       });
 
       const duration = Date.now() - startTime;
@@ -84,6 +169,7 @@ export class AgentExecutor {
         duration,
         agent: options.agent,
         task: options.task,
+        memoryEnabled: this.memoryEnabled || options.enableMemory || false,
       };
 
       // Trigger post-execution hook
@@ -109,6 +195,7 @@ export class AgentExecutor {
         duration,
         agent: options.agent,
         task: options.task,
+        memoryEnabled: this.memoryEnabled || options.enableMemory || false,
       };
 
       // Trigger error hook

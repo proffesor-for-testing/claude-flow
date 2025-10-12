@@ -4,19 +4,71 @@ const execAsync = promisify(exec);
 export class AgentExecutor {
     agenticFlowPath;
     hooksManager;
+    memoryEnabled = false;
+    memoryDatabase = '.swarm/memory.db';
     constructor(hooksManager){
         this.hooksManager = hooksManager;
         this.agenticFlowPath = 'npx agentic-flow';
     }
+    async initializeMemory(dbPath) {
+        const db = dbPath || this.memoryDatabase;
+        try {
+            const { stdout } = await execAsync(`${this.agenticFlowPath} reasoningbank init`);
+            this.memoryEnabled = true;
+            this.memoryDatabase = db;
+            console.log('✅ ReasoningBank initialized:', db);
+        } catch (error) {
+            console.error('Failed to initialize ReasoningBank:', error.message);
+            throw error;
+        }
+    }
+    async getMemoryStats() {
+        if (!this.memoryEnabled) {
+            return {
+                enabled: false,
+                totalMemories: 0
+            };
+        }
+        try {
+            const { stdout } = await execAsync(`${this.agenticFlowPath} reasoningbank status`);
+            return {
+                enabled: true,
+                output: stdout
+            };
+        } catch (error) {
+            return {
+                enabled: true,
+                error: error.message
+            };
+        }
+    }
+    async consolidateMemories() {
+        if (!this.memoryEnabled) return;
+        try {
+            await execAsync(`${this.agenticFlowPath} reasoningbank consolidate`);
+            console.log('✅ Memory consolidation complete');
+        } catch (error) {
+            console.warn('Consolidation failed:', error.message);
+        }
+    }
     async execute(options) {
         const startTime = Date.now();
+        const taskId = options.memoryTaskId || `task-${Date.now()}`;
         try {
+            if (options.enableMemory && !this.memoryEnabled) {
+                try {
+                    await this.initializeMemory(options.memoryDatabase);
+                } catch (error) {
+                    console.warn('Memory initialization failed, continuing without memory');
+                }
+            }
             if (this.hooksManager) {
                 await this.hooksManager.trigger('pre-agent-execute', {
                     agent: options.agent,
                     task: options.task,
                     provider: options.provider || 'anthropic',
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    memoryEnabled: this.memoryEnabled || options.enableMemory
                 });
             }
             const command = this.buildCommand(options);
@@ -32,7 +84,8 @@ export class AgentExecutor {
                 model: options.model || 'default',
                 duration,
                 agent: options.agent,
-                task: options.task
+                task: options.task,
+                memoryEnabled: this.memoryEnabled || options.enableMemory || false
             };
             if (this.hooksManager) {
                 await this.hooksManager.trigger('post-agent-execute', {
@@ -53,7 +106,8 @@ export class AgentExecutor {
                 model: options.model || 'default',
                 duration,
                 agent: options.agent,
-                task: options.task
+                task: options.task,
+                memoryEnabled: this.memoryEnabled || options.enableMemory || false
             };
             if (this.hooksManager) {
                 await this.hooksManager.trigger('agent-execute-error', {
