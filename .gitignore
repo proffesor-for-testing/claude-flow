@@ -136,6 +136,11 @@ hive-mind-prompt-*.txt
 hive-mind-prompt-*.txt
 ./claude/checkpoints/
 
+
+# Removed Windows wrapper files per user request
+hive-mind-prompt-*.txt
+.research/
+
 # Claude Flow generated files
 .claude/settings.local.json
 .mcp.json
@@ -162,4 +167,7 @@ coordination/orchestration/*
 claude-flow
 # Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
-.research/
+
+# SPARC/Roo files (not used)
+.roo/
+.roomodes
