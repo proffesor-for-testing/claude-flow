@@ -61,7 +61,11 @@ USAGE:
   start [--swarm]          Start orchestration system
   swarm <objective>        Multi-agent swarm coordination
   agent <action>           Agent management (spawn, list, terminate)
-  sparc <mode>             SPARC development modes (17 available)
+    • agent booster        Ultra-fast code editing (352x faster, $0 cost)
+      - edit <file>        Edit single file with local WASM processing
+      - batch <pattern>    Batch edit multiple files (1000 files in 1 sec)
+      - benchmark          Validate 352x speed claim with tests
+  sparc <mode>             SPARC development modes (13 available)
   memory <action>          Persistent memory operations
   github <mode>            GitHub workflow automation (6 modes)
   status                   System status and health
