@@ -795,11 +795,18 @@ export function getStandardizedCommandHelp(command) {
   const commandConfigs = {
     agent: {
       name: 'claude-flow agent',
-      description: 'Manage individual agents',
+      description: 'Manage agents with agentic-flow integration (66+ agents, ultra-fast editing, memory)',
       usage: 'claude-flow agent <action> [options]',
       commands: [
-        { name: 'spawn', description: 'Create a new agent' },
-        { name: 'list', description: 'List all active agents' },
+        { name: 'run <agent> "<task>"', description: 'Execute agent with multi-provider (NEW)' },
+        { name: 'agents', description: 'List all 66+ agentic-flow agents (NEW)' },
+        { name: 'booster edit <file>', description: 'Ultra-fast editing - 352x faster (NEW)' },
+        { name: 'booster batch <pattern>', description: 'Batch edit multiple files (NEW)' },
+        { name: 'memory init', description: 'Initialize ReasoningBank memory (NEW)' },
+        { name: 'config wizard', description: 'Interactive setup wizard (NEW)' },
+        { name: 'mcp start', description: 'Start MCP server (NEW)' },
+        { name: 'spawn', description: 'Create internal agent' },
+        { name: 'list', description: 'List active internal agents' },
         { name: 'info', description: 'Show agent details' },
         { name: 'terminate', description: 'Stop an agent' },
         { name: 'hierarchy', description: 'Manage agent hierarchies' },

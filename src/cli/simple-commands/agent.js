@@ -9,6 +9,12 @@ const execAsync = promisify(exec);
 export async function agentCommand(subArgs, flags) {
   const agentCmd = subArgs[0];
 
+  // Handle --help flag explicitly to show full help
+  if (flags.help || flags.h || agentCmd === '--help' || agentCmd === '-h') {
+    showAgentHelp();
+    return;
+  }
+
   switch (agentCmd) {
     case 'run':
     case 'execute':

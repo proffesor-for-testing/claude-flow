@@ -5,6 +5,10 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 export async function agentCommand(subArgs, flags) {
     const agentCmd = subArgs[0];
+    if (flags.help || flags.h || agentCmd === '--help' || agentCmd === '-h') {
+        showAgentHelp();
+        return;
+    }
     switch(agentCmd){
         case 'run':
         case 'execute':
