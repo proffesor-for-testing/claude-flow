@@ -24,6 +24,12 @@ export async function validateNoSensitiveData(): Promise<{ safe: boolean; issues
       /API_KEY="\.\.\."/i,
       /API_KEY="\(paste/i,
       /API_KEY="\(your/i,
+      /API_KEY=sk-ant-\.\.\./i,       // Truncated example keys
+      /API_KEY=sk-or-v1-\.\.\./i,     // Truncated example keys
+      /API_KEY="sk-ant-\.\.\."/i,     // Quoted truncated keys
+      /API_KEY="sk-or-v1-\.\.\."/i,   // Quoted truncated keys
+      /API_KEY=sk-ant-xxxxx/i,        // xxxxx format examples
+      /API_KEY=sk-or-v1-xxxxx/i,      // xxxxx format examples
       /TOKEN=\(paste/i,
       /TOKEN=\(your/i,
       /SECRET=\(paste/i,

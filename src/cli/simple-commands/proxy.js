@@ -239,7 +239,7 @@ async function configureProxy(subArgs, flags) {
   console.log('  3. Requires OPENROUTER_API_KEY environment variable');
 
   console.log('\n🔑 API Key Setup:');
-  console.log('  export OPENROUTER_API_KEY="(paste your key)"');
+  console.log('  export OPENROUTER_API_KEY="sk-or-v1-..."');
 
   console.log('\n🌐 Claude Code Integration:');
   console.log('  export ANTHROPIC_BASE_URL="http://localhost:8080"');
@@ -255,7 +255,7 @@ async function configureProxy(subArgs, flags) {
   console.log('  export PROXY_LOG_LEVEL=debug        # Verbose logging');
 
   console.log('\n🚀 Quick Start:');
-  console.log('  1. claude-flow agent config set OPENROUTER_API_KEY your-openrouter-key-here');
+  console.log('  1. claude-flow agent config set OPENROUTER_API_KEY sk-or-v1-...');
   console.log('  2. claude-flow proxy start --daemon');
   console.log('  3. export ANTHROPIC_BASE_URL=http://localhost:8080');
   console.log('  4. Use Claude Code normally → automatic 90% savings!');
@@ -334,7 +334,7 @@ EXAMPLES:
 SETUP GUIDE:
   1. Get OpenRouter API key: https://openrouter.ai/keys
   2. Set environment variable:
-     claude-flow agent config set OPENROUTER_API_KEY your-openrouter-key-here
+     claude-flow agent config set OPENROUTER_API_KEY sk-or-v1-...
 
   3. Start proxy server:
      claude-flow proxy start --daemon

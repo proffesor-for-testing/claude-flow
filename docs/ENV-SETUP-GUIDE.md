@@ -26,7 +26,7 @@ Open `.env` and add at minimum one of these:
 # Required: Choose at least one
 ANTHROPIC_API_KEY=sk-ant-xxxxx  # Get from https://console.anthropic.com/settings/keys
 OPENROUTER_API_KEY=sk-or-v1-xxxxx  # Get from https://openrouter.ai/keys
-GOOGLE_GEMINI_API_KEY=your-gemini-key-here
+GOOGLE_GEMINI_API_KEY=...
 ```
 
 ### 3. Get API Keys
@@ -53,8 +53,8 @@ claude-flow agent run coder "Build API" --enable-memory
    claude-flow init --env
 
 2. Add your API keys to .env:
-   ANTHROPIC_API_KEY=sk-ant-your-key-here
-   OPENROUTER_API_KEY=sk-or-v1-your-key-here
+   ANTHROPIC_API_KEY=sk-ant-...
+   OPENROUTER_API_KEY=sk-or-v1-...
 
 3. Get API keys:
    • Anthropic: https://console.anthropic.com/settings/keys
@@ -120,7 +120,7 @@ With OpenRouter + DeepSeek R1, you can reduce costs by 46%:
 
 ```bash
 # 1. Add to .env
-OPENROUTER_API_KEY=sk-or-v1-your-key-here
+OPENROUTER_API_KEY=sk-or-v1-...
 
 # 2. Create .swarm/reasoningbank.yaml
 mkdir -p .swarm

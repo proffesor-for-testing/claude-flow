@@ -141,8 +141,8 @@ EOF
 
 # 2. Test it
 cd /tmp && mkdir cost-test && cd cost-test
-export ANTHROPIC_API_KEY="(paste key)"
-export OPENROUTER_API_KEY="(paste key)"
+export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENROUTER_API_KEY="sk-or-v1-..."
 
 # Run with cheap models for memory operations
 npx agentic-flow --agent coder \

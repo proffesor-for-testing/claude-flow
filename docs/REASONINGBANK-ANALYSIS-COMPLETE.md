@@ -236,7 +236,7 @@ score = α·similarity + β·recency + γ·reliability + δ·diversity
 # Core settings
 REASONINGBANK_ENABLED=true
 CLAUDE_FLOW_DB_PATH=.swarm/memory.db
-ANTHROPIC_API_KEY=(your-key)
+ANTHROPIC_API_KEY=sk-ant-...
 
 # Retrieval settings
 REASONINGBANK_K=3

@@ -542,9 +542,9 @@ export REASONINGBANK_ENABLED=true
 export CLAUDE_FLOW_DB_PATH=".swarm/memory.db"
 
 # API Keys (choose one)
-export ANTHROPIC_API_KEY="(paste here)"  # Recommended
-export OPENROUTER_API_KEY="(paste here)" # Alternative
-export GOOGLE_GEMINI_API_KEY="(paste here)" # Alternative
+export ANTHROPIC_API_KEY="sk-ant-..."  # Recommended
+export OPENROUTER_API_KEY="sk-or-v1-..." # Alternative
+export GOOGLE_GEMINI_API_KEY="..." # Alternative
 
 # Retrieval settings
 export REASONINGBANK_K=3                   # Top-k memories

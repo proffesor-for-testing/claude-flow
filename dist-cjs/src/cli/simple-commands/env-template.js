@@ -164,8 +164,8 @@ export function showEnvSetupInstructions() {
     console.log('1. Create .env file:');
     console.log('   claude-flow init --env\n');
     console.log('2. Add your API keys to .env:');
-    console.log('   ANTHROPIC_API_KEY=(paste your key)');
-    console.log('   OPENROUTER_API_KEY=(paste your key)  # Optional: 99% cost savings\n');
+    console.log('   ANTHROPIC_API_KEY=sk-ant-...');
+    console.log('   OPENROUTER_API_KEY=sk-or-v1-...  # Optional: 99% cost savings\n');
     console.log('3. Get API keys:');
     console.log('   • Anthropic: https://console.anthropic.com/settings/keys');
     console.log('   • OpenRouter: https://openrouter.ai/keys (for cost optimization)\n');

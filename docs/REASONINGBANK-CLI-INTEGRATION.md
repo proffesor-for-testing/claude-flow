@@ -198,8 +198,8 @@ npm run build
 ### Step 1: Set Environment Variables
 
 ```bash
-export ANTHROPIC_API_KEY=(your-key)  # For LLM-based judge/distill
-export OPENAI_API_KEY=(your-key)     # Optional: for real embeddings
+export ANTHROPIC_API_KEY=sk-ant-...  # For LLM-based judge/distill
+export OPENAI_API_KEY=sk-...     # Optional: for real embeddings
 export REASONINGBANK_ENABLED=true
 export CLAUDE_FLOW_DB_PATH=.swarm/memory.db
 ```
