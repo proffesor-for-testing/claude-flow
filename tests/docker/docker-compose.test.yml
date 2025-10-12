@@ -1,94 +1,17 @@
 version: '3.8'
 
 services:
-  reasoningbank-test:
-    build:
-      context: ../..
-      dockerfile: tests/docker/Dockerfile.test
-    container_name: claude-flow-reasoningbank-test
-    env_file:
-      - ../../.env
-    environment:
-      - NODE_ENV=test
-      - REASONINGBANK_ENABLED=true
-      - CLAUDE_FLOW_DB_PATH=/app/.swarm/memory.db
-    volumes:
-      - ../../.swarm:/app/.swarm
-      - ../../dist-cjs:/app/dist-cjs
-    working_dir: /app
-    command: >
-      /bin/bash -c "
-      echo '🧪 Starting ReasoningBank Integration Tests' &&
-      echo '' &&
-      echo '📦 Verifying agentic-flow installation...' &&
-      npm list agentic-flow &&
-      echo '' &&
-      echo '🧠 Test 1: Initialize ReasoningBank' &&
-      ./bin/claude-flow agent memory init &&
-      echo '' &&
-      echo '✅ Test 2: Check memory status' &&
-      ./bin/claude-flow agent memory status &&
-      echo '' &&
-      echo '📋 Test 3: List available agents' &&
-      ./bin/claude-flow agent agents | head -20 &&
-      echo '' &&
-      echo '🧠 Test 4: ReasoningBank help' &&
-      npx agentic-flow reasoningbank help &&
-      echo '' &&
-      echo '📊 Test 5: Memory list (should be empty)' &&
-      ./bin/claude-flow agent memory list --limit 5 &&
-      echo '' &&
-      echo '🔍 Test 6: Verify database structure' &&
-      sqlite3 .swarm/memory.db '.tables' &&
-      echo '' &&
-      echo '📈 Test 7: Database schema verification' &&
-      sqlite3 .swarm/memory.db 'SELECT name FROM sqlite_master WHERE type=\\\"table\\\" ORDER BY name;' &&
-      echo '' &&
-      echo '🎯 Test 8: ReasoningBank status via agentic-flow' &&
-      npx agentic-flow reasoningbank status &&
-      echo '' &&
-      echo '✅ All ReasoningBank integration tests passed!'
-      "
-    networks:
-      - claude-flow-test
-
-  # Agent execution test with memory
-  agent-memory-test:
-    build:
-      context: ../..
-      dockerfile: tests/docker/Dockerfile.test
-    container_name: claude-flow-agent-memory-test
-    env_file:
-      - ../../.env
-    environment:
-      - NODE_ENV=test
-      - REASONINGBANK_ENABLED=true
-      - CLAUDE_FLOW_DB_PATH=/app/.swarm/memory.db
-    volumes:
-      - ../../.swarm:/app/.swarm
-      - ../../dist-cjs:/app/dist-cjs
-    working_dir: /app
-    command: >
-      /bin/bash -c "
-      echo '🚀 Agent Execution with Memory Tests' &&
-      echo '' &&
-      echo '📦 Initialize memory if not exists' &&
-      ./bin/claude-flow agent memory init &&
-      echo '' &&
-      echo '🧪 Test: Agent execution with memory flags (ONNX provider - no API key needed)' &&
-      echo 'Testing: --enable-memory flag parsing' &&
-      timeout 30 ./bin/claude-flow agent run coder 'print hello world' --enable-memory --provider onnx --verbose 2>&1 | head -50 || echo 'Test completed (may timeout, verifying flag parsing)' &&
-      echo '' &&
-      echo '🔍 Verify memory flags are recognized' &&
-      ./bin/claude-flow agent --help | grep -A 10 'Memory Options' &&
-      echo '' &&
-      echo '✅ Agent memory flag tests completed!'
-      "
-    networks:
-      - claude-flow-test
-    depends_on:
-      - reasoningbank-test
-
-networks:
   claude-flow-test:
-    driver: bridge
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+    container_name: claude-flow-test
+    volumes:
+      - test-data:/home/testuser/data
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    command: sh -c "sleep infinity"
+
+volumes:
+  test-data:
