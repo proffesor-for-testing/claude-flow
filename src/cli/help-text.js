@@ -72,8 +72,12 @@ USAGE:
       - edit <file>        Edit single file with local WASM processing
       - batch <pattern>    Batch edit multiple files (1000 files in 1 sec)
       - benchmark          Validate 352x speed claim with tests
+    • agent memory         ReasoningBank learning memory (46% faster, 88% success)
+      - init               Initialize ReasoningBank database
+      - status             Show memory statistics
+      - list               List stored memories
   sparc <mode>             SPARC development modes (13 available)
-  memory <action>          Persistent memory operations
+  memory <action>          ReasoningBank persistent memory system
   github <mode>            GitHub workflow automation (6 modes)
   status                   System status and health
   
@@ -795,14 +799,16 @@ export function getStandardizedCommandHelp(command) {
   const commandConfigs = {
     agent: {
       name: 'claude-flow agent',
-      description: 'Manage agents with agentic-flow integration (66+ agents, ultra-fast editing, memory)',
+      description: 'Manage agents with agentic-flow integration (66+ agents, ultra-fast editing, ReasoningBank memory)',
       usage: 'claude-flow agent <action> [options]',
       commands: [
         { name: 'run <agent> "<task>"', description: 'Execute agent with multi-provider (NEW)' },
         { name: 'agents', description: 'List all 66+ agentic-flow agents (NEW)' },
         { name: 'booster edit <file>', description: 'Ultra-fast editing - 352x faster (NEW)' },
         { name: 'booster batch <pattern>', description: 'Batch edit multiple files (NEW)' },
-        { name: 'memory init', description: 'Initialize ReasoningBank memory (NEW)' },
+        { name: 'memory init', description: 'Initialize ReasoningBank learning memory - 46% faster execution (NEW)' },
+        { name: 'memory status', description: 'Show ReasoningBank status and statistics (NEW)' },
+        { name: 'memory list', description: 'List stored ReasoningBank memories (NEW)' },
         { name: 'config wizard', description: 'Interactive setup wizard (NEW)' },
         { name: 'mcp start', description: 'Start MCP server (NEW)' },
         { name: 'spawn', description: 'Create internal agent' },
