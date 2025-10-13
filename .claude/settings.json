@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | npx claude-flow@alpha hooks modify-bash"
+            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-command --command '{}' --validate-safety true --prepare-resources true"
           }
         ]
       },
@@ -50,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | npx claude-flow@alpha hooks modify-file"
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-edit --file '{}' --auto-assign-agents true --load-context true"
           }
         ]
       }
@@ -109,6 +109,7 @@
   "includeCoAuthoredBy": true,
   "enabledMcpjsonServers": ["claude-flow", "ruv-swarm"],
   "statusLine": {
-    "command": "~/.claude/statusline-command.sh"
+    "type": "command",
+    "command": ".claude/statusline-command.sh"
   }
 }

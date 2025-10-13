@@ -304,6 +304,25 @@ export async function initCommand(subArgs, flags) {
         showInitHelp();
         return;
     }
+    if (flags.env || subArgs.includes('--env')) {
+        const { generateEnvTemplate } = await import('../env-template.js');
+        const workingDir = process.env.PWD || process.cwd();
+        const force = flags.force || flags.f;
+        console.log('📋 Generating .env template file...\n');
+        const result = await generateEnvTemplate(workingDir, force);
+        if (result.created) {
+            console.log('\n📚 Next steps:');
+            console.log('1. Open .env file and add your API keys');
+            console.log('2. Get keys from:');
+            console.log('   • Anthropic: https://console.anthropic.com/settings/keys');
+            console.log('   • OpenRouter: https://openrouter.ai/keys');
+            console.log('3. Enable memory: claude-flow agent run coder "task" --enable-memory\n');
+            console.log('💡 See docs/REASONINGBANK-COST-OPTIMIZATION.md for cost savings tips');
+        } else if (result.exists) {
+            console.log('💡 To overwrite: claude-flow init --env --force');
+        }
+        return;
+    }
     const hasVerificationFlags = subArgs.includes('--verify') || subArgs.includes('--pair') || flags.verify || flags.pair;
     if (flags['flow-nexus']) {
         return await flowNexusMinimalInit(flags, subArgs);
@@ -1034,6 +1053,8 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
     const force = flags.force || flags.f;
     const dryRun1 = flags.dryRun || flags['dry-run'] || flags.d;
     const initSparc = flags.roo || subArgs && subArgs.includes('--roo');
+    const agentType = flags.agent || subArgs && subArgs.find((arg)=>arg.startsWith('--agent='))?.split('=')[1];
+    const initReasoning = agentType === 'reasoning' || subArgs && subArgs.includes('--agent') && subArgs.includes('reasoning');
     const args = subArgs || [];
     const options = flags || {};
     const fs = await import('fs/promises');
@@ -1252,6 +1273,39 @@ ${commands.map((cmd)=>`- [${cmd}](./${cmd}.md)`).join('\n')}
             await fs.writeFile(`${workingDir}/memory/sessions/README.md`, createSessionsReadme(), 'utf8');
             printSuccess('✓ Initialized memory system');
             try {
+                const dbPath = '.swarm/memory.db';
+                const { existsSync } = await import('fs');
+                const dbExistedBefore = existsSync(dbPath);
+                if (dbExistedBefore) {
+                    console.log('  🔍 Checking existing database for ReasoningBank schema...');
+                    try {
+                        const { initializeReasoningBank, checkReasoningBankTables, migrateReasoningBank } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+                        process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+                        const tableCheck = await checkReasoningBankTables();
+                        if (tableCheck.exists) {
+                            console.log('  ✅ ReasoningBank schema already complete');
+                        } else if (force) {
+                            console.log(`  🔄 Migrating database: ${tableCheck.missingTables.length} tables missing`);
+                            console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+                            const migrationResult = await migrateReasoningBank();
+                            if (migrationResult.success) {
+                                printSuccess(`  ✓ Migration complete: added ${migrationResult.addedTables?.length || 0} tables`);
+                                console.log('     Use --reasoningbank flag to enable AI-powered memory features');
+                            } else {
+                                console.log(`  ⚠️  Migration failed: ${migrationResult.message}`);
+                                console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+                            }
+                        } else {
+                            console.log(`  ℹ️  Database has ${tableCheck.missingTables.length} missing ReasoningBank tables`);
+                            console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+                            console.log('     Use --force to migrate existing database');
+                            console.log('     Or use: memory init --reasoningbank');
+                        }
+                    } catch (rbErr) {
+                        console.log(`  ⚠️  ReasoningBank check failed: ${rbErr.message}`);
+                        console.log('     Will attempt normal initialization...');
+                    }
+                }
                 const { FallbackMemoryStore } = await import('../../../memory/fallback-store.js');
                 const memoryStore = new FallbackMemoryStore();
                 await memoryStore.initialize();
@@ -1260,6 +1314,18 @@ ${commands.map((cmd)=>`- [${cmd}](./${cmd}.md)`).join('\n')}
                     console.log('  💡 For persistent storage, install locally: npm install claude-flow@alpha');
                 } else {
                     printSuccess('✓ Initialized memory database (.swarm/memory.db)');
+                    if (!dbExistedBefore) {
+                        try {
+                            const { initializeReasoningBank } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+                            process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+                            console.log('  🧠 Initializing ReasoningBank schema...');
+                            await initializeReasoningBank();
+                            printSuccess('  ✓ ReasoningBank schema initialized (use --reasoningbank flag for AI-powered memory)');
+                        } catch (rbErr) {
+                            console.log(`  ⚠️  ReasoningBank initialization failed: ${rbErr.message}`);
+                            console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+                        }
+                    }
                 }
                 memoryStore.close();
             } catch (err) {
@@ -1377,8 +1443,50 @@ ${commands.map((cmd)=>`- [${cmd}](./${cmd}.md)`).join('\n')}
             } else {
                 console.log('⚠️  Agent system setup failed:', agentResult.error);
             }
+            if (initReasoning) {
+                console.log('\n🧠 Setting up reasoning agents with ReasoningBank integration...');
+                try {
+                    const reasoningAgentsDir = `${workingDir}/.claude/agents/reasoning`;
+                    await fs.mkdir(reasoningAgentsDir, {
+                        recursive: true
+                    });
+                    const path1 = await import('path');
+                    const { fileURLToPath } = await import('url');
+                    const { dirname, join } = path1.default;
+                    const __filename = fileURLToPath(import.meta.url);
+                    const __dirname1 = dirname(__filename);
+                    const sourceReasoningDir = join(__dirname1, '../../../../.claude/agents/reasoning');
+                    try {
+                        const reasoningFiles = await fs.readdir(sourceReasoningDir);
+                        let copiedReasoningAgents = 0;
+                        for (const file of reasoningFiles){
+                            if (file.endsWith('.md')) {
+                                const sourcePath = join(sourceReasoningDir, file);
+                                const destPath = join(reasoningAgentsDir, file);
+                                const content = await fs.readFile(sourcePath, 'utf8');
+                                await fs.writeFile(destPath, content);
+                                copiedReasoningAgents++;
+                            }
+                        }
+                        printSuccess(`✓ Copied ${copiedReasoningAgents} reasoning agent files`);
+                        console.log('  📚 Reasoning agents available:');
+                        console.log('    • goal-planner - Goal-Oriented Action Planning specialist');
+                        console.log('    • sublinear-goal-planner - Sub-linear complexity goal planning');
+                        console.log('  💡 Use: npx agentic-flow --agent goal-planner --task "your task"');
+                        console.log('  📖 Documentation: .claude/agents/reasoning/README.md');
+                    } catch (err) {
+                        console.log(`  ⚠️  Could not copy reasoning agents: ${err.message}`);
+                        console.log('     Reasoning agents may not be available yet');
+                    }
+                } catch (err) {
+                    console.log(`  ⚠️  Reasoning agent setup failed: ${err.message}`);
+                }
+            }
         } else {
             console.log('  [DRY RUN] Would create agent system with 64 specialized agents');
+            if (initReasoning) {
+                console.log('  [DRY RUN] Would also setup reasoning agents with ReasoningBank integration');
+            }
         }
         const enableMonitoring = flags.monitoring || flags['enable-monitoring'];
         if (enableMonitoring && !dryRun1) {
