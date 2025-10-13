@@ -422,24 +422,61 @@ async function isReasoningBankInitialized() {
 async function handleReasoningBankCommand(command, subArgs, flags) {
   const initialized = await isReasoningBankInitialized();
 
+  // Lazy load the adapter (ES modules)
+  const { initializeReasoningBank, storeMemory, queryMemories, listMemories, getStatus, checkReasoningBankTables, migrateReasoningBank } = await import('../../reasoningbank/reasoningbank-adapter.js');
+
   // Special handling for 'init' command
   if (command === 'init') {
+    const dbPath = '.swarm/memory.db';
+
     if (initialized) {
-      printWarning('⚠️  ReasoningBank already initialized');
-      console.log('Database: .swarm/memory.db');
-      console.log('\nTo reinitialize, delete .swarm/memory.db first');
+      // Database exists - check if migration is needed
+      printInfo('🔍 Checking existing database for ReasoningBank schema...\n');
+
+      try {
+        // Set the database path for ReasoningBank
+        process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+
+        const tableCheck = await checkReasoningBankTables();
+
+        if (tableCheck.exists) {
+          printSuccess('✅ ReasoningBank already complete');
+          console.log('Database: .swarm/memory.db');
+          console.log('All ReasoningBank tables present\n');
+          console.log('Use --reasoningbank flag with memory commands to enable AI features');
+          return;
+        }
+
+        // Missing tables found - run migration
+        console.log(`🔄 Migrating database: ${tableCheck.missingTables.length} tables missing`);
+        console.log(`   Missing: ${tableCheck.missingTables.join(', ')}\n`);
+
+        const migrationResult = await migrateReasoningBank();
+
+        if (migrationResult.success) {
+          printSuccess(`✓ Migration complete: added ${migrationResult.addedTables?.length || 0} tables`);
+          console.log('\nNext steps:');
+          console.log('  1. Store memories: memory store key "value" --reasoningbank');
+          console.log('  2. Query memories: memory query "search" --reasoningbank');
+          console.log('  3. Check status: memory status --reasoningbank');
+        } else {
+          printError(`❌ Migration failed: ${migrationResult.message}`);
+          console.log('Try running: init --force to reinitialize');
+        }
+      } catch (error) {
+        printError('❌ Migration check failed');
+        console.error(error.message);
+        console.log('\nTry running: init --force to reinitialize');
+      }
       return;
     }
 
+    // Fresh initialization
     printInfo('🧠 Initializing ReasoningBank...');
     console.log('This will create: .swarm/memory.db\n');
 
     try {
-      const { stdout, stderr } = await execAsync('npx agentic-flow reasoningbank init', {
-        timeout: 30000,
-      });
-
-      if (stdout) console.log(stdout);
+      await initializeReasoningBank();
       printSuccess('✅ ReasoningBank initialized successfully!');
       console.log('\nNext steps:');
       console.log('  1. Store memories: memory store key "value" --reasoningbank');
@@ -448,9 +485,6 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
     } catch (error) {
       printError('❌ Failed to initialize ReasoningBank');
       console.error(error.message);
-      if (error.stderr) {
-        console.error('Details:', error.stderr);
-      }
     }
     return;
   }
@@ -463,18 +497,153 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
     return;
   }
 
-  // Delegate to agentic-flow reasoningbank commands
   printInfo(`🧠 Using ReasoningBank mode...`);
 
   try {
-    const cmd = buildReasoningBankCommand(command, subArgs, flags);
-    const { stdout, stderr } = await execAsync(cmd, { timeout: 30000 });
+    // Handle different commands
+    switch (command) {
+      case 'store':
+        await handleReasoningBankStore(subArgs, flags, storeMemory);
+        break;
 
-    if (stdout) console.log(stdout);
-    if (stderr && !stderr.includes('Warning')) console.error(stderr);
+      case 'query':
+        await handleReasoningBankQuery(subArgs, flags, queryMemories);
+        break;
+
+      case 'list':
+        await handleReasoningBankList(subArgs, flags, listMemories);
+        break;
+
+      case 'status':
+        await handleReasoningBankStatus(getStatus);
+        break;
+
+      case 'consolidate':
+      case 'demo':
+      case 'test':
+      case 'benchmark':
+        // These still use CLI commands
+        const cmd = `npx agentic-flow reasoningbank ${command}`;
+        const { stdout } = await execAsync(cmd, { timeout: 60000 });
+        if (stdout) console.log(stdout);
+        break;
+
+      default:
+        printError(`Unknown ReasoningBank command: ${command}`);
+    }
   } catch (error) {
     printError(`❌ ReasoningBank command failed`);
     console.error(error.message);
+  }
+}
+
+// NEW: Handle ReasoningBank store
+async function handleReasoningBankStore(subArgs, flags, storeMemory) {
+  const key = subArgs[1];
+  const value = subArgs.slice(2).join(' ');
+
+  if (!key || !value) {
+    printError('Usage: memory store <key> <value> --reasoningbank');
+    return;
+  }
+
+  try {
+    const namespace = flags?.namespace || flags?.ns || getArgValue(subArgs, '--namespace') || 'default';
+
+    const memoryId = await storeMemory(key, value, {
+      namespace,
+      agent: 'memory-agent',
+      domain: namespace,
+    });
+
+    printSuccess('✅ Stored successfully in ReasoningBank');
+    console.log(`📝 Key: ${key}`);
+    console.log(`🧠 Memory ID: ${memoryId}`);
+    console.log(`📦 Namespace: ${namespace}`);
+    console.log(`💾 Size: ${new TextEncoder().encode(value).length} bytes`);
+    console.log(`🔍 Semantic search: enabled`);
+  } catch (error) {
+    printError(`Failed to store: ${error.message}`);
+  }
+}
+
+// NEW: Handle ReasoningBank query
+async function handleReasoningBankQuery(subArgs, flags, queryMemories) {
+  const search = subArgs.slice(1).join(' ');
+
+  if (!search) {
+    printError('Usage: memory query <search> --reasoningbank');
+    return;
+  }
+
+  try {
+    const namespace = flags?.namespace || flags?.ns || getArgValue(subArgs, '--namespace');
+    const results = await queryMemories(search, {
+      domain: namespace || 'general',
+      limit: 10,
+    });
+
+    if (results.length === 0) {
+      printWarning('No results found');
+      return;
+    }
+
+    printSuccess(`Found ${results.length} results (semantic search):`);
+
+    for (const entry of results) {
+      console.log(`\n📌 ${entry.key}`);
+      console.log(`   Namespace: ${entry.namespace}`);
+      console.log(`   Value: ${entry.value.substring(0, 100)}${entry.value.length > 100 ? '...' : ''}`);
+      console.log(`   Confidence: ${(entry.confidence * 100).toFixed(1)}%`);
+      console.log(`   Usage: ${entry.usage_count} times`);
+      if (entry.score) {
+        console.log(`   Match Score: ${(entry.score * 100).toFixed(1)}%`);
+      }
+      console.log(`   Stored: ${new Date(entry.created_at).toLocaleString()}`);
+    }
+  } catch (error) {
+    printError(`Failed to query: ${error.message}`);
+  }
+}
+
+// NEW: Handle ReasoningBank list
+async function handleReasoningBankList(subArgs, flags, listMemories) {
+  try {
+    const sort = flags?.sort || getArgValue(subArgs, '--sort') || 'created_at';
+    const limit = parseInt(flags?.limit || getArgValue(subArgs, '--limit') || '10');
+
+    const results = await listMemories({ sort, limit });
+
+    if (results.length === 0) {
+      printWarning('No memories found');
+      return;
+    }
+
+    printSuccess(`ReasoningBank memories (${results.length} shown):`);
+
+    for (const entry of results) {
+      console.log(`\n📌 ${entry.key}`);
+      console.log(`   Value: ${entry.value.substring(0, 80)}${entry.value.length > 80 ? '...' : ''}`);
+      console.log(`   Confidence: ${(entry.confidence * 100).toFixed(1)}% | Usage: ${entry.usage_count}`);
+    }
+  } catch (error) {
+    printError(`Failed to list: ${error.message}`);
+  }
+}
+
+// NEW: Handle ReasoningBank status
+async function handleReasoningBankStatus(getStatus) {
+  try {
+    const stats = await getStatus();
+
+    printSuccess('📊 ReasoningBank Status:');
+    console.log(`   Total memories: ${stats.total_memories}`);
+    console.log(`   Average confidence: ${(stats.avg_confidence * 100).toFixed(1)}%`);
+    console.log(`   Total usage: ${stats.total_usage}`);
+    console.log(`   Embeddings: ${stats.total_embeddings}`);
+    console.log(`   Trajectories: ${stats.total_trajectories}`);
+  } catch (error) {
+    printError(`Failed to get status: ${error.message}`);
   }
 }
 
@@ -503,6 +672,9 @@ function buildReasoningBankCommand(command, subArgs, flags) {
       parts.push(`"${arg}"`);
     }
   });
+
+  // Add required --agent parameter
+  parts.push('--agent', 'memory-agent');
 
   return parts.join(' ');
 }

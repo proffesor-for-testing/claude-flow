@@ -1273,6 +1273,39 @@ ${commands.map((cmd)=>`- [${cmd}](./${cmd}.md)`).join('\n')}
             await fs.writeFile(`${workingDir}/memory/sessions/README.md`, createSessionsReadme(), 'utf8');
             printSuccess('✓ Initialized memory system');
             try {
+                const dbPath = '.swarm/memory.db';
+                const { existsSync } = await import('fs');
+                const dbExistedBefore = existsSync(dbPath);
+                if (dbExistedBefore) {
+                    console.log('  🔍 Checking existing database for ReasoningBank schema...');
+                    try {
+                        const { initializeReasoningBank, checkReasoningBankTables, migrateReasoningBank } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+                        process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+                        const tableCheck = await checkReasoningBankTables();
+                        if (tableCheck.exists) {
+                            console.log('  ✅ ReasoningBank schema already complete');
+                        } else if (force) {
+                            console.log(`  🔄 Migrating database: ${tableCheck.missingTables.length} tables missing`);
+                            console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+                            const migrationResult = await migrateReasoningBank();
+                            if (migrationResult.success) {
+                                printSuccess(`  ✓ Migration complete: added ${migrationResult.addedTables?.length || 0} tables`);
+                                console.log('     Use --reasoningbank flag to enable AI-powered memory features');
+                            } else {
+                                console.log(`  ⚠️  Migration failed: ${migrationResult.message}`);
+                                console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+                            }
+                        } else {
+                            console.log(`  ℹ️  Database has ${tableCheck.missingTables.length} missing ReasoningBank tables`);
+                            console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+                            console.log('     Use --force to migrate existing database');
+                            console.log('     Or use: memory init --reasoningbank');
+                        }
+                    } catch (rbErr) {
+                        console.log(`  ⚠️  ReasoningBank check failed: ${rbErr.message}`);
+                        console.log('     Will attempt normal initialization...');
+                    }
+                }
                 const { FallbackMemoryStore } = await import('../../../memory/fallback-store.js');
                 const memoryStore = new FallbackMemoryStore();
                 await memoryStore.initialize();
@@ -1281,6 +1314,18 @@ ${commands.map((cmd)=>`- [${cmd}](./${cmd}.md)`).join('\n')}
                     console.log('  💡 For persistent storage, install locally: npm install claude-flow@alpha');
                 } else {
                     printSuccess('✓ Initialized memory database (.swarm/memory.db)');
+                    if (!dbExistedBefore) {
+                        try {
+                            const { initializeReasoningBank } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+                            process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+                            console.log('  🧠 Initializing ReasoningBank schema...');
+                            await initializeReasoningBank();
+                            printSuccess('  ✓ ReasoningBank schema initialized (use --reasoningbank flag for AI-powered memory)');
+                        } catch (rbErr) {
+                            console.log(`  ⚠️  ReasoningBank initialization failed: ${rbErr.message}`);
+                            console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+                        }
+                    }
                 }
                 memoryStore.close();
             } catch (err) {

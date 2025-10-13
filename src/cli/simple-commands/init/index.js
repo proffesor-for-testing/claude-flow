@@ -1568,6 +1568,57 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
 
       // Initialize memory database with fallback support
       try {
+        // Check if database exists BEFORE creating it
+        const dbPath = '.swarm/memory.db';
+        const { existsSync } = await import('fs');
+        const dbExistedBefore = existsSync(dbPath);
+
+        // Handle ReasoningBank migration BEFORE FallbackMemoryStore initialization
+        // This prevents schema conflicts with old databases
+        if (dbExistedBefore) {
+          console.log('  🔍 Checking existing database for ReasoningBank schema...');
+
+          try {
+            const {
+              initializeReasoningBank,
+              checkReasoningBankTables,
+              migrateReasoningBank
+            } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+
+            // Set the database path for ReasoningBank
+            process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+
+            const tableCheck = await checkReasoningBankTables();
+
+            if (tableCheck.exists) {
+              console.log('  ✅ ReasoningBank schema already complete');
+            } else if (force) {
+              // User used --force flag, migrate the database
+              console.log(`  🔄 Migrating database: ${tableCheck.missingTables.length} tables missing`);
+              console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+
+              const migrationResult = await migrateReasoningBank();
+
+              if (migrationResult.success) {
+                printSuccess(`  ✓ Migration complete: added ${migrationResult.addedTables?.length || 0} tables`);
+                console.log('     Use --reasoningbank flag to enable AI-powered memory features');
+              } else {
+                console.log(`  ⚠️  Migration failed: ${migrationResult.message}`);
+                console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+              }
+            } else {
+              // Database exists with missing tables but no --force flag
+              console.log(`  ℹ️  Database has ${tableCheck.missingTables.length} missing ReasoningBank tables`);
+              console.log(`     Missing: ${tableCheck.missingTables.join(', ')}`);
+              console.log('     Use --force to migrate existing database');
+              console.log('     Or use: memory init --reasoningbank');
+            }
+          } catch (rbErr) {
+            console.log(`  ⚠️  ReasoningBank check failed: ${rbErr.message}`);
+            console.log('     Will attempt normal initialization...');
+          }
+        }
+
         // Import and initialize FallbackMemoryStore to create the database
         const { FallbackMemoryStore } = await import('../../../memory/fallback-store.js');
         const memoryStore = new FallbackMemoryStore();
@@ -1580,6 +1631,25 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
           );
         } else {
           printSuccess('✓ Initialized memory database (.swarm/memory.db)');
+
+          // Initialize ReasoningBank schema for fresh databases
+          if (!dbExistedBefore) {
+            try {
+              const {
+                initializeReasoningBank
+              } = await import('../../../reasoningbank/reasoningbank-adapter.js');
+
+              // Set the database path for ReasoningBank
+              process.env.CLAUDE_FLOW_DB_PATH = dbPath;
+
+              console.log('  🧠 Initializing ReasoningBank schema...');
+              await initializeReasoningBank();
+              printSuccess('  ✓ ReasoningBank schema initialized (use --reasoningbank flag for AI-powered memory)');
+            } catch (rbErr) {
+              console.log(`  ⚠️  ReasoningBank initialization failed: ${rbErr.message}`);
+              console.log('     Basic memory will work, use: memory init --reasoningbank to retry');
+            }
+          }
         }
 
         memoryStore.close();

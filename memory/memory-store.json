@@ -37,6 +37,20 @@
       "namespace": "default",
       "timestamp": 1760284936974,
       "redacted": false
+    },
+    {
+      "key": "docker_test",
+      "value": "validation test",
+      "namespace": "default",
+      "timestamp": 1760288841215,
+      "redacted": false
+    },
+    {
+      "key": "secure_key",
+      "value": "api=sk-ant-test",
+      "namespace": "default",
+      "timestamp": 1760288844695,
+      "redacted": false
     }
   ],
   "swarm": [

@@ -1,6 +1,6 @@
 {
   "name": "claude-flow",
-  "version": "2.6.0-alpha.2",
+  "version": "2.7.0-alpha.4",
   "description": "Enterprise-grade AI agent orchestration with multi-provider execution engine",
   "mcpName": "io.github.ruvnet/claude-flow",
   "main": "cli.mjs",
