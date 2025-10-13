@@ -1,17 +1,18 @@
 /**
- * ReasoningBank Adapter for Claude-Flow (WASM-Powered)
+ * ReasoningBank Adapter for Claude-Flow (Node.js Backend)
  *
- * Wraps agentic-flow's ReasoningBank WASM for ultra-fast performance
- * Performance: 3ms/op storage, 10,000-25,000 ops/sec (250x+ faster than SDK)
+ * Uses agentic-flow@1.5.13 Node.js backend with SQLite for persistent storage
+ * Provides semantic search via embeddings and MMR ranking
  *
- * Now uses agentic-flow@1.5.12 with proper ESM WASM bindings!
+ * Backend: SQLite with better-sqlite3
+ * Features: Persistent storage, semantic search, memory consolidation
  */
 
-import { createReasoningBank } from 'agentic-flow/dist/reasoningbank/wasm-adapter.js';
+import * as ReasoningBank from 'agentic-flow/reasoningbank';
 import { v4 as uuidv4 } from 'uuid';
 
-// WASM instance (singleton)
-let wasmInstance = null;
+// Backend instance (singleton)
+let backendInitialized = false;
 let initPromise = null;
 
 // Query result cache (LRU)
@@ -20,12 +21,12 @@ const CACHE_SIZE = 100;
 const CACHE_TTL = 60000; // 60 seconds
 
 /**
- * Initialize ReasoningBank WASM instance
- * @returns {Promise<ReasoningBankAdapter>}
+ * Initialize ReasoningBank Node.js backend
+ * @returns {Promise<boolean>}
  */
-async function getWasmInstance() {
-  if (wasmInstance) {
-    return wasmInstance;
+async function ensureInitialized() {
+  if (backendInitialized) {
+    return true;
   }
 
   if (initPromise) {
@@ -34,14 +35,14 @@ async function getWasmInstance() {
 
   initPromise = (async () => {
     try {
-      // Create WASM instance with database name from environment or default
-      const dbName = process.env.CLAUDE_FLOW_DB_NAME || 'claude-flow-memory';
-      wasmInstance = await createReasoningBank(dbName);
-      console.log('[ReasoningBank] WASM initialized successfully');
-      return wasmInstance;
+      // Initialize Node.js backend with SQLite database
+      await ReasoningBank.initialize();
+      backendInitialized = true;
+      console.log('[ReasoningBank] Node.js backend initialized successfully');
+      return true;
     } catch (error) {
-      console.error('[ReasoningBank] WASM initialization failed:', error);
-      throw new Error(`Failed to initialize ReasoningBank WASM: ${error.message}`);
+      console.error('[ReasoningBank] Backend initialization failed:', error);
+      throw new Error(`Failed to initialize ReasoningBank: ${error.message}`);
     }
   })();
 
@@ -49,63 +50,80 @@ async function getWasmInstance() {
 }
 
 /**
- * Initialize ReasoningBank database (WASM version)
+ * Initialize ReasoningBank database (Node.js version)
  */
 export async function initializeReasoningBank() {
-  // Just initialize the WASM instance
-  await getWasmInstance();
+  // Initialize the Node.js backend
+  await ensureInitialized();
   return true;
 }
 
 /**
- * Store a memory in ReasoningBank (WASM-powered for 0.04ms performance)
+ * Store a memory in ReasoningBank (Node.js backend with SQLite)
  *
  * Maps claude-flow memory model to ReasoningBank pattern model:
- * - key -> strategy
- * - value -> task_description
- * - namespace -> task_category
- * - confidence -> success_score
+ * - key -> title
+ * - value -> content (searchable text)
+ * - namespace -> domain
+ * - confidence -> confidence score
  */
 export async function storeMemory(key, value, options = {}) {
-  const wasm = await getWasmInstance();
+  await ensureInitialized();
 
   try {
+    const memoryId = options.id || uuidv4();
+
     // Map our memory model to ReasoningBank pattern model
-    const pattern = {
-      task_description: value,
-      task_category: options.namespace || 'default',
-      strategy: key,
-      success_score: options.confidence || 0.8,
-      // Include metadata for compatibility
-      metadata: {
+    const memory = {
+      id: memoryId,
+      type: 'reasoning_memory',
+      pattern_data: {
+        title: key,
+        content: value,
+        domain: options.namespace || 'default',
         agent: options.agent || 'memory-agent',
-        domain: options.domain || 'general',
-        type: options.type || 'fact',
+        task_type: options.type || 'fact',
+        // Store original values for compatibility
         original_key: key,
         original_value: value,
-        namespace: options.namespace || 'default',
-        created_at: new Date().toISOString()
-      }
+        namespace: options.namespace || 'default'
+      },
+      confidence: options.confidence || 0.8,
+      usage_count: 0
     };
 
-    // Store using WASM (ultra-fast: 0.04ms/op)
-    const patternId = await wasm.storePattern(pattern);
+    // Store memory using Node.js backend
+    ReasoningBank.db.upsertMemory(memory);
+
+    // Generate and store embedding for semantic search
+    try {
+      const embedding = await ReasoningBank.computeEmbedding(value);
+      ReasoningBank.db.upsertEmbedding({
+        id: memoryId,
+        model: 'text-embedding-3-small', // Default model
+        dims: embedding.length,
+        vector: embedding
+      });
+    } catch (embeddingError) {
+      console.warn('[ReasoningBank] Failed to generate embedding:', embeddingError.message);
+      // Continue without embedding - memory is still stored
+    }
 
     // Invalidate query cache when new memory is added
     queryCache.clear();
 
-    return patternId;
+    return memoryId;
   } catch (error) {
-    console.error('[ReasoningBank] WASM storeMemory failed:', error);
+    console.error('[ReasoningBank] storeMemory failed:', error);
     throw new Error(`Failed to store memory: ${error.message}`);
   }
 }
 
 /**
- * Query memories from ReasoningBank (WASM-powered semantic search)
+ * Query memories from ReasoningBank (Node.js backend with semantic search)
  *
- * Uses WASM findSimilar for ultra-fast semantic search
- * Fallback to searchByCategory if semantic search fails
+ * Uses retrieveMemories for semantic search via embeddings and MMR ranking
+ * Fallback to database query if semantic search fails
  */
 export async function queryMemories(searchQuery, options = {}) {
   // Check cache first
@@ -114,46 +132,49 @@ export async function queryMemories(searchQuery, options = {}) {
     return cached;
   }
 
-  const wasm = await getWasmInstance();
+  await ensureInitialized();
   const limit = options.limit || 10;
   const namespace = options.namespace || 'default';
 
   try {
-    // Try semantic search first (WASM-powered, ultra-fast)
-    const results = await wasm.findSimilar(
-      searchQuery,
-      namespace,
-      limit
-    );
+    // Try semantic search first using retrieveMemories
+    const results = await ReasoningBank.retrieveMemories(searchQuery, {
+      domain: namespace,
+      agent: options.agent || 'query-agent',
+      k: limit,
+      minConfidence: options.minConfidence || 0.3
+    });
 
-    // Map WASM pattern results to our memory format
-    const memories = results.map(pattern => ({
-      id: pattern.id || `mem_${uuidv4()}`,
-      key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-      value: pattern.task_description || pattern.metadata?.original_value || '',
-      namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-      confidence: pattern.success_score || 0.8,
-      usage_count: pattern.usage_count || 0,
-      created_at: pattern.metadata?.created_at || new Date().toISOString(),
-      score: pattern.similarity_score || 0,
+    // Map backend results to our memory format
+    const memories = results.map(memory => ({
+      id: memory.id,
+      key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
+      value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
+      namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
+      confidence: memory.confidence || 0.8,
+      usage_count: memory.usage_count || 0,
+      created_at: memory.created_at || new Date().toISOString(),
+      score: memory.similarity_score || memory.mmr_score || 0,
       // Include original pattern for debugging
-      _pattern: pattern
+      _pattern: memory
     }));
 
-    // If no results, try category search as fallback
+    // If no results, try direct database query as fallback
     if (memories.length === 0) {
-      console.warn('[ReasoningBank] Semantic search returned 0 results, trying category fallback');
-      const categoryResults = await wasm.searchByCategory(namespace, limit);
+      console.warn('[ReasoningBank] Semantic search returned 0 results, trying database fallback');
+      const fallbackResults = ReasoningBank.db.fetchMemoryCandidates({
+        domain: namespace,
+        minConfidence: options.minConfidence || 0.3
+      });
 
-      const fallbackMemories = categoryResults.map(pattern => ({
-        id: pattern.id || `mem_${uuidv4()}`,
-        key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-        value: pattern.task_description || pattern.metadata?.original_value || '',
-        namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-        confidence: pattern.success_score || 0.8,
-        usage_count: pattern.usage_count || 0,
-        created_at: pattern.metadata?.created_at || new Date().toISOString(),
-        _pattern: pattern
+      const fallbackMemories = fallbackResults.slice(0, limit).map(memory => ({
+        id: memory.id,
+        key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
+        value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
+        namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
+        confidence: memory.confidence || 0.8,
+        usage_count: memory.usage_count || 0,
+        created_at: memory.created_at || new Date().toISOString()
       }));
 
       // Cache and return fallback results
@@ -165,20 +186,23 @@ export async function queryMemories(searchQuery, options = {}) {
     setCachedQuery(searchQuery, options, memories);
     return memories;
   } catch (error) {
-    console.warn('[ReasoningBank] WASM query failed, trying category fallback:', error.message);
+    console.warn('[ReasoningBank] Query failed, trying database fallback:', error.message);
 
     try {
-      // Final fallback: search by category
-      const categoryResults = await wasm.searchByCategory(namespace, limit);
+      // Final fallback: direct database query
+      const fallbackResults = ReasoningBank.db.fetchMemoryCandidates({
+        domain: namespace,
+        minConfidence: options.minConfidence || 0.3
+      });
 
-      const fallbackMemories = categoryResults.map(pattern => ({
-        id: pattern.id || `mem_${uuidv4()}`,
-        key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-        value: pattern.task_description || pattern.metadata?.original_value || '',
-        namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-        confidence: pattern.success_score || 0.8,
-        usage_count: pattern.usage_count || 0,
-        created_at: pattern.metadata?.created_at || new Date().toISOString()
+      const fallbackMemories = fallbackResults.slice(0, limit).map(memory => ({
+        id: memory.id,
+        key: memory.pattern_data?.title || 'unknown',
+        value: memory.pattern_data?.content || '',
+        namespace: memory.pattern_data?.domain || 'default',
+        confidence: memory.confidence || 0.8,
+        usage_count: memory.usage_count || 0,
+        created_at: memory.created_at || new Date().toISOString()
       }));
 
       setCachedQuery(searchQuery, options, fallbackMemories);
@@ -191,25 +215,35 @@ export async function queryMemories(searchQuery, options = {}) {
 }
 
 /**
- * List all memories (using WASM searchByCategory with no filter)
+ * List all memories (using Node.js backend database query)
  */
 export async function listMemories(options = {}) {
-  const wasm = await getWasmInstance();
+  await ensureInitialized();
   const limit = options.limit || 10;
-  const namespace = options.namespace || 'default';
+  const namespace = options.namespace;
 
   try {
-    // Use category search to list all memories in namespace
-    const patterns = await wasm.searchByCategory(namespace, limit);
+    let memories;
 
-    return patterns.map(pattern => ({
-      id: pattern.id || `mem_${uuidv4()}`,
-      key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-      value: pattern.task_description || pattern.metadata?.original_value || '',
-      namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-      confidence: pattern.success_score || 0.8,
-      usage_count: pattern.usage_count || 0,
-      created_at: pattern.metadata?.created_at || new Date().toISOString()
+    if (namespace && namespace !== 'default') {
+      // Filter by namespace/domain
+      const allMemories = ReasoningBank.db.getAllActiveMemories();
+      memories = allMemories
+        .filter(m => m.pattern_data?.domain === namespace)
+        .slice(0, limit);
+    } else {
+      // Get all active memories
+      memories = ReasoningBank.db.getAllActiveMemories().slice(0, limit);
+    }
+
+    return memories.map(memory => ({
+      id: memory.id,
+      key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
+      value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
+      namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
+      confidence: memory.confidence || 0.8,
+      usage_count: memory.usage_count || 0,
+      created_at: memory.created_at || new Date().toISOString()
     }));
   } catch (error) {
     console.error('[ReasoningBank] listMemories failed:', error);
@@ -218,24 +252,36 @@ export async function listMemories(options = {}) {
 }
 
 /**
- * Get ReasoningBank statistics (WASM-powered)
+ * Get ReasoningBank statistics (Node.js backend)
  */
 export async function getStatus() {
-  const wasm = await getWasmInstance();
+  await ensureInitialized();
 
   try {
-    const stats = await wasm.getStats();
+    const db = ReasoningBank.db.getDb();
+
+    // Count patterns
+    const patterns = db.prepare("SELECT COUNT(*) as count FROM patterns WHERE type = 'reasoning_memory'").get();
+    const embeddings = db.prepare("SELECT COUNT(*) as count FROM pattern_embeddings").get();
+    const trajectories = db.prepare("SELECT COUNT(*) as count FROM task_trajectories").get();
+    const links = db.prepare("SELECT COUNT(*) as count FROM pattern_links").get();
+
+    // Get average confidence
+    const avgConf = db.prepare("SELECT AVG(confidence) as avg FROM patterns WHERE type = 'reasoning_memory'").get();
+
+    // Count unique domains
+    const domains = db.prepare("SELECT COUNT(DISTINCT json_extract(pattern_data, '$.domain')) as count FROM patterns WHERE type = 'reasoning_memory'").get();
 
     return {
-      total_memories: stats.total_patterns || 0,
-      total_categories: stats.total_categories || 0,
-      storage_backend: stats.storage_backend || 'unknown',
-      wasm_version: stats.wasm_version || '1.5.11',
-      performance: 'WASM-powered (0.04ms/op)',
-      avg_confidence: 0.8, // WASM doesn't track this, use default
-      total_usage: 0, // WASM doesn't track this
-      total_embeddings: stats.total_patterns || 0,
-      total_trajectories: 0 // Not applicable in WASM
+      total_memories: patterns.count || 0,
+      total_categories: domains.count || 0,
+      storage_backend: 'SQLite (Node.js)',
+      database_path: process.env.CLAUDE_FLOW_DB_PATH || '.swarm/memory.db',
+      performance: 'SQLite with persistent storage',
+      avg_confidence: avgConf.avg || 0.8,
+      total_embeddings: embeddings.count || 0,
+      total_trajectories: trajectories.count || 0,
+      total_links: links.count || 0
     };
   } catch (error) {
     console.error('[ReasoningBank] getStatus failed:', error);
@@ -247,21 +293,26 @@ export async function getStatus() {
 }
 
 /**
- * Check which ReasoningBank tables are present (WASM version always has required data)
+ * Check which ReasoningBank tables are present (Node.js backend)
  */
 export async function checkReasoningBankTables() {
-  const wasm = await getWasmInstance();
-
   try {
-    await wasm.getStats();
+    await ensureInitialized();
+    const db = ReasoningBank.db.getDb();
+
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'pattern%'").all();
+    const tableNames = tables.map(t => t.name);
+
+    const requiredTables = ['patterns', 'pattern_embeddings', 'pattern_links', 'task_trajectories'];
+    const missingTables = requiredTables.filter(t => !tableNames.includes(t));
 
     return {
       exists: true,
-      existingTables: ['WASM patterns storage'],
-      missingTables: [],
-      requiredTables: ['WASM patterns storage'],
-      backend: 'WASM',
-      note: 'WASM backend does not use traditional SQL tables'
+      existingTables: tableNames,
+      missingTables: missingTables,
+      requiredTables: requiredTables,
+      backend: 'SQLite (Node.js)',
+      note: missingTables.length > 0 ? 'Some tables are missing - run migrations' : 'All tables present'
     };
   } catch (error) {
     return {
@@ -275,22 +326,22 @@ export async function checkReasoningBankTables() {
 }
 
 /**
- * Migrate existing database (not needed for WASM, always initialized)
+ * Migrate existing database (Node.js backend - run migrations)
  */
 export async function migrateReasoningBank() {
   try {
-    await getWasmInstance();
+    await ReasoningBank.db.runMigrations();
 
     return {
       success: true,
-      message: 'WASM backend initialized successfully',
-      migrated: false,
-      note: 'WASM backend does not require traditional migration'
+      message: 'Database migrations completed successfully',
+      migrated: true,
+      database_path: process.env.CLAUDE_FLOW_DB_PATH || '.swarm/memory.db'
     };
   } catch (error) {
     return {
       success: false,
-      message: `WASM initialization failed: ${error.message}`,
+      message: `Migration failed: ${error.message}`,
       error: error.message
     };
   }
@@ -326,4 +377,25 @@ function setCachedQuery(searchQuery, options, results) {
     results,
     timestamp: Date.now()
   });
+}
+
+/**
+ * Close database connection and cleanup resources
+ * Should be called when done with ReasoningBank operations
+ */
+export function cleanup() {
+  try {
+    if (backendInitialized) {
+      // Clear embedding cache (prevents memory leaks)
+      ReasoningBank.clearEmbeddingCache();
+
+      // Close database connection
+      ReasoningBank.db.closeDb();
+      backendInitialized = false;
+      initPromise = null;
+      console.log('[ReasoningBank] Database connection closed');
+    }
+  } catch (error) {
+    console.error('[ReasoningBank] Cleanup failed:', error.message);
+  }
 }

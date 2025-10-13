@@ -42,14 +42,14 @@
       "key": "docker_test",
       "value": "validation test",
       "namespace": "default",
-      "timestamp": 1760288841215,
+      "timestamp": 1760381491944,
       "redacted": false
     },
     {
       "key": "secure_key",
       "value": "api=sk-ant-test",
       "namespace": "default",
-      "timestamp": 1760288844695,
+      "timestamp": 1760381495550,
       "redacted": false
     }
   ],
@@ -75,6 +75,15 @@
       "namespace": "release_check",
       "timestamp": 1760201357297,
       "redacted": true
+    }
+  ],
+  "security": [
+    {
+      "key": "test-key",
+      "value": "This is a test memory for authentication",
+      "namespace": "security",
+      "timestamp": 1760388004082,
+      "redacted": false
     }
   ]
 }

@@ -315,7 +315,11 @@ async function detectMemoryMode(flags, subArgs) {
         const initialized = await isReasoningBankInitialized();
         return initialized ? 'reasoningbank' : 'basic';
     }
-    return 'basic';
+    if (flags?.basic || subArgs.includes('--basic')) {
+        return 'basic';
+    }
+    const initialized = await isReasoningBankInitialized();
+    return initialized ? 'reasoningbank' : 'basic';
 }
 async function isReasoningBankInitialized() {
     try {
@@ -590,14 +594,15 @@ async function checkBasicMode() {
 async function showCurrentMode() {
     const rbInitialized = await isReasoningBankInitialized();
     printInfo('📊 Current Memory Configuration:\n');
-    console.log('Default Mode: Basic (backward compatible)');
+    console.log('Default Mode: AUTO (smart selection with JSON fallback)');
     console.log('Available Modes:');
-    console.log('  • Basic Mode: Always available');
-    console.log(`  • ReasoningBank Mode: ${rbInitialized ? 'Initialized ✅' : 'Not initialized ⚠️'}`);
-    console.log('\n💡 To use a specific mode:');
-    console.log('   --reasoningbank or --rb  → Use ReasoningBank');
-    console.log('   --auto                   → Auto-detect best mode');
-    console.log('   (no flag)                → Use Basic mode');
+    console.log('  • Basic Mode: Always available (JSON storage)');
+    console.log(`  • ReasoningBank Mode: ${rbInitialized ? 'Initialized ✅ (will be used by default)' : 'Not initialized ⚠️ (JSON fallback active)'}`);
+    console.log('\n💡 Mode Behavior:');
+    console.log('   (no flag)                → AUTO: Use ReasoningBank if initialized, else JSON');
+    console.log('   --reasoningbank or --rb  → Force ReasoningBank mode');
+    console.log('   --basic                  → Force JSON mode');
+    console.log('   --auto                   → Same as default (explicit)');
 }
 async function migrateMemory(subArgs, flags) {
     const targetMode = flags?.to || getArgValue(subArgs, '--to');
@@ -656,10 +661,11 @@ function showMemoryHelp() {
     console.log('  --redact               🔒 Enable API key redaction (security feature)');
     console.log('  --secure               Alias for --redact');
     console.log();
-    console.log('🎯 Mode Selection (NEW):');
-    console.log('  --reasoningbank, --rb  Use ReasoningBank mode (AI-powered)');
-    console.log('  --auto                 Auto-detect best available mode');
-    console.log('  (no flag)              Use Basic mode (default, backward compatible)');
+    console.log('🎯 Mode Selection:');
+    console.log('  (no flag)              AUTO MODE (default) - Uses ReasoningBank if initialized, else JSON fallback');
+    console.log('  --reasoningbank, --rb  Force ReasoningBank mode (AI-powered)');
+    console.log('  --basic                Force Basic mode (JSON storage)');
+    console.log('  --auto                 Explicit auto-detect (same as default)');
     console.log();
     console.log('🔒 Security Features (v2.6.0):');
     console.log('  API Key Protection:    Automatically detects and redacts sensitive data');
@@ -687,9 +693,10 @@ function showMemoryHelp() {
     console.log('  memory mode    # Show current configuration');
     console.log();
     console.log('💡 Tips:');
-    console.log('  • Use Basic mode for simple key-value storage (fast, always available)');
-    console.log('  • Use ReasoningBank for AI-powered semantic search (learns from patterns)');
-    console.log('  • Use --auto to let claude-flow choose the best mode for you');
+    console.log('  • AUTO MODE (default): Automatically uses best available storage');
+    console.log('  • ReasoningBank: AI-powered semantic search (learns from patterns)');
+    console.log('  • JSON fallback: Always available, fast, simple key-value storage');
+    console.log('  • Initialize ReasoningBank once: "memory init --reasoningbank"');
     console.log('  • Always use --redact when storing API keys or secrets!');
 }
 

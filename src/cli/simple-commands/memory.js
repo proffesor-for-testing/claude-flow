@@ -402,8 +402,15 @@ async function detectMemoryMode(flags, subArgs) {
     return initialized ? 'reasoningbank' : 'basic';
   }
 
-  // Default: basic mode (backward compatible)
-  return 'basic';
+  // Explicit basic mode flag
+  if (flags?.basic || subArgs.includes('--basic')) {
+    return 'basic';
+  }
+
+  // Default: AUTO MODE (smart selection with JSON fallback)
+  // Automatically use ReasoningBank if initialized, otherwise fall back to basic mode
+  const initialized = await isReasoningBankInitialized();
+  return initialized ? 'reasoningbank' : 'basic';
 }
 
 // NEW: Check if ReasoningBank is initialized
@@ -423,7 +430,7 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
   const initialized = await isReasoningBankInitialized();
 
   // Lazy load the adapter (ES modules)
-  const { initializeReasoningBank, storeMemory, queryMemories, listMemories, getStatus, checkReasoningBankTables, migrateReasoningBank } = await import('../../reasoningbank/reasoningbank-adapter.js');
+  const { initializeReasoningBank, storeMemory, queryMemories, listMemories, getStatus, checkReasoningBankTables, migrateReasoningBank, cleanup } = await import('../../reasoningbank/reasoningbank-adapter.js');
 
   // Special handling for 'init' command
   if (command === 'init') {
@@ -467,6 +474,11 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
         printError('❌ Migration check failed');
         console.error(error.message);
         console.log('\nTry running: init --force to reinitialize');
+      } finally {
+        // Cleanup after migration check
+        cleanup();
+        // Force exit to prevent hanging from embedding cache timers
+        setTimeout(() => process.exit(0), 100);
       }
       return;
     }
@@ -485,6 +497,11 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
     } catch (error) {
       printError('❌ Failed to initialize ReasoningBank');
       console.error(error.message);
+    } finally {
+      // Cleanup after init
+      cleanup();
+      // Force exit to prevent hanging from embedding cache timers
+      setTimeout(() => process.exit(0), 100);
     }
     return;
   }
@@ -534,6 +551,16 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
   } catch (error) {
     printError(`❌ ReasoningBank command failed`);
     console.error(error.message);
+  } finally {
+    // Always cleanup database connection
+    cleanup();
+
+    // Force process exit after cleanup (embedding cache timers prevent natural exit)
+    // This is necessary because agentic-flow's embedding cache uses setTimeout
+    // which keeps the event loop alive
+    setTimeout(() => {
+      process.exit(0);
+    }, 100);
   }
 }
 
@@ -751,15 +778,16 @@ async function showCurrentMode() {
   const rbInitialized = await isReasoningBankInitialized();
 
   printInfo('📊 Current Memory Configuration:\n');
-  console.log('Default Mode: Basic (backward compatible)');
+  console.log('Default Mode: AUTO (smart selection with JSON fallback)');
   console.log('Available Modes:');
-  console.log('  • Basic Mode: Always available');
-  console.log(`  • ReasoningBank Mode: ${rbInitialized ? 'Initialized ✅' : 'Not initialized ⚠️'}`);
+  console.log('  • Basic Mode: Always available (JSON storage)');
+  console.log(`  • ReasoningBank Mode: ${rbInitialized ? 'Initialized ✅ (will be used by default)' : 'Not initialized ⚠️ (JSON fallback active)'}`);
 
-  console.log('\n💡 To use a specific mode:');
-  console.log('   --reasoningbank or --rb  → Use ReasoningBank');
-  console.log('   --auto                   → Auto-detect best mode');
-  console.log('   (no flag)                → Use Basic mode');
+  console.log('\n💡 Mode Behavior:');
+  console.log('   (no flag)                → AUTO: Use ReasoningBank if initialized, else JSON');
+  console.log('   --reasoningbank or --rb  → Force ReasoningBank mode');
+  console.log('   --basic                  → Force JSON mode');
+  console.log('   --auto                   → Same as default (explicit)');
 }
 
 // NEW: Migrate memory between modes
@@ -826,10 +854,11 @@ function showMemoryHelp() {
   console.log('  --redact               🔒 Enable API key redaction (security feature)');
   console.log('  --secure               Alias for --redact');
   console.log();
-  console.log('🎯 Mode Selection (NEW):');
-  console.log('  --reasoningbank, --rb  Use ReasoningBank mode (AI-powered)');
-  console.log('  --auto                 Auto-detect best available mode');
-  console.log('  (no flag)              Use Basic mode (default, backward compatible)');
+  console.log('🎯 Mode Selection:');
+  console.log('  (no flag)              AUTO MODE (default) - Uses ReasoningBank if initialized, else JSON fallback');
+  console.log('  --reasoningbank, --rb  Force ReasoningBank mode (AI-powered)');
+  console.log('  --basic                Force Basic mode (JSON storage)');
+  console.log('  --auto                 Explicit auto-detect (same as default)');
   console.log();
   console.log('🔒 Security Features (v2.6.0):');
   console.log('  API Key Protection:    Automatically detects and redacts sensitive data');
@@ -857,8 +886,9 @@ function showMemoryHelp() {
   console.log('  memory mode    # Show current configuration');
   console.log();
   console.log('💡 Tips:');
-  console.log('  • Use Basic mode for simple key-value storage (fast, always available)');
-  console.log('  • Use ReasoningBank for AI-powered semantic search (learns from patterns)');
-  console.log('  • Use --auto to let claude-flow choose the best mode for you');
+  console.log('  • AUTO MODE (default): Automatically uses best available storage');
+  console.log('  • ReasoningBank: AI-powered semantic search (learns from patterns)');
+  console.log('  • JSON fallback: Always available, fast, simple key-value storage');
+  console.log('  • Initialize ReasoningBank once: "memory init --reasoningbank"');
   console.log('  • Always use --redact when storing API keys or secrets!');
 }
