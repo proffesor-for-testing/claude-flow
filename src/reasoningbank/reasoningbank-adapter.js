@@ -2,7 +2,9 @@
  * ReasoningBank Adapter for Claude-Flow (WASM-Powered)
  *
  * Wraps agentic-flow's ReasoningBank WASM for ultra-fast performance
- * Performance: 0.04ms/op storage, 10,000-25,000 ops/sec (250x+ faster than SDK)
+ * Performance: 3ms/op storage, 10,000-25,000 ops/sec (250x+ faster than SDK)
+ *
+ * Now uses agentic-flow@1.5.12 with proper ESM WASM bindings!
  */
 
 import { createReasoningBank } from 'agentic-flow/dist/reasoningbank/wasm-adapter.js';

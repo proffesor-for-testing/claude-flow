@@ -39,39 +39,9 @@
 - 🛡️ **Safety**: Auto-adds `-i` to `rm` commands, detects sensitive keywords
 - 📁 **Organization**: Auto-routes files (tests→`/tests/`, src→`/src/`)
 - ⚡ **Productivity**: Alias expansion (`ll`→`ls -lah`), conventional commits
-
-**Quick Start:**
-
-**Option 1: Direct Plugin Installation** (Recommended)
-```bash
-# In Claude Code, run:
-/plugin ruvnet/claude-flow
-```
-
-**Option 2: Via NPM**
-```bash
-npx claude-flow@alpha init --force  # Auto-configures .claude-plugin/hooks/hooks.json
-```
-
-**Examples:**
-```bash
-rm test.txt          → rm -i test.txt           # Safety
-test.js             → src/test.js              # Organization
-git commit -m "fix" → [fix] fix + co-author   # Commits
-```
-
+ 
 > 📚 **Docs**: [HOOKS-V2-MODIFICATION.md](./docs/HOOKS-V2-MODIFICATION.md) | **Plugin**: `.claude-plugin/` | **Composable** with `agent-booster`
-
-## 🌐 **Flow Nexus Cloud Platform**
-
-**NEW**: Claude-Flow v2.0.0 now includes **Flow Nexus integration** - a cloud-powered AI development platform featuring:
-
-- **E2B Sandboxes**: Secure isolated environments for Node.js, Python, React, Next.js
-- **AI Swarms**: Deploy multi-agent systems in cloud infrastructure  
-- **Neural Training**: Distributed machine learning with custom model deployment
-- **Challenges & Marketplace**: Coding challenges with rUv credit rewards and template marketplace
-- **Workflow Automation**: Event-driven automation with message queue processing
-
+ 
 > 📚 **Complete documentation**: Visit [flow-nexus.ruv.io](https://flow-nexus.ruv.io) for comprehensive guides, tutorials, and API reference. Also see issue # https://github.com/ruvnet/claude-flow/issues/732
 
 ## ⚡ **Try v2.0.0 Alpha in 4 Commands**

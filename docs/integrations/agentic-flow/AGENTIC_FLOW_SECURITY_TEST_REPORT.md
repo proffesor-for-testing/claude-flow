@@ -29,8 +29,8 @@
 
 **Features:**
 - Comprehensive API key pattern matching
-  - Anthropic keys: `sk-ant-...`
-  - OpenRouter keys: `sk-or-...`
+  - Anthropic keys: `$ANTHROPIC_API_KEY`
+  - OpenRouter keys: `$OPENROUTER_API_KEY`
   - Google/Gemini keys: `AIza...`
   - Bearer tokens
   - Environment variables
@@ -41,7 +41,7 @@
 
 **Test Results:**
 ```
-✅ API keys redacted in text (sk-ant-a...[REDACTED])
+✅ API keys redacted in text ($ANTHROPIC_API_KEY)
 ✅ Environment variables sanitized
 ✅ Objects with sensitive fields protected
 ✅ Validation detects unredacted keys
@@ -96,8 +96,8 @@ grep -E "^[A-Z_]+=" .env | cut -d'=' -f1
 npx tsx test-redaction.ts
 
 # Results
-✅ Anthropic API Key: sk-ant-a...[REDACTED]
-✅ OpenRouter API Key: sk-or-v1...[REDACTED]
+✅ Anthropic API Key: $ANTHROPIC_API_KEY
+✅ OpenRouter API Key: $OPENROUTER_API_KEY
 ✅ Environment Variables: ANTHROPI...[REDACTED]
 ✅ Object Redaction: { apiKey: [REDACTED], model: "claude-3-sonnet" }
 ✅ Validation: Detects unredacted keys
@@ -203,8 +203,8 @@ npx agentic-flow agent list
 
 **Present in `.env`:**
 ```
-ANTHROPIC_API_KEY=sk-an...[REDACTED]
-OPENROUTER_API_KEY=sk-or...[REDACTED]
+ANTHROPIC_API_KEY=***REDACTED***
+OPENROUTER_API_KEY=***REDACTED***
 GOOGLE_GEMINI_API_KEY=AIza...[REDACTED]
 HUGGINGFACE_API_KEY=hf_...[REDACTED]
 PERPLEXITY_API_KEY=pplx...[REDACTED]

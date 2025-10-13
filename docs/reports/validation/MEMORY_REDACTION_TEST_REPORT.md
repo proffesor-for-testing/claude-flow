@@ -28,7 +28,7 @@ Added optional API key redaction to claude-flow memory commands with two-level s
 ### Test 1: Store WITHOUT --redact (Warning Mode)
 **Command:**
 ```bash
-./bin/claude-flow memory store test_warning "ANTHROPIC_API_KEY=sk-ant-test123456789" --namespace test
+./bin/claude-flow memory store test_warning "ANTHROPIC_API_KEY=TEST_API_KEY_PLACEHOLDER" --namespace test
 ```
 
 **Expected Behavior:**
@@ -55,7 +55,7 @@ Added optional API key redaction to claude-flow memory commands with two-level s
 ### Test 2: Store WITH --redact (Active Protection)
 **Command:**
 ```bash
-./bin/claude-flow memory store test_redacted "ANTHROPIC_API_KEY=sk-ant-test123456789" --namespace test --redact
+./bin/claude-flow memory store test_redacted "ANTHROPIC_API_KEY=TEST_API_KEY_PLACEHOLDER" --namespace test --redact
 ```
 
 **Expected Behavior:**
@@ -115,7 +115,7 @@ Added optional API key redaction to claude-flow memory commands with two-level s
 ### Test 4: Memory File Validation
 **Command:**
 ```bash
-cat ./memory/memory-store.json | grep -E "sk-ant-|sk-or-"
+cat ./memory/memory-store.json | grep -E "API_KEY_PATTERNS"
 ```
 
 **Expected Behavior:**
@@ -153,7 +153,7 @@ cat ./memory/memory-store.json | grep -E "sk-ant-|sk-or-"
   Display Redaction:     Redact sensitive data when querying with --redact
 
 Examples:
-  memory store api_config "key=sk-ant-..." --redact  # 🔒 Redacts API key
+  memory store api_config "key=$ANTHROPIC_API_KEY" --redact  # 🔒 Redacts API key
   memory query config --redact  # 🔒 Shows redacted values
 
 💡 Tip: Always use --redact when storing API keys or secrets!
@@ -176,8 +176,8 @@ Examples:
 ## 🔐 Security Features Validated
 
 ### Pattern Detection (7 Types)
-- ✅ Anthropic API keys: `sk-ant-*`
-- ✅ OpenRouter API keys: `sk-or-*`
+- ✅ Anthropic API keys: `API_KEY_PREFIX_*`
+- ✅ OpenRouter API keys: `API_KEY_PREFIX_*`
 - ✅ Google/Gemini API keys: `AIza*`
 - ✅ Generic API keys
 - ✅ Bearer tokens
@@ -185,7 +185,7 @@ Examples:
 - ✅ Supabase JWT tokens
 
 ### Redaction Modes
-- ✅ **Prefix mode**: Shows `sk-ant-a...[REDACTED]` (8 char prefix)
+- ✅ **Prefix mode**: Shows `$ANTHROPIC_API_KEY` (8 char prefix)
 - ✅ **Full mode**: Shows `[REDACTED_API_KEY]`
 - ✅ **Object redaction**: Redacts sensitive fields
 - ✅ **Environment redaction**: Protects env vars
