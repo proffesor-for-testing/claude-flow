@@ -134,7 +134,8 @@ export async function queryMemories(searchQuery, options = {}) {
 
   await ensureInitialized();
   const limit = options.limit || 10;
-  const namespace = options.namespace || 'default';
+  // Accept both 'namespace' and 'domain' for compatibility
+  const namespace = options.namespace || options.domain || 'default';
 
   try {
     // Try semantic search first using retrieveMemories
@@ -146,15 +147,16 @@ export async function queryMemories(searchQuery, options = {}) {
     });
 
     // Map backend results to our memory format
+    // retrieveMemories returns: { id, title, content, description, score, components }
     const memories = results.map(memory => ({
       id: memory.id,
-      key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
-      value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
-      namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
-      confidence: memory.confidence || 0.8,
+      key: memory.title || 'unknown',
+      value: memory.content || memory.description || '',
+      namespace: namespace, // Use the namespace from our query
+      confidence: memory.components?.reliability || 0.8,
       usage_count: memory.usage_count || 0,
       created_at: memory.created_at || new Date().toISOString(),
-      score: memory.similarity_score || memory.mmr_score || 0,
+      score: memory.score || 0,
       // Include original pattern for debugging
       _pattern: memory
     }));

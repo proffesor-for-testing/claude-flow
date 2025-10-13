@@ -1,57 +1,70 @@
-import { createReasoningBank } from 'agentic-flow/dist/reasoningbank/wasm-adapter.js';
+import * as ReasoningBank from 'agentic-flow/reasoningbank';
 import { v4 as uuidv4 } from 'uuid';
-let wasmInstance = null;
+let backendInitialized = false;
 let initPromise = null;
 const queryCache = new Map();
 const CACHE_SIZE = 100;
 const CACHE_TTL = 60000;
-async function getWasmInstance() {
-    if (wasmInstance) {
-        return wasmInstance;
+async function ensureInitialized() {
+    if (backendInitialized) {
+        return true;
     }
     if (initPromise) {
         return initPromise;
     }
     initPromise = (async ()=>{
         try {
-            const dbName = process.env.CLAUDE_FLOW_DB_NAME || 'claude-flow-memory';
-            wasmInstance = await createReasoningBank(dbName);
-            console.log('[ReasoningBank] WASM initialized successfully');
-            return wasmInstance;
+            await ReasoningBank.initialize();
+            backendInitialized = true;
+            console.log('[ReasoningBank] Node.js backend initialized successfully');
+            return true;
         } catch (error) {
-            console.error('[ReasoningBank] WASM initialization failed:', error);
-            throw new Error(`Failed to initialize ReasoningBank WASM: ${error.message}`);
+            console.error('[ReasoningBank] Backend initialization failed:', error);
+            throw new Error(`Failed to initialize ReasoningBank: ${error.message}`);
         }
     })();
     return initPromise;
 }
 export async function initializeReasoningBank() {
-    await getWasmInstance();
+    await ensureInitialized();
     return true;
 }
 export async function storeMemory(key, value, options = {}) {
-    const wasm = await getWasmInstance();
+    await ensureInitialized();
     try {
-        const pattern = {
-            task_description: value,
-            task_category: options.namespace || 'default',
-            strategy: key,
-            success_score: options.confidence || 0.8,
-            metadata: {
+        const memoryId = options.id || uuidv4();
+        const memory = {
+            id: memoryId,
+            type: 'reasoning_memory',
+            pattern_data: {
+                title: key,
+                content: value,
+                domain: options.namespace || 'default',
                 agent: options.agent || 'memory-agent',
-                domain: options.domain || 'general',
-                type: options.type || 'fact',
+                task_type: options.type || 'fact',
                 original_key: key,
                 original_value: value,
-                namespace: options.namespace || 'default',
-                created_at: new Date().toISOString()
-            }
+                namespace: options.namespace || 'default'
+            },
+            confidence: options.confidence || 0.8,
+            usage_count: 0
         };
-        const patternId = await wasm.storePattern(pattern);
+        ReasoningBank.db.upsertMemory(memory);
+        try {
+            const embedding = await ReasoningBank.computeEmbedding(value);
+            ReasoningBank.db.upsertEmbedding({
+                id: memoryId,
+                model: 'text-embedding-3-small',
+                dims: embedding.length,
+                vector: embedding
+            });
+        } catch (embeddingError) {
+            console.warn('[ReasoningBank] Failed to generate embedding:', embeddingError.message);
+        }
         queryCache.clear();
-        return patternId;
+        return memoryId;
     } catch (error) {
-        console.error('[ReasoningBank] WASM storeMemory failed:', error);
+        console.error('[ReasoningBank] storeMemory failed:', error);
         throw new Error(`Failed to store memory: ${error.message}`);
     }
 }
@@ -60,34 +73,41 @@ export async function queryMemories(searchQuery, options = {}) {
     if (cached) {
         return cached;
     }
-    const wasm = await getWasmInstance();
+    await ensureInitialized();
     const limit = options.limit || 10;
-    const namespace = options.namespace || 'default';
+    const namespace = options.namespace || options.domain || 'default';
     try {
-        const results = await wasm.findSimilar(searchQuery, namespace, limit);
-        const memories = results.map((pattern)=>({
-                id: pattern.id || `mem_${uuidv4()}`,
-                key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-                value: pattern.task_description || pattern.metadata?.original_value || '',
-                namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-                confidence: pattern.success_score || 0.8,
-                usage_count: pattern.usage_count || 0,
-                created_at: pattern.metadata?.created_at || new Date().toISOString(),
-                score: pattern.similarity_score || 0,
-                _pattern: pattern
+        const results = await ReasoningBank.retrieveMemories(searchQuery, {
+            domain: namespace,
+            agent: options.agent || 'query-agent',
+            k: limit,
+            minConfidence: options.minConfidence || 0.3
+        });
+        const memories = results.map((memory)=>({
+                id: memory.id,
+                key: memory.title || 'unknown',
+                value: memory.content || memory.description || '',
+                namespace: namespace,
+                confidence: memory.components?.reliability || 0.8,
+                usage_count: memory.usage_count || 0,
+                created_at: memory.created_at || new Date().toISOString(),
+                score: memory.score || 0,
+                _pattern: memory
             }));
         if (memories.length === 0) {
-            console.warn('[ReasoningBank] Semantic search returned 0 results, trying category fallback');
-            const categoryResults = await wasm.searchByCategory(namespace, limit);
-            const fallbackMemories = categoryResults.map((pattern)=>({
-                    id: pattern.id || `mem_${uuidv4()}`,
-                    key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-                    value: pattern.task_description || pattern.metadata?.original_value || '',
-                    namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-                    confidence: pattern.success_score || 0.8,
-                    usage_count: pattern.usage_count || 0,
-                    created_at: pattern.metadata?.created_at || new Date().toISOString(),
-                    _pattern: pattern
+            console.warn('[ReasoningBank] Semantic search returned 0 results, trying database fallback');
+            const fallbackResults = ReasoningBank.db.fetchMemoryCandidates({
+                domain: namespace,
+                minConfidence: options.minConfidence || 0.3
+            });
+            const fallbackMemories = fallbackResults.slice(0, limit).map((memory)=>({
+                    id: memory.id,
+                    key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
+                    value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
+                    namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
+                    confidence: memory.confidence || 0.8,
+                    usage_count: memory.usage_count || 0,
+                    created_at: memory.created_at || new Date().toISOString()
                 }));
             setCachedQuery(searchQuery, options, fallbackMemories);
             return fallbackMemories;
@@ -95,17 +115,20 @@ export async function queryMemories(searchQuery, options = {}) {
         setCachedQuery(searchQuery, options, memories);
         return memories;
     } catch (error) {
-        console.warn('[ReasoningBank] WASM query failed, trying category fallback:', error.message);
+        console.warn('[ReasoningBank] Query failed, trying database fallback:', error.message);
         try {
-            const categoryResults = await wasm.searchByCategory(namespace, limit);
-            const fallbackMemories = categoryResults.map((pattern)=>({
-                    id: pattern.id || `mem_${uuidv4()}`,
-                    key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-                    value: pattern.task_description || pattern.metadata?.original_value || '',
-                    namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-                    confidence: pattern.success_score || 0.8,
-                    usage_count: pattern.usage_count || 0,
-                    created_at: pattern.metadata?.created_at || new Date().toISOString()
+            const fallbackResults = ReasoningBank.db.fetchMemoryCandidates({
+                domain: namespace,
+                minConfidence: options.minConfidence || 0.3
+            });
+            const fallbackMemories = fallbackResults.slice(0, limit).map((memory)=>({
+                    id: memory.id,
+                    key: memory.pattern_data?.title || 'unknown',
+                    value: memory.pattern_data?.content || '',
+                    namespace: memory.pattern_data?.domain || 'default',
+                    confidence: memory.confidence || 0.8,
+                    usage_count: memory.usage_count || 0,
+                    created_at: memory.created_at || new Date().toISOString()
                 }));
             setCachedQuery(searchQuery, options, fallbackMemories);
             return fallbackMemories;
@@ -116,19 +139,25 @@ export async function queryMemories(searchQuery, options = {}) {
     }
 }
 export async function listMemories(options = {}) {
-    const wasm = await getWasmInstance();
+    await ensureInitialized();
     const limit = options.limit || 10;
-    const namespace = options.namespace || 'default';
+    const namespace = options.namespace;
     try {
-        const patterns = await wasm.searchByCategory(namespace, limit);
-        return patterns.map((pattern)=>({
-                id: pattern.id || `mem_${uuidv4()}`,
-                key: pattern.strategy || pattern.metadata?.original_key || 'unknown',
-                value: pattern.task_description || pattern.metadata?.original_value || '',
-                namespace: pattern.task_category || pattern.metadata?.namespace || 'default',
-                confidence: pattern.success_score || 0.8,
-                usage_count: pattern.usage_count || 0,
-                created_at: pattern.metadata?.created_at || new Date().toISOString()
+        let memories;
+        if (namespace && namespace !== 'default') {
+            const allMemories = ReasoningBank.db.getAllActiveMemories();
+            memories = allMemories.filter((m)=>m.pattern_data?.domain === namespace).slice(0, limit);
+        } else {
+            memories = ReasoningBank.db.getAllActiveMemories().slice(0, limit);
+        }
+        return memories.map((memory)=>({
+                id: memory.id,
+                key: memory.pattern_data?.title || memory.pattern_data?.original_key || 'unknown',
+                value: memory.pattern_data?.content || memory.pattern_data?.original_value || '',
+                namespace: memory.pattern_data?.domain || memory.pattern_data?.namespace || 'default',
+                confidence: memory.confidence || 0.8,
+                usage_count: memory.usage_count || 0,
+                created_at: memory.created_at || new Date().toISOString()
             }));
     } catch (error) {
         console.error('[ReasoningBank] listMemories failed:', error);
@@ -136,19 +165,25 @@ export async function listMemories(options = {}) {
     }
 }
 export async function getStatus() {
-    const wasm = await getWasmInstance();
+    await ensureInitialized();
     try {
-        const stats = await wasm.getStats();
+        const db = ReasoningBank.db.getDb();
+        const patterns = db.prepare("SELECT COUNT(*) as count FROM patterns WHERE type = 'reasoning_memory'").get();
+        const embeddings = db.prepare("SELECT COUNT(*) as count FROM pattern_embeddings").get();
+        const trajectories = db.prepare("SELECT COUNT(*) as count FROM task_trajectories").get();
+        const links = db.prepare("SELECT COUNT(*) as count FROM pattern_links").get();
+        const avgConf = db.prepare("SELECT AVG(confidence) as avg FROM patterns WHERE type = 'reasoning_memory'").get();
+        const domains = db.prepare("SELECT COUNT(DISTINCT json_extract(pattern_data, '$.domain')) as count FROM patterns WHERE type = 'reasoning_memory'").get();
         return {
-            total_memories: stats.total_patterns || 0,
-            total_categories: stats.total_categories || 0,
-            storage_backend: stats.storage_backend || 'unknown',
-            wasm_version: stats.wasm_version || '1.5.11',
-            performance: 'WASM-powered (0.04ms/op)',
-            avg_confidence: 0.8,
-            total_usage: 0,
-            total_embeddings: stats.total_patterns || 0,
-            total_trajectories: 0
+            total_memories: patterns.count || 0,
+            total_categories: domains.count || 0,
+            storage_backend: 'SQLite (Node.js)',
+            database_path: process.env.CLAUDE_FLOW_DB_PATH || '.swarm/memory.db',
+            performance: 'SQLite with persistent storage',
+            avg_confidence: avgConf.avg || 0.8,
+            total_embeddings: embeddings.count || 0,
+            total_trajectories: trajectories.count || 0,
+            total_links: links.count || 0
         };
     } catch (error) {
         console.error('[ReasoningBank] getStatus failed:', error);
@@ -159,20 +194,25 @@ export async function getStatus() {
     }
 }
 export async function checkReasoningBankTables() {
-    const wasm = await getWasmInstance();
     try {
-        await wasm.getStats();
+        await ensureInitialized();
+        const db = ReasoningBank.db.getDb();
+        const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'pattern%'").all();
+        const tableNames = tables.map((t)=>t.name);
+        const requiredTables = [
+            'patterns',
+            'pattern_embeddings',
+            'pattern_links',
+            'task_trajectories'
+        ];
+        const missingTables = requiredTables.filter((t)=>!tableNames.includes(t));
         return {
             exists: true,
-            existingTables: [
-                'WASM patterns storage'
-            ],
-            missingTables: [],
-            requiredTables: [
-                'WASM patterns storage'
-            ],
-            backend: 'WASM',
-            note: 'WASM backend does not use traditional SQL tables'
+            existingTables: tableNames,
+            missingTables: missingTables,
+            requiredTables: requiredTables,
+            backend: 'SQLite (Node.js)',
+            note: missingTables.length > 0 ? 'Some tables are missing - run migrations' : 'All tables present'
         };
     } catch (error) {
         return {
@@ -186,17 +226,17 @@ export async function checkReasoningBankTables() {
 }
 export async function migrateReasoningBank() {
     try {
-        await getWasmInstance();
+        await ReasoningBank.db.runMigrations();
         return {
             success: true,
-            message: 'WASM backend initialized successfully',
-            migrated: false,
-            note: 'WASM backend does not require traditional migration'
+            message: 'Database migrations completed successfully',
+            migrated: true,
+            database_path: process.env.CLAUDE_FLOW_DB_PATH || '.swarm/memory.db'
         };
     } catch (error) {
         return {
             success: false,
-            message: `WASM initialization failed: ${error.message}`,
+            message: `Migration failed: ${error.message}`,
             error: error.message
         };
     }
@@ -225,6 +265,19 @@ function setCachedQuery(searchQuery, options, results) {
         results,
         timestamp: Date.now()
     });
+}
+export function cleanup() {
+    try {
+        if (backendInitialized) {
+            ReasoningBank.clearEmbeddingCache();
+            ReasoningBank.db.closeDb();
+            backendInitialized = false;
+            initPromise = null;
+            console.log('[ReasoningBank] Database connection closed');
+        }
+    } catch (error) {
+        console.error('[ReasoningBank] Cleanup failed:', error.message);
+    }
 }
 
 //# sourceMappingURL=reasoningbank-adapter.js.map

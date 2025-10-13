@@ -332,7 +332,7 @@ async function isReasoningBankInitialized() {
 }
 async function handleReasoningBankCommand(command, subArgs, flags) {
     const initialized = await isReasoningBankInitialized();
-    const { initializeReasoningBank, storeMemory, queryMemories, listMemories, getStatus, checkReasoningBankTables, migrateReasoningBank } = await import('../../reasoningbank/reasoningbank-adapter.js');
+    const { initializeReasoningBank, storeMemory, queryMemories, listMemories, getStatus, checkReasoningBankTables, migrateReasoningBank, cleanup } = await import('../../reasoningbank/reasoningbank-adapter.js');
     if (command === 'init') {
         const dbPath = '.swarm/memory.db';
         if (initialized) {
@@ -364,6 +364,9 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
                 printError('❌ Migration check failed');
                 console.error(error.message);
                 console.log('\nTry running: init --force to reinitialize');
+            } finally{
+                cleanup();
+                setTimeout(()=>process.exit(0), 100);
             }
             return;
         }
@@ -379,6 +382,9 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
         } catch (error) {
             printError('❌ Failed to initialize ReasoningBank');
             console.error(error.message);
+        } finally{
+            cleanup();
+            setTimeout(()=>process.exit(0), 100);
         }
         return;
     }
@@ -419,6 +425,11 @@ async function handleReasoningBankCommand(command, subArgs, flags) {
     } catch (error) {
         printError(`❌ ReasoningBank command failed`);
         console.error(error.message);
+    } finally{
+        cleanup();
+        setTimeout(()=>{
+            process.exit(0);
+        }, 100);
     }
 }
 async function handleReasoningBankStore(subArgs, flags, storeMemory) {
