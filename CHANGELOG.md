@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0-alpha.12] - 2025-10-20
+
+> **🔧 Critical Bug Fixes**: Skills system and statusline initialization now work correctly in all npm install scenarios
+
+### 🐛 Bug Fixes
+
+#### **Skills System Initialization**
+- **Fixed**: Skills copier path resolution in both `bin/init/skills-copier.js` and `src/cli/simple-commands/init/skills-copier.js`
+  - Skills now copy correctly from npm package installations (global and local)
+  - All 21 built-in skills properly initialize during `npx claude-flow init`
+  - Tested and verified in Docker environment
+  - Resolves issue where `.claude/skills/` directory remained empty after init
+
+#### **Statusline Script Creation**
+- **Fixed**: Statusline script creation with proper bash variable escaping and missing imports
+  - Escaped bash variables (`${MEM_COLOR}`, `${CPU_COLOR}`, `${SUCCESS_COLOR}`) to prevent JavaScript template literal conflicts
+  - Added missing `path` and `os` module imports in `enhancedClaudeFlowInit()` function
+  - Script now creates successfully with executable permissions (755) in both `.claude/` and `~/.claude/`
+  - Resolves "⚠️ Could not create statusline script, skipping..." warning during init
+  - Verified in Docker with proper file permissions: `-rwxr-xr-x`
+
+### ✅ Verification
+- **Docker Testing**: All fixes validated in isolated Docker environment before publishing
+- **Skills Validation**: All 21 skills copy successfully
+- **Statusline Validation**: Script creates with correct permissions and executable functionality
+
 ## [2.7.0-alpha.11] - 2025-10-20
 
 > **🎨 Skills System Integration**: Complete migration from commands to skills + comprehensive documentation
