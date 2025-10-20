@@ -220,7 +220,7 @@ if [ -d "$FLOW_DIR" ]; then
         else
           MEM_COLOR="\\033[31m"  # Red
         fi
-        echo -ne "  ${MEM_COLOR}💾 ${MEM_PERCENT}%\\033[0m"
+        echo -ne "  \${MEM_COLOR}💾 \${MEM_PERCENT}%\\033[0m"
       fi
 
       # CPU load
@@ -234,7 +234,7 @@ if [ -d "$FLOW_DIR" ]; then
         else
           CPU_COLOR="\\033[31m"  # Red
         fi
-        echo -ne "  ${CPU_COLOR}⚙ ${CPU_LOAD}%\\033[0m"
+        echo -ne "  \${CPU_COLOR}⚙ \${CPU_LOAD}%\\033[0m"
       fi
     fi
   fi
@@ -288,7 +288,7 @@ if [ -d "$FLOW_DIR" ]; then
         else
           SUCCESS_COLOR="\\033[31m"  # Red
         fi
-        echo -ne "  ${SUCCESS_COLOR}🎯 ${SUCCESS_RATE}%\\033[0m"
+        echo -ne "  \${SUCCESS_COLOR}🎯 \${SUCCESS_RATE}%\\033[0m"
       fi
 
       # Average Time
@@ -1332,9 +1332,11 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
   const args = subArgs || [];
   const options = flags || {};
 
-  // Import fs module for Node.js
+  // Import fs, path, and os modules for Node.js
   const fs = await import('fs/promises');
   const { chmod } = fs;
+  const path = await import('path');
+  const os = await import('os');
 
   try {
     // Check existing files
@@ -1418,6 +1420,7 @@ async function enhancedClaudeFlowInit(flags, subArgs = []) {
       // Not critical, just skip
       if (!dryRun) {
         console.log('  ⚠️  Could not create statusline script, skipping...');
+        console.log(`  ℹ️  Error: ${err.message}`);
       }
     }
 
