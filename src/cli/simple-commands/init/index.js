@@ -43,6 +43,7 @@ import { promises as fs } from 'fs';
 import { copyTemplates } from './template-copier.js';
 import { copyRevisedTemplates, validateTemplatesExist } from './copy-revised-templates.js';
 import { copyAgentFiles, createAgentDirectories, validateAgentSystem, copyCommandFiles } from './agent-copier.js';
+import { copySkillFiles, createSkillDirectories, validateSkillSystem } from './skills-copier.js';
 import { showInitHelp } from './help.js';
 import { batchInitCommand, batchInitFromConfig, validateBatchOptions } from './batch-init.js';
 import { ValidationSystem, runFullValidation } from './validation/index.js';
@@ -1781,6 +1782,20 @@ ${commands.map((cmd) => `- [${cmd}](./${cmd}.md)`).join('\n')}
           console.log('✅ ✓ Command system setup complete with Flow Nexus integration');
         } else {
           console.log('⚠️  Command system setup failed:', commandResult.error);
+        }
+
+        // Copy skill files including skill-builder
+        console.log('\n🎯 Setting up skill system...');
+        const skillResult = await copySkillFiles(workingDir, {
+          force: force,
+          dryRun: dryRun
+        });
+
+        if (skillResult.success) {
+          await validateSkillSystem(workingDir);
+          console.log('✅ ✓ Skill system setup complete with skill-builder');
+        } else {
+          console.log('⚠️  Skill system setup failed:', skillResult.error);
         }
 
         console.log('✅ ✓ Agent system setup complete with 64 specialized agents');
