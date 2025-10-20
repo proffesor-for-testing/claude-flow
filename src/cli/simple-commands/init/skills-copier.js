@@ -10,35 +10,53 @@ const __dirname = dirname(__filename);
  * Copy all skill files from the installed package to project directory
  */
 export async function copySkillFiles(targetDir, options = {}) {
+  console.log('  🚀 copySkillFiles function called');
+  console.log(`  📂 Target directory: ${targetDir}`);
+  console.log(`  ⚙️  Options:`, options);
+  console.log(`  📍 __dirname: ${__dirname}`);
+
   const { force = false, dryRun = false } = options;
 
   // Path to skill files - try multiple locations
-  const packageSkillsDir = join(__dirname, '../../../../../.claude/skills'); // From npm package
-  const localSkillsDir = '/workspaces/claude-code-flow/.claude/skills';   // Local development
-  const cwdSkillsDir = join(process.cwd(), '.claude/skills');              // Current working directory
+  // From npm package: src/cli/simple-commands/init/ -> root = ../../../../
+  const packageSkillsDir = join(__dirname, '../../../../.claude/skills');
+  const localSkillsDir = join(__dirname, '../../../../../.claude/skills'); // Local development (one more level up)
+  const globalNpmSkillsDir = '/usr/local/lib/node_modules/claude-flow/.claude/skills'; // Global npm install
 
   let sourceSkillsDir;
 
-  // Try local development first, then package, then cwd
-  try {
-    await fs.access(localSkillsDir);
-    sourceSkillsDir = localSkillsDir;
-    console.log('  📁 Using local development skill files');
-  } catch {
+  // Try package location first (most common for npm installs), then local dev, then global npm
+  const locationsToTry = [
+    { path: packageSkillsDir, label: 'packaged skill files' },
+    { path: localSkillsDir, label: 'local development skill files' },
+    { path: globalNpmSkillsDir, label: 'global npm skill files' }
+  ];
+
+  for (const location of locationsToTry) {
     try {
-      await fs.access(packageSkillsDir);
-      sourceSkillsDir = packageSkillsDir;
-      console.log('  📁 Using packaged skill files');
-    } catch {
-      try {
-        await fs.access(cwdSkillsDir);
-        sourceSkillsDir = cwdSkillsDir;
-        console.log('  📁 Using current directory skill files');
-      } catch {
-        console.log('  ⚠️  No skill files found in any location');
-        return { success: false, error: 'Skill files not found' };
+      console.log(`  🔍 Checking: ${location.path}`);
+      await fs.access(location.path);
+      // Verify it's actually a directory with skills
+      const items = await fs.readdir(location.path);
+      console.log(`  📊 Found ${items.length} items at ${location.path}`);
+      if (items.length > 0) {
+        sourceSkillsDir = location.path;
+        console.log(`  📁 Using ${location.label}`);
+        console.log(`  📍 Path: ${location.path}`);
+        break;
       }
+    } catch (err) {
+      console.log(`  ❌ Failed to access ${location.path}: ${err.message}`);
+      // Try next location
+      continue;
     }
+  }
+
+  if (!sourceSkillsDir) {
+    console.log('  ⚠️  No skill files found in any location');
+    console.log('  🔍 Searched locations:');
+    locationsToTry.forEach(loc => console.log(`     - ${loc.path}`));
+    return { success: false, error: 'Skill files not found' };
   }
 
   const targetSkillsDir = join(targetDir, '.claude/skills');
