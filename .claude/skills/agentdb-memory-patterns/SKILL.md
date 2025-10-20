@@ -9,39 +9,100 @@ description: "Implement persistent memory patterns for AI agents using AgentDB. 
 
 Provides memory management patterns for AI agents using AgentDB's persistent storage and ReasoningBank integration. Enables agents to remember conversations, learn from interactions, and maintain context across sessions.
 
+**Performance**: 150x-12,500x faster than traditional solutions with 100% backward compatibility.
+
 ## Prerequisites
 
-- agentic-flow v1.5.11+ or agentdb v1.0.4+
 - Node.js 18+
+- AgentDB v1.0.7+ (via agentic-flow or standalone)
 - Understanding of agent architectures
 
-## Quick Start
+## Quick Start with CLI
+
+### Initialize AgentDB
+
+```bash
+# Initialize vector database
+npx agentdb@latest init ./agents.db
+
+# Or with custom dimensions
+npx agentdb@latest init ./agents.db --dimension 768
+
+# Use preset configurations
+npx agentdb@latest init ./agents.db --preset large
+
+# In-memory database for testing
+npx agentdb@latest init ./memory.db --in-memory
+```
+
+### Start MCP Server for Claude Code
+
+```bash
+# Start MCP server (integrates with Claude Code)
+npx agentdb@latest mcp
+
+# Add to Claude Code (one-time setup)
+claude mcp add agentdb npx agentdb@latest mcp
+```
+
+### Create Learning Plugin
+
+```bash
+# Interactive plugin wizard
+npx agentdb@latest create-plugin
+
+# Use template directly
+npx agentdb@latest create-plugin -t decision-transformer -n my-agent
+
+# Available templates:
+# - decision-transformer (sequence modeling RL)
+# - q-learning (value-based learning)
+# - sarsa (on-policy TD learning)
+# - actor-critic (policy gradient)
+# - curiosity-driven (exploration-based)
+```
+
+## Quick Start with API
 
 ```typescript
-import { AgentDB, MemoryManager } from 'agentdb';
+import { createAgentDBAdapter } from 'agentic-flow/reasoningbank';
 
-// Initialize memory system
-const memory = new MemoryManager({
-  agentId: 'assistant-001',
-  persist: true,
-  ttl: 3600 * 24 * 30 // 30 days
+// Initialize with default configuration
+const adapter = await createAgentDBAdapter({
+  dbPath: '.agentdb/reasoningbank.db',
+  enableLearning: true,      // Enable learning plugins
+  enableReasoning: true,      // Enable reasoning agents
+  quantizationType: 'scalar', // binary | scalar | product | none
+  cacheSize: 1000,            // In-memory cache
 });
 
-// Store interaction
-await memory.store({
-  role: 'user',
-  content: 'What is the capital of France?',
-  timestamp: Date.now()
+// Store interaction memory
+const patternId = await adapter.insertPattern({
+  id: '',
+  type: 'pattern',
+  domain: 'conversation',
+  pattern_data: JSON.stringify({
+    embedding: await computeEmbedding('What is the capital of France?'),
+    pattern: {
+      user: 'What is the capital of France?',
+      assistant: 'The capital of France is Paris.',
+      timestamp: Date.now()
+    }
+  }),
+  confidence: 0.95,
+  usage_count: 1,
+  success_count: 1,
+  created_at: Date.now(),
+  last_used: Date.now(),
 });
 
-await memory.store({
-  role: 'assistant',
-  content: 'The capital of France is Paris.',
-  timestamp: Date.now()
+// Retrieve context with reasoning
+const context = await adapter.retrieveWithReasoning(queryEmbedding, {
+  domain: 'conversation',
+  k: 10,
+  useMMR: true,              // Maximal Marginal Relevance
+  synthesizeContext: true,    // Generate rich context
 });
-
-// Retrieve context
-const context = await memory.getRecentContext({ limit: 10 });
 ```
 
 ## Memory Patterns
@@ -122,45 +183,157 @@ await memory.consolidate({
 });
 ```
 
+## CLI Operations
+
+### Query Database
+
+```bash
+# Query with vector embedding
+npx agentdb@latest query ./agents.db "[0.1,0.2,0.3,...]"
+
+# Top-k results
+npx agentdb@latest query ./agents.db "[0.1,0.2,0.3]" -k 10
+
+# With similarity threshold
+npx agentdb@latest query ./agents.db "0.1 0.2 0.3" -t 0.75
+
+# JSON output
+npx agentdb@latest query ./agents.db "[...]" -f json
+```
+
+### Import/Export Data
+
+```bash
+# Export vectors to file
+npx agentdb@latest export ./agents.db ./backup.json
+
+# Import vectors from file
+npx agentdb@latest import ./backup.json
+
+# Get database statistics
+npx agentdb@latest stats ./agents.db
+```
+
+### Performance Benchmarks
+
+```bash
+# Run performance benchmarks
+npx agentdb@latest benchmark
+
+# Results show:
+# - Pattern Search: 150x faster (100µs vs 15ms)
+# - Batch Insert: 500x faster (2ms vs 1s)
+# - Large-scale Query: 12,500x faster (8ms vs 100s)
+```
+
 ## Integration with ReasoningBank
 
 ```typescript
-import { ReasoningBank } from 'agentic-flow/reasoningbank';
+import { createAgentDBAdapter, migrateToAgentDB } from 'agentic-flow/reasoningbank';
 
-// Connect memory to reasoning
-const rb = new ReasoningBank({
-  memory: memory,
-  learningRate: 0.1
+// Migrate from legacy ReasoningBank
+const result = await migrateToAgentDB(
+  '.swarm/memory.db',           // Source (legacy)
+  '.agentdb/reasoningbank.db'   // Destination (AgentDB)
+);
+
+console.log(`✅ Migrated ${result.patternsMigrated} patterns`);
+
+// Train learning model
+const adapter = await createAgentDBAdapter({
+  enableLearning: true,
 });
 
-// Learn from outcomes
-await rb.recordOutcome({
-  task: 'summarize_document',
-  approach: 'extractive',
-  success: true,
-  metrics: { accuracy: 0.95 }
+await adapter.train({
+  epochs: 50,
+  batchSize: 32,
 });
 
-// Get optimal strategy
-const strategy = await rb.getOptimalStrategy('summarize_document');
+// Get optimal strategy with reasoning
+const result = await adapter.retrieveWithReasoning(queryEmbedding, {
+  domain: 'task-planning',
+  synthesizeContext: true,
+  optimizeMemory: true,
+});
 ```
+
+## Learning Plugins
+
+### Available Algorithms (9 Total)
+
+1. **Decision Transformer** - Sequence modeling RL (recommended)
+2. **Q-Learning** - Value-based learning
+3. **SARSA** - On-policy TD learning
+4. **Actor-Critic** - Policy gradient with baseline
+5. **Active Learning** - Query selection
+6. **Adversarial Training** - Robustness
+7. **Curriculum Learning** - Progressive difficulty
+8. **Federated Learning** - Distributed learning
+9. **Multi-task Learning** - Transfer learning
+
+### List and Manage Plugins
+
+```bash
+# List available plugins
+npx agentdb@latest list-plugins
+
+# List plugin templates
+npx agentdb@latest list-templates
+
+# Get plugin info
+npx agentdb@latest plugin-info <name>
+```
+
+## Reasoning Agents (4 Modules)
+
+1. **PatternMatcher** - Find similar patterns with HNSW indexing
+2. **ContextSynthesizer** - Generate rich context from multiple sources
+3. **MemoryOptimizer** - Consolidate similar patterns, prune low-quality
+4. **ExperienceCurator** - Quality-based experience filtering
 
 ## Best Practices
 
-1. **Prune regularly**: Remove outdated or low-value memories
-2. **Use TTL**: Set time-to-live for ephemeral data
-3. **Index metadata**: Enable fast filtering by sessionId, userId
-4. **Compress old data**: Archive infrequently accessed memories
+1. **Enable quantization**: Use scalar/binary for 4-32x memory reduction
+2. **Use caching**: 1000 pattern cache for <1ms retrieval
+3. **Batch operations**: 500x faster than individual inserts
+4. **Train regularly**: Update learning models with new experiences
+5. **Enable reasoning**: Automatic context synthesis and optimization
+6. **Monitor metrics**: Use `stats` command to track performance
 
 ## Troubleshooting
 
 ### Issue: Memory growing too large
-**Solution**: Enable auto-pruning or set TTL values
+```bash
+# Check database size
+npx agentdb@latest stats ./agents.db
 
-### Issue: Context not relevant
-**Solution**: Use vector search for semantic memory retrieval
+# Enable quantization
+# Use 'binary' (32x smaller) or 'scalar' (4x smaller)
+```
+
+### Issue: Slow search performance
+```bash
+# Enable HNSW indexing and caching
+# Results: <100µs search time
+```
+
+### Issue: Migration from legacy ReasoningBank
+```bash
+# Automatic migration with validation
+npx agentdb@latest migrate --source .swarm/memory.db
+```
+
+## Performance Characteristics
+
+- **Vector Search**: <100µs (HNSW indexing)
+- **Pattern Retrieval**: <1ms (with cache)
+- **Batch Insert**: 2ms for 100 patterns
+- **Memory Efficiency**: 4-32x reduction with quantization
+- **Backward Compatibility**: 100% compatible with ReasoningBank API
 
 ## Learn More
 
-- Memory API: packages/agentdb/docs/memory-api.md
-- ReasoningBank: agentic-flow/src/reasoningbank/README.md
+- GitHub: https://github.com/ruvnet/agentic-flow/tree/main/packages/agentdb
+- Documentation: node_modules/agentic-flow/docs/AGENTDB_INTEGRATION.md
+- MCP Integration: `npx agentdb@latest mcp` for Claude Code
+- Website: https://agentdb.ruv.io

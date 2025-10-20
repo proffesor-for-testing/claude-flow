@@ -5,6 +5,94 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0-alpha.14] - 2025-10-20
+
+> **📚 AgentDB Skills Expansion**: Comprehensive AgentDB documentation with 6 specialized skills covering all CLI commands and advanced features
+
+### ✨ New Features
+
+#### **AgentDB Skills Suite (6 Total)**
+
+**Updated Skills (2)**:
+- **agentdb-memory-patterns** - Enhanced with all `npx agentdb@latest` CLI commands
+  - Added: `init`, `mcp`, `create-plugin`, `query`, `import/export`, `stats`, `benchmark`
+  - Added: 9 learning algorithms documentation
+  - Added: 4 reasoning agents (PatternMatcher, ContextSynthesizer, MemoryOptimizer, ExperienceCurator)
+  - Added: Performance characteristics (150x-12,500x improvements)
+  - Added: MCP server integration instructions
+
+- **agentdb-vector-search** - Comprehensive vector search documentation
+  - Added: All CLI commands with distance metrics (cosine, euclidean, dot)
+  - Added: Quantization options (binary 32x, scalar 4x, product 8-16x)
+  - Added: HNSW indexing details (<100µs search)
+  - Added: MCP integration and performance benchmarks
+  - Added: RAG pipeline examples
+
+**New Skills (4)**:
+- **reasoningbank-agentdb** (~420 lines) - ReasoningBank integration with AgentDB backend
+  - Trajectory tracking and verdict judgment
+  - Memory distillation and pattern recognition
+  - 4 reasoning agents integration
+  - Legacy API 100% backward compatibility
+  - Migration tools from legacy ReasoningBank
+
+- **agentdb-learning** (~450 lines) - AI learning plugins and reinforcement learning
+  - 9 RL algorithms: Decision Transformer, Q-Learning, SARSA, Actor-Critic, Active Learning, Adversarial Training, Curriculum Learning, Federated Learning, Multi-Task Learning
+  - Plugin creation and management via CLI
+  - Training workflows and experience replay
+  - Multi-agent training patterns
+
+- **agentdb-optimization** (~480 lines) - Performance optimization and scalability
+  - Quantization strategies (4-32x memory reduction)
+  - HNSW indexing (O(log n) search, <100µs)
+  - Caching strategies (LRU cache, <1ms retrieval)
+  - Batch operations (500x faster)
+  - Optimization recipes for different scales (small to massive)
+  - Scaling strategies and performance monitoring
+
+- **agentdb-advanced** (~490 lines) - Advanced distributed systems features
+  - QUIC synchronization (<1ms latency)
+  - Custom distance metrics
+  - Hybrid search (vector + metadata filtering)
+  - Multi-database management and sharding
+  - MMR (Maximal Marginal Relevance)
+  - Production patterns (connection pooling, error handling, monitoring)
+  - Multi-node deployment
+
+### 📊 Coverage
+
+**CLI Commands**: All 12 AgentDB commands fully documented
+- `init`, `mcp`, `create-plugin`, `list-plugins`, `list-templates`, `plugin-info`
+- `query`, `import`, `export`, `stats`, `benchmark`, `version`
+
+**Algorithms**: 9 reinforcement learning algorithms
+**Reasoning Agents**: 4 modules for intelligent pattern matching
+**Quantization**: 3 types with 4-32x memory reduction
+**Performance**: 150x-12,500x improvements documented
+
+### 📦 Distribution
+
+- ✅ All 6 AgentDB skills included in `.claude/skills/` directory
+- ✅ Skills distributed with npm package via `.claude/` in files array
+- ✅ Total: ~2,520 lines of comprehensive documentation
+- ✅ All skills follow skill-builder specification with proper YAML frontmatter
+- ✅ Progressive disclosure structure (4 levels)
+- ✅ Cross-references between skills
+
+### 🎯 Use Case Mapping
+
+- **Stateful chatbots** → `agentdb-memory-patterns`
+- **Semantic search/RAG** → `agentdb-vector-search`
+- **Self-learning agents** → `reasoningbank-agentdb`, `agentdb-learning`
+- **Performance tuning** → `agentdb-optimization`
+- **Distributed AI systems** → `agentdb-advanced`
+
+### 🔗 Resources
+
+- GitHub: https://github.com/ruvnet/agentic-flow/tree/main/packages/agentdb
+- Website: https://agentdb.ruv.io
+- MCP Integration: `npx agentdb@latest mcp`
+
 ## [2.7.0-alpha.12] - 2025-10-20
 
 > **🔧 Critical Bug Fixes**: Skills system and statusline initialization now work correctly in all npm install scenarios
