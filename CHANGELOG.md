@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.1] - 2025-10-22
+
+> **🐛 Critical Bug Fix**: MCP Pattern Persistence - Fixed neural pattern storage, search, and statistics
+
+### 🐛 Bug Fixes
+
+#### **MCP Pattern Persistence (Critical)**
+- **Fixed `neural_train` persistence**: Patterns now properly persist to memory instead of being discarded
+  - Added storage to `patterns` namespace with 30-day TTL
+  - Added automatic statistics tracking to `pattern-stats` namespace
+  - Tracks: total trainings, avg/max/min accuracy, model history (last 50)
+
+- **Implemented `neural_patterns` handler**: Complete implementation of missing handler
+  - **`analyze` action**: Retrieve specific patterns by modelId or list all patterns
+  - **`learn` action**: Store learning experiences with operation and outcome tracking
+  - **`predict` action**: Generate predictions based on historical training data
+  - **`stats` action**: Retrieve comprehensive statistics per pattern type or all types
+
+- **Added error handling**: Robust error management with detailed logging for debugging
+
+### 📁 Files Changed
+- `src/mcp/mcp-server.js` - Enhanced neural_train handler (lines 1288-1391) and implemented neural_patterns handler (lines 1393-1614)
+
+### 🧪 Testing
+- Added integration test suite: `tests/integration/mcp-pattern-persistence.test.js` (16 test cases)
+- Added manual test script: `tests/manual/test-pattern-persistence.js` (8 end-to-end scenarios)
+- Added comprehensive documentation: `docs/PATTERN_PERSISTENCE_FIX.md`
+
+### 📊 Impact
+- **Before**: ⚠️ Pattern Store/Search/Stats all partially functional (data not persisting)
+- **After**: ✅ All operations fully functional with complete persistence and retrieval
+
+### ✅ Backward Compatibility
+- Fully backward compatible - no breaking changes
+- Existing `neural_train` calls return same response format
+- New persistence happens transparently in background
+
+### 📈 Performance
+- Storage: ~1KB per pattern with configurable 30-day TTL
+- Operations: 2 memory store operations per training (pattern + stats)
+- Stats optimization: Only last 50 models tracked per pattern type
+
 ## [2.7.0] - 2025-10-20
 
 > **📚 AgentDB Skills Expansion**: Comprehensive AgentDB documentation with 6 specialized skills covering all CLI commands and advanced features
